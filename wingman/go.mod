@@ -7,6 +7,7 @@ require (
 	github.com/automuteus/utils v0.0.13
 	github.com/googollee/go-socket.io v1.4.4
 	github.com/gorilla/mux v1.8.0
+	github.com/joho/godotenv v1.3.0 // indirect
 	go.uber.org/zap v1.16.0
 )
 

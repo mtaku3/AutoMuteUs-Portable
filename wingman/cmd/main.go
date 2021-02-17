@@ -1,12 +1,15 @@
 package main
 
 import (
-	"github.com/automuteus/wingman/pkg/broker"
-	"go.uber.org/zap"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/automuteus/wingman/pkg/broker"
+	"go.uber.org/zap"
+
+	"github.com/joho/godotenv"
 )
 
 const DefaultWingmanPort = "8123"
@@ -15,6 +18,13 @@ func main() {
 	logger, err := zap.NewProduction()
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	// Load .env file
+	err = godotenv.Load("../.env")
+	if err != nil {
+		log.Fatal(err)
+		return
 	}
 
 	galactusAddr := os.Getenv("GALACTUS_ADDR")
