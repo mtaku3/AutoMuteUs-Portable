@@ -2,9 +2,6 @@ package main
 
 import (
 	"errors"
-	galactus_client "github.com/automuteus/galactus/pkg/client"
-	"github.com/automuteus/utils/pkg/settings"
-	"go.uber.org/zap"
 	"log"
 	"math/rand"
 	"os"
@@ -12,9 +9,15 @@ import (
 	"syscall"
 	"time"
 
+	galactus_client "github.com/automuteus/galactus/pkg/client"
+	"github.com/automuteus/utils/pkg/settings"
+	"go.uber.org/zap"
+
 	"github.com/denverquane/amongusdiscord/storage"
 
 	"github.com/denverquane/amongusdiscord/discord"
+
+	"github.com/joho/godotenv"
 )
 
 var (
@@ -34,6 +37,16 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	// Load .env file
+	err = godotenv.Load("../.env")
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+
+	// Setup different env
+	os.Setenv("REDIS_ADDR", os.Getenv("AUTOMUTEUS_REDIS_ADDR"))
 
 	err = discordMainWrapper(logger)
 	if err != nil {
