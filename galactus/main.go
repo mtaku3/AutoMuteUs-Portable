@@ -1,14 +1,17 @@
 package main
 
 import (
-	"github.com/automuteus/galactus/internal/galactus"
-	"go.uber.org/zap"
 	"log"
 	"os"
 	"os/signal"
 	"strconv"
 	"syscall"
 	"time"
+
+	"github.com/automuteus/galactus/internal/galactus"
+	"go.uber.org/zap"
+
+	"github.com/joho/godotenv"
 )
 
 const DefaultGalactusPort = "5858"
@@ -26,6 +29,16 @@ func main() {
 		log.Println("Failed to initialize logger with error")
 		log.Fatal(err)
 	}
+
+	// Load .env file
+	err = godotenv.Load("../.env")
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+
+	// Setup different env
+	os.Setenv("REDIS_ADDR", os.Getenv("GALACTUS_REDIS_ADDR"))
 
 	botToken := os.Getenv("DISCORD_BOT_TOKEN")
 	if botToken == "" {
