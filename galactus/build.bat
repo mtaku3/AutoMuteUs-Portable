@@ -1,3 +1,3 @@
 cd /d %~dp0
 
-go build -o ../.build/galactus.exe main.go
+go build -o ../.build/bin/galactus.exe main.go

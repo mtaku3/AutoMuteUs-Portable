@@ -1,13 +1,13 @@
-If not exist postgres\data call initdb.bat
+If not exist bin\postgres\data call initdb.bat
 
 cd %~dp0
 
-start .\postgres\bin\pg_ctl -D ../data start
+start bin\postgres\bin\pg_ctl -D bin/postgres/data start
 
-start .\redis\redis-server.exe
+start bin\redis\redis-server.exe
 
-start .\galactus.exe
+start bin\galactus.exe
 
-start .\automuteus.exe
+start bin\automuteus.exe
 
-start .\wingman.exe
+start bin\wingman.exe
