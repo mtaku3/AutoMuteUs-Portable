@@ -24,11 +24,13 @@ jobs:
         uses: WyriHaximus/github-action-get-previous-tag@master
 
       - name: Build
-        run: build.bat
+        shell: cmd
+        run: call build.bat
       
       - name: Zip
         run: |
           7z a ..\AutoMuteUs-Portable.zip .\.build\ -mx=9
+          7z rn ..\AutoMuteUs-Portable.zip .build AutoMuteUs-Portable
 
       - name: Create release
         id: create_release
