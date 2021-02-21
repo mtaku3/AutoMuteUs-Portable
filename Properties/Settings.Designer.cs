@@ -82,29 +82,5 @@ namespace AutoMuteUs_Portable.Properties {
                 this["ARCHITECTURE"] = value;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("postgres")]
-        public string POSTGRES_USER {
-            get {
-                return ((string)(this["POSTGRES_USER"]));
-            }
-            set {
-                this["POSTGRES_USER"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string POSTGRES_PASS {
-            get {
-                return ((string)(this["POSTGRES_PASS"]));
-            }
-            set {
-                this["POSTGRES_PASS"] = value;
-            }
-        }
     }
 }

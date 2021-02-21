@@ -17,11 +17,5 @@
     <Setting Name="ARCHITECTURE" Type="System.String" Scope="User">
       <Value Profile="(Default)">v7</Value>
     </Setting>
-    <Setting Name="POSTGRES_USER" Type="System.String" Scope="User">
-      <Value Profile="(Default)">postgres</Value>
-    </Setting>
-    <Setting Name="POSTGRES_PASS" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
   </Settings>
 </SettingsFile>

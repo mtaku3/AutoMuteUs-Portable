@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using NLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -39,6 +41,16 @@ namespace AutoMuteUs_Portable
             OldUserVars = new Dictionary<string, string>(Settings.UserVars);
             var VersionList = Settings.VersionList;
             AllControls = new Dictionary<string, Dictionary<string, UIElement>>();
+
+            var logger = LogManager.GetLogger("Main");
+
+            logger.Debug("########## OldEnvVars Output ##########");
+            logger.Debug(JsonConvert.SerializeObject(OldEnvVars));
+            logger.Debug("#######################################");
+
+            logger.Debug("########## OldUserVars Output ##########");
+            logger.Debug(JsonConvert.SerializeObject(OldUserVars));
+            logger.Debug("########################################");
 
             Grid grid;
             foreach (var variable in OldUserVars)
@@ -178,8 +190,10 @@ namespace AutoMuteUs_Portable
                 AllControls.Add(variable.Key, controls);
             }
 
-            foreach (var variable in OldEnvVars)
+            for (var ind = 0; ind < OldEnvVars.Count(); ind++)
             {
+                var variable = OldEnvVars.ElementAt(ind);
+
                 var controls = new Dictionary<string, UIElement>();
 
                 grid = new Grid();
@@ -212,9 +226,12 @@ namespace AutoMuteUs_Portable
 
                 stackPanel.Children.Add(grid);
 
-                var separetor = new Separator();
-                stackPanel.Children.Add(separetor);
-                controls.Add("Separator", separetor);
+                if (ind != OldEnvVars.Count() - 1)
+                {
+                    var separetor = new Separator();
+                    stackPanel.Children.Add(separetor);
+                    controls.Add("Separator", separetor);
+                }
 
                 AllControls.Add(variable.Key, controls);
             }
@@ -254,6 +271,11 @@ namespace AutoMuteUs_Portable
         {
             var comboBox = AllControls["ARCHITECTURE"]["ComboBox"] as ComboBox;
 
+            if (OldUserVars["ARCHITECTURE"] != (string)comboBox.SelectedValue)
+            {
+                UpdateUserVars();
+            }
+
             if ((string)comboBox.SelectedValue == "v7")
             {
                 AllControls["WINGMAN_TAG"]["Grid"].Visibility = Visibility.Visible;
@@ -266,8 +288,12 @@ namespace AutoMuteUs_Portable
             }
         }
 
-        private void saveBtn_Click(object sender, RoutedEventArgs e)
+        private void UpdateEnvVars()
         {
+            var logger = LogManager.GetLogger("Main");
+
+            logger.Debug("########## EnvVars Update ##########");
+
             foreach (var variable in OldEnvVars)
             {
                 TextBox textBox = AllControls[variable.Key]["TextBox"] as TextBox;
@@ -280,9 +306,19 @@ namespace AutoMuteUs_Portable
 
                 if (OldEnvVars[variable.Key] != textBox.Text)
                 {
+                    logger.Debug($"{variable.Key}: {OldEnvVars[variable.Key]} => {textBox.Text}");
                     Settings.SetEnvVar(variable.Key, textBox.Text);
                 }
             }
+
+            logger.Debug("####################################");
+        }
+
+        private void UpdateUserVars()
+        {
+            var logger = LogManager.GetLogger("Main");
+
+            logger.Debug("########## UserVars Update ##########");
 
             foreach (var variable in OldUserVars)
             {
@@ -298,6 +334,7 @@ namespace AutoMuteUs_Portable
 
                     if (OldUserVars[variable.Key] != (string)comboBox.SelectedValue)
                     {
+                        logger.Debug($"{variable.Key}: {OldUserVars[variable.Key]} => {(string)comboBox.SelectedValue}");
                         Settings.SetUserVar(variable.Key, (string)comboBox.SelectedValue);
                     }
                 }
@@ -313,11 +350,20 @@ namespace AutoMuteUs_Portable
 
                     if (OldUserVars[variable.Key] != textBox.Text)
                     {
+                        logger.Debug($"{variable.Key}: {OldUserVars[variable.Key]} => {textBox.Text}");
                         Settings.SetUserVar(variable.Key, textBox.Text);
                     }
                 }
-
             }
+
+            logger.Debug("#####################################");
+        }
+
+        private void saveBtn_Click(object sender, RoutedEventArgs e)
+        {
+            UpdateEnvVars();
+
+            UpdateUserVars();
 
             Close();
         }

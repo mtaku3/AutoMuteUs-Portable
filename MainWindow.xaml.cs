@@ -26,7 +26,6 @@ namespace AutoMuteUs_Portable
     {
 
         private static Main main;
-        private static readonly NLog.Logger logger = NLog.LogManager.GetLogger("MainWindow");
 
         public MainWindow()
         {
@@ -36,62 +35,106 @@ namespace AutoMuteUs_Portable
 
         private void Window_ContentRendered(object sender, EventArgs e)
         {
-            Settings.LoadSettings();
-            main = new Main();
+            Task.Factory.StartNew(() => {
+                Settings.LoadSettings();
+                main = new Main(this);
+            });
         }
 
-        private void WriteLogText(object sender, LogEventInfo logEvent)
+        private string GetLogLevelColor(string logLevel)
         {
-            var textbox = LogTextBox;
-            LogTextBox.Dispatcher.BeginInvoke((Action)(() =>
+            switch (logLevel)
             {
-                var LogLevelColor = "#202020";
-                var LoggerNameColor = "#505050";
-                var EventMessageColor = "#000000";
+                case "Trace":
+                    return "#808080";
+                case "Debug":
+                    return "#C0C0C0";
+                case "Info":
+                    return "#FFFFFF";
+                case "Warn":
+                    return "#FF00FF";
+                case "Error":
+                    return "#FFFF00";
+                case "Fatal":
+                    return "FF0000";
+                default:
+                    return "";
+            }
+        }
 
-                Paragraph paragraph = new Paragraph();
-                Run run;
+        private Paragraph CreateColoredLogParagraph(LogEventInfo logEvent)
+        {
+            var LogLevelColor = GetLogLevelColor(logEvent.Level.Name);
+            var LoggerNameColor = "#2bc454";
+            var EventMessageColor = LogLevelColor;
 
-                // LogLevel
-                run = new Run($"[{logEvent.Level.Name}] ");
-                run.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(LogLevelColor));
-                paragraph.Inlines.Add(run);
-                paragraph.LineHeight = 1;
+            Paragraph paragraph = new Paragraph();
+            Run run;
 
-                // LoggerName
-                run = new Run($"[{logEvent.LoggerName}] ");
-                run.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(LoggerNameColor));
-                paragraph.Inlines.Add(run);
-                paragraph.LineHeight = 1;
+            // LoggerName
+            run = new Run($"[{logEvent.LoggerName}] ");
+            run.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(LoggerNameColor));
+            paragraph.Inlines.Add(run);
+            paragraph.LineHeight = 1;
 
-                // Event Message
-                run = new Run(logEvent.Message);
-                run.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(EventMessageColor));
-                paragraph.Inlines.Add(run);
-                paragraph.LineHeight = 1;
+            // LogLevel
+            run = new Run($"[{logEvent.Level.Name}] ");
+            run.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(LogLevelColor));
+            paragraph.Inlines.Add(run);
+            paragraph.LineHeight = 1;
 
-                textbox.Document.Blocks.Add(paragraph);
-                textbox.ScrollToEnd();
+            // Event Message
+            run = new Run(logEvent.Message);
+            run.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(EventMessageColor));
+            paragraph.Inlines.Add(run);
+            paragraph.LineHeight = 1;
+
+            return paragraph;
+        }
+
+        private void mainWriteLogText(object sender, LogEventInfo logEvent)
+        {
+            if (logEvent.LoggerName != "Main") return;
+
+            var textBox = mainLogTextBox;
+            mainLogTextBox.Dispatcher.BeginInvoke((Action)(() =>
+            {
+                textBox.Document.Blocks.Add(CreateColoredLogParagraph(logEvent));
+                textBox.ScrollToEnd();
             }));
+        }
+
+        private void detailedWriteLogText(object sender, LogEventInfo logEvent)
+        {
+            if (logEvent.LoggerName == "Main") return;
+
+            var textBox = detailedLogTextBox;
+            detailedLogTextBox.Dispatcher.BeginInvoke((Action)(() =>
+            {
+                textBox.Document.Blocks.Add(CreateColoredLogParagraph(logEvent));
+                textBox.ScrollToEnd();
+            }));
+        }
+
+        private void InitializeRichTextBoxTarget(RichTextBox richTextBox, EventHandler<LogEventInfo> writeLogText)
+        {
+            richTextBox.Document.Blocks.Clear();
+
+            var target = new RichTextBoxTarget(richTextBox.Name, LogLevel.Info, LogLevel.Fatal);
+            target.OnLog += writeLogText;
         }
 
         private void InitializeNLog()
         {
             NLog.LogManager.Configuration = new NLog.Config.LoggingConfiguration();
 
-            var minLevel = LogLevel.Debug;
-            var maxLevel = LogLevel.Fatal;
-            var target = new RichTextBoxTarget(this.LogTextBox.Name, minLevel, maxLevel);
-            target.OnLog += WriteLogText;
-
-            LogTextBox.Document.Blocks.Clear();
-
-            logger.Debug("Initialized NLog");
+            InitializeRichTextBoxTarget(mainLogTextBox, mainWriteLogText);
+            InitializeRichTextBoxTarget(detailedLogTextBox, detailedWriteLogText);
         }
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            main.TerminateProcs();
+            if (main != null) main.TerminateProcs();
         }
 
     }

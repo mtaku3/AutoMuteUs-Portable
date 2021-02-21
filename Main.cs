@@ -5,6 +5,12 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Shapes;
+using System.Windows.Threading;
+using Path = System.IO.Path;
 
 namespace AutoMuteUs_Portable
 {
@@ -12,18 +18,21 @@ namespace AutoMuteUs_Portable
     {
         private static readonly Dictionary<string, NLog.Logger> logger = new Dictionary<string, NLog.Logger>();
         private static readonly Dictionary<string, Process> Procs = new Dictionary<string, Process>();
+        private static Dictionary<string, Dictionary<string, UIElement>> IndicatorControls;
+        private MainWindow mainWindow;
 
-        public Main()
+        public Main(MainWindow mainWindow)
         {
+            this.mainWindow = mainWindow;
             InitializeLogger();
             InitializeProcs();
+            STATask.Run(() => InitializeProcIndicators()).Wait();
             StartProcs();
             Task.Factory.StartNew(() => RunLoop());
         }
 
         private void RunLoop()
         {
-            logger["Main"].Debug("########## BEGIN : Running Process Loop ##########");
             while (true)
             {
                 foreach (var proc in Procs)
@@ -32,8 +41,6 @@ namespace AutoMuteUs_Portable
 
                     if (process.HasExited && proc.Key != "postgres")
                     {
-                        logger[proc.Key].Error("Process has been exited");
-                        logger["Main"].Debug("########## END : Ending Process Loop ##########");
                         TerminateProcs();
                         return;
                     }
@@ -53,7 +60,10 @@ namespace AutoMuteUs_Portable
                         process.Kill();
                         process.WaitForExit();
                     }
-                    logger["Main"].Info($"Process {proc.Key} closed.");
+                    var ellipse = IndicatorControls[proc.Key]["Ellipse"] as Ellipse;
+                    ellipse.Dispatcher.Invoke((Action)(() => ellipse.Fill = Brushes.Red));
+
+                    logger["Main"].Info($"{proc.Key} closed.");
                 }
                 catch
                 {
@@ -65,44 +75,39 @@ namespace AutoMuteUs_Portable
 
         private static void StandardOutputHandler(string process, object sender, DataReceivedEventArgs e)
         {
-            if (e.Data != "")
+            if (logger.ContainsKey(process))
             {
-                if (logger.ContainsKey(process))
-                {
-                    logger[process].Info(e.Data);
-                }
-                else
-                {
-                    NLog.LogManager.GetLogger(process).Info(e.Data);
-                }
+                logger[process].Info(e.Data);
+            }
+            else
+            {
+                NLog.LogManager.GetLogger(process).Info(e.Data);
             }
         }
 
         private static void StandardErrorHandler(string process, object sender, DataReceivedEventArgs e)
         {
-            if (e.Data != "")
+            if (logger.ContainsKey(process))
             {
-                if (logger.ContainsKey(process))
-                {
-                    logger[process].Error(e.Data);
-                }
-                else
-                {
-                    NLog.LogManager.GetLogger(process).Error(e.Data);
-                }
+                logger[process].Error(e.Data);
+            }
+            else
+            {
+                NLog.LogManager.GetLogger(process).Error(e.Data);
             }
         }
 
         private void StartProcs()
         {
-            logger["Main"].Info("Starting Processes");
             foreach (var proc in Procs)
             {
                 var process = proc.Value;
                 process.Start();
                 process.BeginErrorReadLine();
                 process.BeginOutputReadLine();
-                logger["Main"].Info($"Process {proc.Key} located in {process.StartInfo.FileName} started.");
+                var ellipse = IndicatorControls[proc.Key]["Ellipse"] as Ellipse;
+                ellipse.Dispatcher.Invoke((Action)(() => ellipse.Fill = Brushes.LimeGreen));
+                logger["Main"].Info($"{proc.Key} started.");
             }
         }
 
@@ -118,16 +123,13 @@ namespace AutoMuteUs_Portable
                     CreateNoWindow = true,
                     UseShellExecute = false,
                     RedirectStandardError = true,
-                    RedirectStandardOutput = true,
-                    StandardErrorEncoding = Encoding.UTF8,
-                    StandardOutputEncoding = Encoding.UTF8
+                    RedirectStandardOutput = true
                 }
             };
         }
 
         public static void TerminatePostgresServer()
         {
-            var logger = NLog.LogManager.GetLogger("postgres");
             try
             {
                 var server_process = Main.CreateProcessFromArchive("postgres.zip", "postgres\\bin\\pg_ctl.exe", "-D data stop", "postgres\\");
@@ -136,12 +138,12 @@ namespace AutoMuteUs_Portable
                 server_process.BeginErrorReadLine();
                 server_process.BeginOutputReadLine();
                 server_process.WaitForExit();
-                logger.Info($"Process postgres closed.");
+                logger["Main"].Info("postgres closed.");
             }
             catch
             {
-                logger.Error($"Failed to close process postgres.");
-                logger.Error($"Try to close manually.");
+                logger["Main"].Error("Failed to close postgres.");
+                logger["Main"].Error("Try to close manually.");
             }
         }
 
@@ -187,15 +189,88 @@ namespace AutoMuteUs_Portable
 
         private void InitializeProcs()
         {
-            logger["Main"].Debug("########## BEGIN : Initializing Processes ##########");
-
             AddProc("postgres", CreateProcessFromArchive("postgres.zip", "postgres\\bin\\pg_ctl.exe", "-D data start", "postgres\\")); // postgres
             AddProc("redis", CreateProcessFromArchive("redis.zip", "redis\\redis-server.exe")); // redis
             if (Settings.GetUserVar("ARCHITECTURE") == "v7") AddProc("wingman", CreateProcessFromExecutable("wingman.exe")); // wingman
             AddProc("galactus", CreateProcessFromExecutable("galactus.exe")); // galactus
             AddProc("automuteus", CreateProcessFromExecutable("automuteus.exe")); // automuteus
+        }
 
-            logger["Main"].Debug("########## END : Initialized Processes ##########");
+        private void InitializeProcIndicators()
+        {
+            IndicatorControls = new Dictionary<string, Dictionary<string, UIElement>>();
+
+            var indicatorsGrid = mainWindow.indicatorsGrid;
+
+            for (var ind = 0; ind < Procs.Count(); ind++)
+            {
+                var proc = Procs.ElementAt(ind);
+
+                var diameter = 10;
+
+                indicatorsGrid.Dispatcher.Invoke((Action)(() =>
+                {
+                    var controls = new Dictionary<string, UIElement>();
+
+                    var grid = new Grid();
+                    controls.Add("Grid", grid);
+
+                    for (var i = 0; i < 2; i++)
+                    {
+                        grid.ColumnDefinitions.Add(new ColumnDefinition()
+                        {
+                            Width = GridLength.Auto
+                        });
+                    }
+
+                    var ellipse = new Ellipse()
+                    {
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Height = diameter,
+                        Width = diameter,
+                        Fill = Brushes.DarkGray,
+                        Margin = new Thickness(2, 0, 4, 2)
+                    };
+                    controls.Add("Ellipse", ellipse);
+                    grid.Children.Add(ellipse);
+                    Grid.SetColumn(ellipse, 0);
+
+                    var textBlock = new TextBlock()
+                    {
+                        VerticalAlignment = VerticalAlignment.Center,
+                        HorizontalAlignment = HorizontalAlignment.Left,
+                        Height = 19,
+                        Text = proc.Key,
+                        Margin = new Thickness(0, 0, 0, 2)
+                    };
+                    controls.Add("TextBlock", textBlock);
+                    grid.Children.Add(textBlock);
+                    Grid.SetColumn(textBlock, 1);
+
+                    for (var i = 0; i < 2; i++)
+                    {
+                        indicatorsGrid.RowDefinitions.Add(new RowDefinition()
+                        {
+                            Height = GridLength.Auto
+                        });
+                    }
+                    indicatorsGrid.Children.Add(grid);
+                    Grid.SetRow(grid, ind * 2);
+
+                    if (ind != Procs.Count() - 1)
+                    {
+                        var separator = new Separator()
+                        {
+                            Margin = new Thickness(0, 2, 0, 2)
+                        };
+                        controls.Add("Separator", separator);
+                        indicatorsGrid.Children.Add(separator);
+                        Grid.SetRow(separator, ind * 2 + 1);
+                    }
+
+                    IndicatorControls.Add(proc.Key, controls);
+                }));
+            }
         }
 
         private void InitializeLogger()
@@ -205,7 +280,6 @@ namespace AutoMuteUs_Portable
             {
                 logger.Add(name, NLog.LogManager.GetLogger(name));
             }
-            logger["Main"].Debug("Initialized Logger");
         }
     }
 }
