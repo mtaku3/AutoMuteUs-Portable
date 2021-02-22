@@ -4,7 +4,6 @@
 
 ![GitHub release (latest by SemVer including pre-releases)](https://img.shields.io/github/downloads-pre/mtaku3/AutoMuteUs-Portable/latest/total?color=green&sort=semver)
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/mtaku3/AutoMuteUs-Portable/releaser-v1)
-![GitHub](https://img.shields.io/github/license/mtaku3/AutoMuteUs-Portable)
 
 ## What is this?
 This is portable version of [AutoMuteUs(self-hosting)](https://github.com/automuteus). So that no need to install anything.
