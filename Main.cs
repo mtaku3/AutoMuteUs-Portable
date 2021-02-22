@@ -16,7 +16,7 @@ using Path = System.IO.Path;
 
 namespace AutoMuteUs_Portable
 {
-    class Main
+    public class Main
     {
         private static Logger MainLogger = LogManager.GetLogger("Main");
 
@@ -54,6 +54,8 @@ namespace AutoMuteUs_Portable
 
         public void TerminateProcs()
         {
+            Ellipse ellipse;
+
             foreach (var proc in Procs)
             {
                 try
@@ -64,7 +66,7 @@ namespace AutoMuteUs_Portable
                         process.Kill();
                         process.WaitForExit();
                     }
-                    var ellipse = IndicatorControls[proc.Key]["Ellipse"] as Ellipse;
+                    ellipse = IndicatorControls[proc.Key]["Ellipse"] as Ellipse;
                     ellipse.Dispatcher.Invoke((Action)(() => ellipse.Fill = Brushes.Red));
 
                     logger["Main"].Info($"{proc.Key} closed.");
@@ -125,7 +127,6 @@ namespace AutoMuteUs_Portable
 
         public static void TerminatePostgresServer()
         {
-
             try
             {
                 var server_process = Main.CreateProcessFromArchive("postgres.zip", "postgres\\bin\\pg_ctl.exe", "-D data stop", "postgres\\");

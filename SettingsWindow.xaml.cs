@@ -297,7 +297,7 @@ namespace AutoMuteUs_Portable
 
                 if (OldEnvVars[variable.Key] != textBox.Text)
                 {
-                    logger.Debug($"{variable.Key}: {OldEnvVars[variable.Key]} => {textBox.Text}");
+                    logger.Debug($"{variable.Key}: \"{OldEnvVars[variable.Key]}\" => \"{textBox.Text}\"");
                     Settings.SetEnvVar(variable.Key, textBox.Text);
                 }
             }
@@ -325,7 +325,7 @@ namespace AutoMuteUs_Portable
 
                     if (OldUserVars[variable.Key] != (string)comboBox.SelectedValue)
                     {
-                        logger.Debug($"{variable.Key}: {OldUserVars[variable.Key]} => {(string)comboBox.SelectedValue}");
+                        logger.Debug($"{variable.Key}: \"{OldUserVars[variable.Key]}\" => \"{(string)comboBox.SelectedValue}\"");
                         Settings.SetUserVar(variable.Key, (string)comboBox.SelectedValue);
                     }
                 }
@@ -341,7 +341,7 @@ namespace AutoMuteUs_Portable
 
                     if (OldUserVars[variable.Key] != textBox.Text)
                     {
-                        logger.Debug($"{variable.Key}: {OldUserVars[variable.Key]} => {textBox.Text}");
+                        logger.Debug($"{variable.Key}: \"{OldUserVars[variable.Key]}\" => \"{textBox.Text}\"");
                         Settings.SetUserVar(variable.Key, textBox.Text);
                     }
                 }

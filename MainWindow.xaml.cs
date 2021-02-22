@@ -120,7 +120,7 @@ namespace AutoMuteUs_Portable
         {
             richTextBox.Document.Blocks.Clear();
 
-            var target = new RichTextBoxTarget(richTextBox.Name, LogLevel.Trace, LogLevel.Fatal);
+            var target = new RichTextBoxTarget(richTextBox.Name, LogLevel.Info, LogLevel.Fatal);
             target.OnLog += writeLogText;
         }
 
@@ -137,5 +137,10 @@ namespace AutoMuteUs_Portable
             if (main != null) main.TerminateProcs();
         }
 
+        private void ResetButton_Click(object sender, RoutedEventArgs e)
+        {
+            var resetWindow = new ResetWindow(main);
+            resetWindow.Show();
+        }
     }
 }

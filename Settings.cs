@@ -198,7 +198,7 @@ namespace AutoMuteUs_Portable
                         process.Start();
                         process.BeginErrorReadLine();
                         process.BeginOutputReadLine();
-                        process.WaitForExit();
+
                         if (process.ExitCode != 0)
                         {
                             logger.Error("Postgres user name didn't set properly.");
@@ -207,9 +207,9 @@ namespace AutoMuteUs_Portable
                         else
                         {
                             logger.Info($"Postgres user name successfully set to '{newUser}'.");
-                            UpdatePostgresUser(newUser);
-                            oldUser = newUser;
                         }
+                        UpdatePostgresUser(newUser);
+                        oldUser = newUser;
                     }
                     if (oldPass != newPass)
                     {
@@ -228,9 +228,9 @@ namespace AutoMuteUs_Portable
                         else
                         {
                             logger.Info($"Postgres password successfully set to '{newPass}'.");
-                            UpdatePostgresPass(newPass);
-                            oldPass = newPass;
                         }
+                        UpdatePostgresPass(newPass);
+                        oldPass = newPass;
                     }
 
                     try
@@ -258,7 +258,64 @@ namespace AutoMuteUs_Portable
             }
         }
 
-        private static void LoadPostgresBinary()
+        public static void LoadWingmanExecutable()
+        {
+            var envPath = GetUserVar("EnvPath");
+
+            logger.Info("wingman.exe has been downloading.");
+            using (WebClient client = new WebClient())
+            {
+                var path = Path.Combine(envPath, "wingman.exe");
+                client.DownloadFile(VersionList["wingman"][GetUserVar("WINGMAN_TAG")], path);
+                logger.Info("wingman.exe successfully loaded.");
+            }
+        }
+
+        public static void LoadGalactusExecutable()
+        {
+            var envPath = GetUserVar("EnvPath");
+
+            logger.Info("galactus.exe has been downloading.");
+            using (WebClient client = new WebClient())
+            {
+                var path = Path.Combine(envPath, "galactus.exe");
+                client.DownloadFile(VersionList["galactus"][GetUserVar("GALACTUS_TAG")], path);
+                logger.Info("galactus.exe successfully loaded.");
+            }
+        }
+
+        public static void LoadAutomuteusExecutable()
+        {
+            var envPath = GetUserVar("EnvPath");
+
+            logger.Info("automuteus.exe has been downloading.");
+            using (WebClient client = new WebClient())
+            {
+                var path = Path.Combine(envPath, "automuteus.exe");
+                client.DownloadFile(VersionList["automuteus"][GetUserVar("AUTOMUTEUS_TAG")], path);
+                logger.Info("automuteus.exe successfully loaded.");
+            }
+        }
+
+        public static void LoadRedisBinary()
+        {
+            var envPath = GetUserVar("EnvPath");
+
+            logger.Info("redis.zip has been downloading.");
+            using (WebClient client = new WebClient())
+            {
+                var path = Path.Combine(envPath, "redis.zip");
+                client.DownloadFile("https://github.com/AutoMuteUs-Portable/redis/releases/download/5.0.10/redis.zip", path);
+                using (ZipFile zipFile = ZipFile.Read(path))
+                {
+                    path = envPath;
+                    zipFile.ExtractAll(path, ExtractExistingFileAction.OverwriteSilently);
+                    logger.Info("Redis' binary successfully loaded.");
+                };
+            }
+        }
+
+        public static void LoadPostgresBinary()
         {
             var envPath = GetUserVar("EnvPath");
 
@@ -300,18 +357,7 @@ namespace AutoMuteUs_Portable
 
             if (!Directory.Exists(Path.Combine(envPath, "redis\\")))
             {
-                logger.Info("redis.zip has been downloading.");
-                using (WebClient client = new WebClient())
-                {
-                    var path = Path.Combine(envPath, "redis.zip");
-                    client.DownloadFile("https://github.com/AutoMuteUs-Portable/redis/releases/download/5.0.10/redis.zip", path);
-                    using (ZipFile zipFile = ZipFile.Read(path))
-                    {
-                        path = envPath;
-                        zipFile.ExtractAll(path, ExtractExistingFileAction.OverwriteSilently);
-                        logger.Info("Redis' binary successfully loaded.");
-                    };
-                }
+                LoadRedisBinary();
             }
 
             if (!File.Exists(Path.Combine(envPath, ".env")))
@@ -332,37 +378,19 @@ namespace AutoMuteUs_Portable
 
             if (!File.Exists(Path.Combine(envPath, "automuteus.exe")))
             {
-                logger.Info("automuteus.exe has been downloading.");
-                using (WebClient client = new WebClient())
-                {
-                    var path = Path.Combine(envPath, "automuteus.exe");
-                    client.DownloadFile(VersionList["automuteus"][GetUserVar("AUTOMUTEUS_TAG")], path);
-                    logger.Info("automuteus.exe successfully loaded.");
-                }
+                LoadAutomuteusExecutable();
             }
 
             if (!File.Exists(Path.Combine(envPath, "galactus.exe")))
             {
-                logger.Info("galactus.exe has been downloading.");
-                using (WebClient client = new WebClient())
-                {
-                    var path = Path.Combine(envPath, "galactus.exe");
-                    client.DownloadFile(VersionList["galactus"][GetUserVar("GALACTUS_TAG")], path);
-                    logger.Info("galactus.exe successfully loaded.");
-                }
+                LoadGalactusExecutable();
             }
 
             if (GetUserVar("ARCHITECTURE") == "v7")
             {
                 if (!File.Exists(Path.Combine(envPath, "wingman.exe")))
                 {
-                    logger.Info("wingman.exe has been downloading.");
-                    using (WebClient client = new WebClient())
-                    {
-                        var path = Path.Combine(envPath, "wingman.exe");
-                        client.DownloadFile(VersionList["wingman"][GetUserVar("WINGMAN_TAG")], path);
-                        logger.Info("wingman.exe successfully loaded.");
-                    }
+                    LoadWingmanExecutable();
                 }
             }
         }
@@ -512,6 +540,19 @@ namespace AutoMuteUs_Portable
                 else
                 {
                     SaveUserVar(Key, Value);
+
+                    switch (Key)
+                    {
+                        case "AUTOMUTEUS_TAG":
+                            LoadAutomuteusExecutable();
+                            break;
+                        case "GALACTUS_TAG":
+                            LoadGalactusExecutable();
+                            break;
+                        case "WINGMAN_TAG":
+                            LoadWingmanExecutable();
+                            break;
+                    }
                 }
             }
         }
