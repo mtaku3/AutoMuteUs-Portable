@@ -87,7 +87,7 @@ namespace AutoMuteUs_Portable
                         comboBox.Items.Add(item.Key);
                     }
 
-                    comboBox.SelectedValue = Settings.GetUserVar("AUTOMUTEUS_TAG");
+                    comboBox.SelectedValue = OldUserVars["AUTOMUTEUS_TAG"];
 
                     grid.Children.Add(comboBox);
                     Grid.SetColumn(comboBox, 1);
@@ -106,7 +106,7 @@ namespace AutoMuteUs_Portable
                         comboBox.Items.Add(item.Key);
                     }
 
-                    comboBox.SelectedValue = Settings.GetUserVar("GALACTUS_TAG");
+                    comboBox.SelectedValue = OldUserVars["GALACTUS_TAG"];
 
                     grid.Children.Add(comboBox);
                     Grid.SetColumn(comboBox, 1);
@@ -125,18 +125,7 @@ namespace AutoMuteUs_Portable
                         comboBox.Items.Add(item.Key);
                     }
 
-                    comboBox.SelectedValue = Settings.GetUserVar("WINGMAN_TAG");
-
-                    if (Settings.GetUserVar("ARCHITECTURE") == "v7")
-                    {
-                        comboBox.Visibility = Visibility.Visible;
-                    }
-                    else
-                    {
-                        comboBox.Visibility = Visibility.Hidden;
-                        var tb = grid.Children.OfType<TextBlock>().FirstOrDefault();
-                        tb.Visibility = Visibility.Hidden;
-                    }
+                    comboBox.SelectedValue = OldUserVars["WINGMAN_TAG"];
 
                     grid.Children.Add(comboBox);
                     Grid.SetColumn(comboBox, 1);
@@ -153,15 +142,9 @@ namespace AutoMuteUs_Portable
                     comboBox.Items.Add("v7");
                     comboBox.Items.Add("v6");
 
-                    comboBox.SelectedValue = Settings.GetUserVar("ARCHITECTURE");
+                    comboBox.SelectedValue = OldUserVars["ARCHITECTURE"];
 
                     comboBox.DropDownClosed += ComboBox_DropDownClosed;
-
-                    if (Settings.GetUserVar("ARCHITECTURE") != "v7")
-                    {
-                        AllControls["WINGMAN_TAG"]["Grid"].Visibility = Visibility.Collapsed;
-                        AllControls["WINGMAN_TAG"]["Separator"].Visibility = Visibility.Collapsed;
-                    }
 
                     grid.Children.Add(comboBox);
                     Grid.SetColumn(comboBox, 1);
@@ -188,6 +171,13 @@ namespace AutoMuteUs_Portable
                 controls.Add("Separator", separetor);
 
                 AllControls.Add(variable.Key, controls);
+            }
+
+            if (OldUserVars["ARCHITECTURE"] != "v7")
+            {
+                AllControls["WINGMAN_TAG"]["TextBlock"].Visibility = Visibility.Collapsed;
+                AllControls["WINGMAN_TAG"]["Grid"].Visibility = Visibility.Collapsed;
+                AllControls["WINGMAN_TAG"]["Separator"].Visibility = Visibility.Collapsed;
             }
 
             for (var ind = 0; ind < OldEnvVars.Count(); ind++)
@@ -274,6 +264,7 @@ namespace AutoMuteUs_Portable
             if (OldUserVars["ARCHITECTURE"] != (string)comboBox.SelectedValue)
             {
                 UpdateUserVars();
+                Close();
             }
 
             if ((string)comboBox.SelectedValue == "v7")
@@ -298,9 +289,9 @@ namespace AutoMuteUs_Portable
             {
                 TextBox textBox = AllControls[variable.Key]["TextBox"] as TextBox;
 
-                if (check(variable.Key, textBox.Text) == false)
+                if (Settings.CheckRequiredVariable(variable.Key, textBox.Text) != null)
                 {
-                    MessageBox.Show("Some required variable are set to empty.\nFill it out and retry.");
+                    MessageBox.Show($"{variable.Key} is required to fill.\nFill it and try again.");
                     return;
                 }
 
@@ -326,9 +317,9 @@ namespace AutoMuteUs_Portable
                 {
                     ComboBox comboBox = AllControls[variable.Key]["ComboBox"] as ComboBox;
 
-                    if (check(variable.Key, (string)comboBox.SelectedValue) == false)
+                    if (Settings.CheckRequiredVariable(variable.Key, (string)comboBox.SelectedValue) != null)
                     {
-                        MessageBox.Show("Some required variable are set to empty.\nFill it out and retry.");
+                        MessageBox.Show($"{variable.Key} is required to fill.\nFill it and try again.");
                         return;
                     }
 
@@ -342,9 +333,9 @@ namespace AutoMuteUs_Portable
                 {
                     TextBox textBox = AllControls[variable.Key]["TextBox"] as TextBox;
 
-                    if (check(variable.Key, textBox.Text) == false)
+                    if (Settings.CheckRequiredVariable(variable.Key, textBox.Text) != null)
                     {
-                        MessageBox.Show("Some required variable are set to empty.\nFill it out and retry.");
+                        MessageBox.Show($"{variable.Key} is required to fill.\nFill it and try again.");
                         return;
                     }
 
@@ -361,23 +352,11 @@ namespace AutoMuteUs_Portable
 
         private void saveBtn_Click(object sender, RoutedEventArgs e)
         {
+            Close();
+
             UpdateEnvVars();
 
             UpdateUserVars();
-
-            Close();
-        }
-
-        private bool check(string Key, string Value)
-        {
-            if (Value == "")
-            {
-                if (Key == "DISCORD_BOT_TOKEN" || Key == "EnvPath")
-                {
-                    return false;
-                }
-            }
-            return true;
         }
 
         [DllImport("user32.dll")]

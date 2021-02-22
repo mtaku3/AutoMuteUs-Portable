@@ -120,7 +120,7 @@ namespace AutoMuteUs_Portable
         {
             richTextBox.Document.Blocks.Clear();
 
-            var target = new RichTextBoxTarget(richTextBox.Name, LogLevel.Info, LogLevel.Fatal);
+            var target = new RichTextBoxTarget(richTextBox.Name, LogLevel.Trace, LogLevel.Fatal);
             target.OnLog += writeLogText;
         }
 

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using NLog;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -16,9 +18,11 @@ namespace AutoMuteUs_Portable
 {
     class Main
     {
-        private static readonly Dictionary<string, NLog.Logger> logger = new Dictionary<string, NLog.Logger>();
-        private static readonly Dictionary<string, Process> Procs = new Dictionary<string, Process>();
-        private static Dictionary<string, Dictionary<string, UIElement>> IndicatorControls;
+        private static Logger MainLogger = LogManager.GetLogger("Main");
+
+        private readonly Dictionary<string, NLog.Logger> logger = new Dictionary<string, NLog.Logger>();
+        private readonly Dictionary<string, Process> Procs = new Dictionary<string, Process>();
+        private Dictionary<string, Dictionary<string, UIElement>> IndicatorControls;
         private MainWindow mainWindow;
 
         public Main(MainWindow mainWindow)
@@ -75,26 +79,12 @@ namespace AutoMuteUs_Portable
 
         private static void StandardOutputHandler(string process, object sender, DataReceivedEventArgs e)
         {
-            if (logger.ContainsKey(process))
-            {
-                logger[process].Info(e.Data);
-            }
-            else
-            {
-                NLog.LogManager.GetLogger(process).Info(e.Data);
-            }
+            LogManager.GetLogger(process).Info(e.Data);
         }
 
         private static void StandardErrorHandler(string process, object sender, DataReceivedEventArgs e)
         {
-            if (logger.ContainsKey(process))
-            {
-                logger[process].Error(e.Data);
-            }
-            else
-            {
-                NLog.LogManager.GetLogger(process).Error(e.Data);
-            }
+            LogManager.GetLogger(process).Error(e.Data);
         }
 
         private void StartProcs()
@@ -113,7 +103,7 @@ namespace AutoMuteUs_Portable
 
         public static Process CreateProcess(string FileName, string Arguments, string WorkingDir)
         {
-            return new Process()
+            var process = new Process()
             {
                 StartInfo =
                 {
@@ -126,10 +116,16 @@ namespace AutoMuteUs_Portable
                     RedirectStandardOutput = true
                 }
             };
+
+            MainLogger.Debug("########## New Process Created ##########");
+            MainLogger.Debug(JsonConvert.SerializeObject(process.StartInfo));
+            MainLogger.Debug("#########################################");
+            return process;
         }
 
         public static void TerminatePostgresServer()
         {
+
             try
             {
                 var server_process = Main.CreateProcessFromArchive("postgres.zip", "postgres\\bin\\pg_ctl.exe", "-D data stop", "postgres\\");
@@ -138,12 +134,12 @@ namespace AutoMuteUs_Portable
                 server_process.BeginErrorReadLine();
                 server_process.BeginOutputReadLine();
                 server_process.WaitForExit();
-                logger["Main"].Info("postgres closed.");
+                MainLogger.Info("postgres closed.");
             }
             catch
             {
-                logger["Main"].Error("Failed to close postgres.");
-                logger["Main"].Error("Try to close manually.");
+                MainLogger.Error("Failed to close postgres.");
+                MainLogger.Error("Try to close manually.");
             }
         }
 

@@ -59,7 +59,7 @@ namespace AutoMuteUs_Portable
                 logger.Debug(JsonConvert.SerializeObject(EnvVars));
                 logger.Debug("#############################");
 
-                if (!EnvVars.ContainsKey("DISCORD_BOT_TOKEN") || EnvVars["DISCORD_BOT_TOKEN"] == "")
+                if (CheckAllRequiredVariable(UserVars, EnvVars))
                 {
                     STATask.Run(() =>
                     {
@@ -84,14 +84,55 @@ namespace AutoMuteUs_Portable
             }
         }
 
+        public static bool CheckAllRequiredVariable(Dictionary<string, string> UserVars, Dictionary<string, string> EnvVars)
+        {
+            foreach (var variable in UserVars) {
+                if (CheckRequiredVariable(variable.Key, variable.Value) != null) return true; 
+            }
+
+            foreach (var variable in EnvVars)
+            {
+                if (CheckRequiredVariable(variable.Key, variable.Value) != null) return true;
+            }
+
+            return false;
+        }
+
+        #nullable enable
+        public static string? CheckRequiredVariable(string Key, string Value)
+        {
+            var EmptyAllowed = new[]
+            {
+                "EMOJI_GUILD_ID",
+                "WORKER_BOT_TOKENS",
+                "CAPTURE_TIMEOUT",
+                "AUTOMUTEUS_LISTENING"
+            };
+
+            if (EmptyAllowed.Contains(Key))
+            {
+                return null;
+            }
+            else
+            {
+                if (Value == "")
+                {
+                    return Key;
+                }
+                return null;
+            }
+        }
+        #nullable restore
+
         public static void DownloadEnv(string envPath, string ARCHITECTURE)
         {
-            var url = $"https://raw.githubusercontent.com/mtaku3/AutoMuteUs-Portable/main/${ARCHITECTURE}.env";
+            var url = $"https://raw.githubusercontent.com/mtaku3/AutoMuteUs-Portable/main/{ARCHITECTURE}.env";
             logger.Info($"{ARCHITECTURE}.env has been downloading.");
             using (WebClient client = new WebClient())
             {
                 var path = Path.Combine(envPath, ".env");
-                client.DownloadFile(url, path);
+                string result = client.DownloadString(url);
+                File.WriteAllText(path, result);
                 logger.Info(".env successfully loaded.");
                 SaveUserVar("ARCHITECTURE", ARCHITECTURE);
             }
@@ -104,13 +145,11 @@ namespace AutoMuteUs_Portable
 
         private static void UpdatePostgresUser(string user)
         {
-            SetEnvVar("POSTGRES_USER", user);
             WriteEnvVar("POSTGRES_USER", user);
         }
 
         private static void UpdatePostgresPass(string pass)
         {
-            SetEnvVar("POSTGRES_PASS", pass);
             WriteEnvVar("POSTGRES_PASS", pass);
         }
 
@@ -119,22 +158,27 @@ namespace AutoMuteUs_Portable
             string oldUser = GetEnvVar("POSTGRES_USER");
             string oldPass = GetEnvVar("POSTGRES_PASS");
 
+            if (!Directory.Exists(Path.Combine(GetUserVar("EnvPath"), "postgres\\")))
+            {
+                LoadPostgresBinary();
+            }
+
             try
             {
                 Process process;
                 if (!Directory.Exists(Path.Combine(GetUserVar("EnvPath"), "postgres\\data")))
                 {
                     logger.Info("Initializing Postgres server.");
-                    process = Main.CreateProcessFromArchive("postgres.zip", "postgres\\bin\\initdb.exe", $"-U {newUser} -A trust -E UTF8 --lc-messages=en_US -D data", "postgres\\");
+                    process = Main.CreateProcessFromArchive("postgres.zip", "postgres\\bin\\initdb.exe", $"-E UTF8 -U {newUser} -A trust --lc-messages=en_US -D data", "postgres\\");
                     Main.RedirectProcessStandardIO("postgres", process);
                     process.Start();
                     process.BeginErrorReadLine();
                     process.BeginOutputReadLine();
-                    logger.Debug($"Argument: {process.StartInfo.Arguments}");
                     process.WaitForExit();
                     logger.Info($"Initialized Postgres server.");
                     UpdatePostgresUser(newUser);
                     oldUser = newUser;
+                    oldPass = "";
                 }
 
                 if (oldUser != newUser || oldPass != newPass)
@@ -214,6 +258,24 @@ namespace AutoMuteUs_Portable
             }
         }
 
+        private static void LoadPostgresBinary()
+        {
+            var envPath = GetUserVar("EnvPath");
+
+            logger.Info("postgres.zip has been downloading.");
+            using (WebClient client = new WebClient())
+            {
+                var path = Path.Combine(envPath, "postgres.zip");
+                client.DownloadFile("https://github.com/AutoMuteUs-Portable/postgres/releases/download/12.6/postgres.zip", path);
+                using (ZipFile zipFile = ZipFile.Read(path))
+                {
+                    path = envPath;
+                    zipFile.ExtractAll(path, ExtractExistingFileAction.OverwriteSilently);
+                    logger.Info("Postgres' binary successfully loaded.");
+                };
+            }
+        }
+
         public static void LoadBinaries()
         {
             var envPath = GetUserVar("EnvPath");
@@ -233,18 +295,7 @@ namespace AutoMuteUs_Portable
 
             if (!Directory.Exists(Path.Combine(envPath, "postgres\\")))
             {
-                logger.Info("postgres.zip has been downloading.");
-                using (WebClient client = new WebClient())
-                {
-                    var path = Path.Combine(envPath, "postgres.zip");
-                    client.DownloadFile("https://github.com/AutoMuteUs-Portable/postgres/releases/download/12.6/postgres.zip", path);
-                    using (ZipFile zipFile = ZipFile.Read(path))
-                    {
-                        path = envPath;
-                        zipFile.ExtractAll(path, ExtractExistingFileAction.OverwriteSilently);
-                        logger.Info("Postgres' binary successfully loaded.");
-                    };
-                }
+                LoadPostgresBinary();
             }
 
             if (!Directory.Exists(Path.Combine(envPath, "redis\\")))
@@ -353,7 +404,7 @@ namespace AutoMuteUs_Portable
         {
             Dictionary<string, string> result = new Dictionary<string, string>();
 
-            using (var reader = new StreamReader(envPath))
+            using (StreamReader reader = new StreamReader(envPath))
             {
                 string output;
                 int index = 0;
@@ -404,11 +455,11 @@ namespace AutoMuteUs_Portable
             {
                 if (Key == "POSTGRES_PASS")
                 {
-                    SetupPostgres(GetEnvVar("POSTGRES_PASS"), Value);
+                    SetupPostgres(GetEnvVar("POSTGRES_USER"), Value);
                 }
                 else if (Key == "POSTGRES_USER")
                 {
-                    SetupPostgres(Value, GetEnvVar("POSTGRES_USER"));
+                    SetupPostgres(Value, GetEnvVar("POSTGRES_PASS"));
                 }
                 else
                 {
