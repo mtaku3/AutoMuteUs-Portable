@@ -1,3 +1,5 @@
+👉 <a href="https://github.com/mtaku3/AutoMuteUs-Portable/blob/main/README_ja.md">日本語</a>
+
 # Portable AutoMuteUs For Windows
 
 ![GitHub release (latest by SemVer including pre-releases)](https://img.shields.io/github/downloads-pre/mtaku3/AutoMuteUs-Portable/latest/total?color=green&sort=semver)
@@ -17,7 +19,7 @@ First of all, this supports only windows
 3.  Run `AutoMuteUs-Portable.exe`. `Settings` window will appear at first launch.
 4.  If you see Windows Defender caution, click `More Info` and `Run Anyway`.
 5.  Write your Discord Bot Token which you got in step No.2 in `DISCORD_BOT_TOKEN` setting.
-6.  Write password whatever you want for Postgres. Password can't be empty.
+6.  Write password whatever you want for Postgres in `POSTGRES_PASS` setting. Password can't be empty.
 7.  Click `save` button.
 
 🔔 After you clicked save button, all required binaries will be downloaded from <a href="#binary-repositories">Binary Repositories</a> in the `EnvPath` directory.
