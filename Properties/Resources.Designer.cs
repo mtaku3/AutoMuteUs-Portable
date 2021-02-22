@@ -59,15 +59,5 @@ namespace AutoMuteUs_Portable.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   型 System.Byte[] のローカライズされたリソースを検索します。
-        /// </summary>
-        internal static byte[] env {
-            get {
-                object obj = ResourceManager.GetObject("env", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
     }
 }
