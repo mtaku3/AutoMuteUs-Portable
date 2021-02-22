@@ -15,11 +15,23 @@ First of all, this supports only windows
 1.  Download the latest version here <a href="https://github.com/mtaku3/AutoMuteUs-Portable/releases/latest/download/AutoMuteUs-Portable.exe"><img alt="GitHub release (latest SemVer including pre-releases)" src="https://img.shields.io/github/v/release/mtaku3/AutoMuteUs-Portable?color=blue&include_prereleases&label=download&sort=semver"></a>
 2.  Create Discord Bot and get the token. Instruction [here](https://github.com/denverquane/automuteus/blob/master/BOT_README.md)
 3.  Run `AutoMuteUs-Portable.exe`. `Settings` window will appear at first launch.
-4.  Add your Discord Bot Token which you got in step No.2 in `DISCORD_BOT_TOKEN` setting. Then click save. 
+4.  If you see Windows Defender caution, click `More Info` and `Run Anyway`.
+5.  Write your Discord Bot Token which you got in step No.2 in `DISCORD_BOT_TOKEN` setting.
+6.  Write password whatever you want for Postgres. Password can't be empty.
+7.  Click `save` button.
 
 🔔 After you clicked save button, all required binaries will be downloaded from <a href="#binary-repositories">Binary Repositories</a> in the `EnvPath` directory.
 
-5.  Logs will appear in MainWindow's log text box. If you've followed the instruction correctly, now you get the Self-Hosted AutoMuteUs Bot. Congrats :partying_face:
+8.  Logs will appear in MainWindow's log text box. If you've followed the instruction correctly, now you get the Self-Hosted AutoMuteUs Bot. Congrats :partying_face:
+
+## Something went wrong?
+If there's some trouble, try RESET Feature 👍
+
+1.  Run `AutoMuteUs-Portable.exe`. MainWindow named `AutoMuteUs Portable` will appear.
+2.  Click `RESET` button at right bottom of MainWindow. `Reset` Window will appear.
+3.  Click `RESET ALL PROPERTIES` and `DELETE ALL BINARIES`. Follow the instructions of message box appeared.
+4.  After that, close `Reset` window by clicking `X` button of the window.
+5.  Run `AutoMuteUs-Portable.exe` again. Follow <a href="#installation-guide">Installation Guide</a>
 
 ## Binary Repositories
 Required binaries will be downloaded from release of repositories below 👇
