@@ -86,6 +86,8 @@ namespace AutoMuteUs_Portable
 
         public void TerminateProcs()
         {
+            var requiredComponent = Main.RequiredComponents[Settings.GetUserVar("ARCHITECTURE")];
+
             Ellipse ellipse;
 
             foreach (var proc in Procs)
@@ -108,7 +110,7 @@ namespace AutoMuteUs_Portable
                 }
             }
 
-            TerminatePostgresServer();
+            if (requiredComponent.Contains("postgres")) TerminatePostgresServer();
         }
 
         private static void StandardOutputHandler(string process, object sender, DataReceivedEventArgs e)

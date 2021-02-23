@@ -43,6 +43,8 @@ namespace AutoMuteUs_Portable
 
                 logger.Info($"EnvPath: {GetUserVar("EnvPath")}");
 
+                var requiredComponent = Main.RequiredComponents[GetUserVar("ARCHITECTURE")];
+
                 if (!File.Exists(Path.Combine(GetUserVar("EnvPath"), ".env")))
                 {
                     SaveUserVar("EnvPath", Path.Combine(Path.GetTempPath(), "AutoMuteUs-Portable\\"));
@@ -75,7 +77,7 @@ namespace AutoMuteUs_Portable
                     try
                     {
                         LoadBinaries();
-                        SetupPostgres();
+                        if (requiredComponent.Contains("postgres")) SetupPostgres();
                         break;
                     }
                     catch (Exception e)
@@ -109,7 +111,8 @@ namespace AutoMuteUs_Portable
                 "EMOJI_GUILD_ID",
                 "WORKER_BOT_TOKENS",
                 "CAPTURE_TIMEOUT",
-                "AUTOMUTEUS_LISTENING"
+                "AUTOMUTEUS_LISTENING",
+                "DISCORD_BOT_TOKEN_2"
             };
 
             if (EmptyAllowed.Contains(Key))
@@ -350,6 +353,17 @@ namespace AutoMuteUs_Portable
             }
         }
 
+        private static bool RequireComponent(string Key)
+        {
+            var requiredComponents = Main.RequiredComponents[Settings.GetUserVar("ARCHITECTURE")];
+
+            if (Key == "EnvPath" || Key == "ARCHITECTURE") return true;
+
+            if (requiredComponents.Contains(Key)) return true;
+
+            return false;
+        }
+
         public static void LoadBinaries()
         {
             var envPath = GetUserVar("EnvPath");
@@ -367,12 +381,12 @@ namespace AutoMuteUs_Portable
                 }
             }
 
-            if (!Directory.Exists(Path.Combine(envPath, "postgres\\")))
+            if (!Directory.Exists(Path.Combine(envPath, "postgres\\")) && RequireComponent("postgres"))
             {
                 LoadPostgresBinary();
             }
 
-            if (!Directory.Exists(Path.Combine(envPath, "redis\\")))
+            if (!Directory.Exists(Path.Combine(envPath, "redis\\")) && RequireComponent("redis"))
             {
                 LoadRedisBinary();
             }
@@ -398,22 +412,19 @@ namespace AutoMuteUs_Portable
                 LoadDiffEnvs(envPath, GetUserVar("ARCHITECTURE"));
             }
 
-            if (!File.Exists(Path.Combine(envPath, "automuteus.exe")))
+            if (!File.Exists(Path.Combine(envPath, "automuteus.exe")) && RequireComponent("automuteus"))
             {
                 LoadAutomuteusExecutable();
             }
 
-            if (!File.Exists(Path.Combine(envPath, "galactus.exe")))
+            if (!File.Exists(Path.Combine(envPath, "galactus.exe")) && RequireComponent("galactus"))
             {
                 LoadGalactusExecutable();
             }
 
-            if (GetUserVar("ARCHITECTURE") == "v7")
+            if (!File.Exists(Path.Combine(envPath, "wingman.exe")) && RequireComponent("wingman"))
             {
-                if (!File.Exists(Path.Combine(envPath, "wingman.exe")))
-                {
-                    LoadWingmanExecutable();
-                }
+                LoadWingmanExecutable();
             }
         }
 
