@@ -45,11 +45,14 @@ namespace AutoMuteUs_Portable
 
                 if (!File.Exists(Path.Combine(GetUserVar("EnvPath"), ".env")))
                 {
-                    UserVars["EnvPath"] = Path.Combine(Path.GetTempPath(), "AutoMuteUs-Portable\\");
+                    SaveUserVar("EnvPath", Path.Combine(Path.GetTempPath(), "AutoMuteUs-Portable\\"));
                     if (!Directory.Exists(GetUserVar("EnvPath"))) Directory.CreateDirectory(GetUserVar("EnvPath"));
                     DownloadEnv(GetUserVar("EnvPath"), GetUserVar("ARCHITECTURE"));
-                    Properties.Settings.Default.EnvPath = GetUserVar("EnvPath");
-                    Properties.Settings.Default.Save();
+                }
+
+                if (!File.Exists(Path.Combine(GetUserVar("EnvPath"), "diffenvs.json")))
+                {
+                    LoadDiffEnvs(GetUserVar("EnvPath"), GetUserVar("ARCHITECTURE"));
                 }
 
                 EnvVars = LoadEnv(Path.Combine(GetUserVar("EnvPath"), ".env"));
@@ -134,6 +137,7 @@ namespace AutoMuteUs_Portable
                 string result = client.DownloadString(url);
                 File.WriteAllText(path, result);
                 logger.Info(".env successfully loaded.");
+                LoadDiffEnvs(envPath, ARCHITECTURE);
                 SaveUserVar("ARCHITECTURE", ARCHITECTURE);
             }
         }
@@ -333,6 +337,19 @@ namespace AutoMuteUs_Portable
             }
         }
 
+        public static void LoadDiffEnvs(string envPath, string ARCHITECTURE)
+        {
+            var url = $"https://raw.githubusercontent.com/mtaku3/AutoMuteUs-Portable/main/{ARCHITECTURE}.diffenvs.json";
+            logger.Info($"{ARCHITECTURE}.diffenvs.json has been downloading.");
+            using (WebClient client = new WebClient())
+            {
+                var path = Path.Combine(envPath, "diffenvs.json");
+                string result = client.DownloadString(url);
+                File.WriteAllText(path, result);
+                logger.Info("diffenvs.json successfully loaded.");
+            }
+        }
+
         public static void LoadBinaries()
         {
             var envPath = GetUserVar("EnvPath");
@@ -374,6 +391,11 @@ namespace AutoMuteUs_Portable
                 File.WriteAllLines(Path.Combine(envPath, ".env"), allLines);
 
                 logger.Info($"File .env saved in {envPath}.");
+            }
+
+            if (!File.Exists(Path.Combine(envPath, "diffenvs.json")))
+            {
+                LoadDiffEnvs(envPath, GetUserVar("ARCHITECTURE"));
             }
 
             if (!File.Exists(Path.Combine(envPath, "automuteus.exe")))
