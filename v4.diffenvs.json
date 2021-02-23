@@ -1,0 +1,9 @@
+{
+    "automuteus": [
+        { "HOST": "GALACTUS_HOST" },
+        { "REDIS_ADDR": "AUTOMUTEUS_REDIS_ADDR" }
+    ],
+    "galactus": [
+        { "REDIS_ADDR": "GALACTUS_REDIS_ADDR" }
+    ]
+}

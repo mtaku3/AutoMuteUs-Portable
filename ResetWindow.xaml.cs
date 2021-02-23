@@ -23,15 +23,11 @@ namespace AutoMuteUs_Portable
     /// </summary>
     public partial class ResetWindow : Window
     {
-        private Main main;
-
         private bool RestartApplication = false;
 
-        public ResetWindow(Main main)
+        public ResetWindow()
         {
             InitializeComponent();
-
-            this.main = main;
         }
 
         private void ResetAllProperties(object sender, RoutedEventArgs e)
@@ -41,7 +37,7 @@ namespace AutoMuteUs_Portable
                 return;
             }
 
-            if (main != null) main.TerminateProcs();
+            if (MainWindow.main != null) MainWindow.main.TerminateProcs();
 
             Properties.Settings.Default.Reset();
             File.Delete(Path.Combine(Settings.GetUserVar("EnvPath"), ".env"));
@@ -57,7 +53,7 @@ namespace AutoMuteUs_Portable
                 return;
             }
 
-            if (main != null) main.TerminateProcs();
+            if (MainWindow.main != null) MainWindow.main.TerminateProcs();
 
             RMRF(Settings.GetUserVar("EnvPath"));
 

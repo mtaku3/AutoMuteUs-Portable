@@ -25,6 +25,38 @@ namespace AutoMuteUs_Portable
         private Dictionary<string, Dictionary<string, UIElement>> IndicatorControls;
         private MainWindow mainWindow;
 
+        public static readonly Dictionary<string, string[]> RequiredComponents = new Dictionary<string, string[]>()
+        {
+            ["v7"] = new string[]
+            {
+                "automuteus",
+                "galactus",
+                "wingman",
+                "redis",
+                "postgres"
+            },
+            ["v6"] = new string[]
+            {
+                "automuteus",
+                "galactus",
+                "redis",
+                "postgres"
+            },
+            ["v5"] = new string[]
+            {
+                "automuteus",
+                "galactus",
+                "redis",
+                "postgres"
+            },
+            ["v4"] = new string[]
+            {
+                "automuteus",
+                "galactus",
+                "redis"
+            }
+        };
+
         public Main(MainWindow mainWindow)
         {
             this.mainWindow = mainWindow;
@@ -186,11 +218,13 @@ namespace AutoMuteUs_Portable
 
         private void InitializeProcs()
         {
-            AddProc("postgres", CreateProcessFromArchive("postgres.zip", "postgres\\bin\\pg_ctl.exe", "-D data start", "postgres\\")); // postgres
-            AddProc("redis", CreateProcessFromArchive("redis.zip", "redis\\redis-server.exe")); // redis
-            if (Settings.GetUserVar("ARCHITECTURE") == "v7") AddProc("wingman", CreateProcessFromExecutable("wingman.exe")); // wingman
-            AddProc("galactus", CreateProcessFromExecutable("galactus.exe")); // galactus
-            AddProc("automuteus", CreateProcessFromExecutable("automuteus.exe")); // automuteus
+            var requiredComponents = RequiredComponents[Settings.GetUserVar("ARCHITECTURE")];
+
+            if (requiredComponents.Contains("postgres")) AddProc("postgres", CreateProcessFromArchive("postgres.zip", "postgres\\bin\\pg_ctl.exe", "-D data start", "postgres\\")); // postgres
+            if (requiredComponents.Contains("redis"))  AddProc("redis", CreateProcessFromArchive("redis.zip", "redis\\redis-server.exe")); // redis
+            if (requiredComponents.Contains("wingman")) AddProc("wingman", CreateProcessFromExecutable("wingman.exe")); // wingman
+            if (requiredComponents.Contains("galactus"))  AddProc("galactus", CreateProcessFromExecutable("galactus.exe")); // galactus
+            if (requiredComponents.Contains("automuteus"))  AddProc("automuteus", CreateProcessFromExecutable("automuteus.exe")); // automuteus
         }
 
         private void InitializeProcIndicators()

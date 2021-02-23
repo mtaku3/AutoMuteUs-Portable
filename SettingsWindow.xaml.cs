@@ -36,6 +36,32 @@ namespace AutoMuteUs_Portable
             InitializeControls();
         }
 
+        private bool SkipComponent(string Key)
+        {
+            var requiredComponents = Main.RequiredComponents[OldUserVars["ARCHITECTURE"]];
+
+            string ComponentName;
+
+            switch (Key)
+            {
+                case "AUTOMUTEUS_TAG":
+                    ComponentName = "automuteus";
+                    break;
+                case "GALACTUS_TAG":
+                    ComponentName = "galactus";
+                    break;
+                case "WINGMAN_TAG":
+                    ComponentName = "wingman";
+                    break;
+                default:
+                    return false;
+            }
+
+            if (requiredComponents.Contains(ComponentName)) return false;
+
+            return true;
+        }
+
         private void InitializeControls()
         {
             OldEnvVars = new Dictionary<string, string>(Settings.EnvVars);
@@ -56,6 +82,8 @@ namespace AutoMuteUs_Portable
             Grid grid;
             foreach (var variable in OldUserVars)
             {
+                if (SkipComponent(variable.Key)) continue;
+
                 var controls = new Dictionary<string, UIElement>();
 
                 grid = new Grid();
@@ -142,6 +170,8 @@ namespace AutoMuteUs_Portable
 
                     comboBox.Items.Add("v7");
                     comboBox.Items.Add("v6");
+                    comboBox.Items.Add("v5");
+                    comboBox.Items.Add("v4");
 
                     comboBox.SelectedValue = OldUserVars["ARCHITECTURE"];
 
@@ -203,13 +233,6 @@ namespace AutoMuteUs_Portable
                 controls.Add("Separator", separetor);
 
                 AllControls.Add(variable.Key, controls);
-            }
-
-            if (OldUserVars["ARCHITECTURE"] != "v7")
-            {
-                AllControls["WINGMAN_TAG"]["TextBlock"].Visibility = Visibility.Collapsed;
-                AllControls["WINGMAN_TAG"]["Grid"].Visibility = Visibility.Collapsed;
-                AllControls["WINGMAN_TAG"]["Separator"].Visibility = Visibility.Collapsed;
             }
 
             for (var ind = 0; ind < OldEnvVars.Count(); ind++)
@@ -309,17 +332,6 @@ namespace AutoMuteUs_Portable
                 UpdateUserVars();
                 Close();
             }
-
-            if ((string)comboBox.SelectedValue == "v7")
-            {
-                AllControls["WINGMAN_TAG"]["Grid"].Visibility = Visibility.Visible;
-                AllControls["WINGMAN_TAG"]["Separator"].Visibility = Visibility.Visible;
-            }
-            else
-            {
-                AllControls["WINGMAN_TAG"]["Grid"].Visibility = Visibility.Collapsed;
-                AllControls["WINGMAN_TAG"]["Separator"].Visibility = Visibility.Collapsed;
-            }
         }
 
         private void UpdateEnvVars()
@@ -350,6 +362,7 @@ namespace AutoMuteUs_Portable
 
         private void UpdateUserVars()
         {
+
             var logger = LogManager.GetLogger("Main");
 
             logger.Debug("########## UserVars Update ##########");
@@ -358,6 +371,7 @@ namespace AutoMuteUs_Portable
             {
                 if (variable.Key == "AUTOMUTEUS_TAG" || variable.Key == "GALACTUS_TAG" || variable.Key == "WINGMAN_TAG" || variable.Key == "ARCHITECTURE")
                 {
+                    if (SkipComponent(variable.Key)) continue;
                     ComboBox comboBox = AllControls[variable.Key]["ComboBox"] as ComboBox;
 
                     if (Settings.CheckRequiredVariable(variable.Key, (string)comboBox.SelectedValue) != null)

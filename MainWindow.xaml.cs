@@ -29,7 +29,7 @@ namespace AutoMuteUs_Portable
     public partial class MainWindow : Window
     {
 
-        private static Main main;
+        public static Main main;
 
         public MainWindow()
         {
@@ -119,7 +119,7 @@ namespace AutoMuteUs_Portable
             detailedLogTextBox.Dispatcher.BeginInvoke((Action)(() =>
             {
                 textBox.Document.Blocks.Add(CreateColoredLogParagraph(logEvent));
-                //textBox.ScrollToEnd();
+                textBox.ScrollToEnd();
             }));
         }
 
@@ -147,7 +147,7 @@ namespace AutoMuteUs_Portable
 
         private void ResetButton_Click(object sender, RoutedEventArgs e)
         {
-            var resetWindow = new ResetWindow(main);
+            var resetWindow = new ResetWindow();
             resetWindow.Show();
         }
 
