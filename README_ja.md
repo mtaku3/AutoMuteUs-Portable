@@ -10,6 +10,12 @@
 
 noteに詳細の記事を作成しました！[こちら](https://note.com/mtaku3/n/nd1419c9138c7)もどうぞ。
 
+## 注意
+
+全てのバイナリを最新版に修正したため、AutoMuteUs Portableはv2.0.0以下のバージョンでは動作しません。
+
+v2.1.0以降をご使用ください。
+
 ### Among Us CaptureとAutoMuteUsの違い
 - Among Us Capture: Among Usからプレイヤーの名前などを読み取り、サーバーに送信するアプリケーション
 - AutoMuteUs: Among Us Captureから受信したデータを元に、Discordのミュート等を実行するアプリケーション

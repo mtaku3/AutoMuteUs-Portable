@@ -10,6 +10,11 @@ This is portable version of [AutoMuteUs(self-hosting)](https://github.com/automu
 
 Note that this is not AmongUsCapture. this is its server side ✊
 
+## Caution
+Binaries has been updated for newer AutoMuteUs Portable version. So that AutoMuteUs Portable under v2.0.0 doesn't work properly.
+
+Please use later than v2.1.0
+
 ## Installation Guide
 First of all, this supports only windows
 

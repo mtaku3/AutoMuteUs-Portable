@@ -119,7 +119,7 @@ namespace AutoMuteUs_Portable
             detailedLogTextBox.Dispatcher.BeginInvoke((Action)(() =>
             {
                 textBox.Document.Blocks.Add(CreateColoredLogParagraph(logEvent));
-                textBox.ScrollToEnd();
+                //textBox.ScrollToEnd();
             }));
         }
 
