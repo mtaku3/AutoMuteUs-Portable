@@ -5,7 +5,9 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <RootNamespace>AutoMuteUs_Portable</RootNamespace>
     <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon>icons8-among-us-500.ico</ApplicationIcon>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

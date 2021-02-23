@@ -15,6 +15,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Path = System.IO.Path;
 
 namespace AutoMuteUs_Portable
 {
@@ -73,7 +74,7 @@ namespace AutoMuteUs_Portable
                 grid.Children.Add(textBlock);
                 Grid.SetColumn(textBlock, 0);
                 controls.Add("TextBlock", textBlock);
-
+                
                 if (variable.Key == "AUTOMUTEUS_TAG")
                 {
                     var comboBox = new ComboBox()
@@ -149,6 +150,37 @@ namespace AutoMuteUs_Portable
                     grid.Children.Add(comboBox);
                     Grid.SetColumn(comboBox, 1);
                     controls.Add("ComboBox", comboBox);
+                }
+                else if (variable.Key == "EnvPath")
+                {
+                    var buttonWidth = 20;
+
+                    grid.ColumnDefinitions.Add(new ColumnDefinition()
+                    {
+                        Width = GridLength.Auto
+                    });
+
+                    var textBox = new TextBox()
+                    {
+                        Width = 300 - buttonWidth,
+                        Text = variable.Value,
+                        Name = variable.Key
+                    };
+                    grid.Children.Add(textBox);
+                    Grid.SetColumn(textBox, 1);
+                    controls.Add("TextBox", textBox);
+
+                    var folderBrowserOpenButton = new Button()
+                    {
+                        Content = "...",
+                        Width = buttonWidth,
+                        VerticalAlignment = VerticalAlignment.Stretch,
+                        HorizontalAlignment = HorizontalAlignment.Stretch
+                    };
+                    folderBrowserOpenButton.Click += FolderBrowserOpenButton_Click;
+                    grid.Children.Add(folderBrowserOpenButton);
+                    Grid.SetColumn(folderBrowserOpenButton, 2);
+                    controls.Add("FolderBrowserOpenButton", folderBrowserOpenButton);
                 }
                 else
                 {
@@ -250,6 +282,17 @@ namespace AutoMuteUs_Portable
             button.AddHandler(Button.ClickEvent, new RoutedEventHandler(cancelBtn_Click));
 
             stackPanel.Children.Add(button);
+        }
+
+        private void FolderBrowserOpenButton_Click(object sender, RoutedEventArgs e)
+        {
+            var browser = new System.Windows.Forms.FolderBrowserDialog();
+
+            if (browser.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                var textBox = AllControls["EnvPath"]["TextBox"] as TextBox;
+                textBox.Text = Path.Combine(browser.SelectedPath, "AutoMuteUs-Portable\\");
+            }
         }
 
         private void cancelBtn_Click(object sender, RoutedEventArgs e)

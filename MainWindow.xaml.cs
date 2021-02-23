@@ -1,9 +1,13 @@
-﻿using NLog;
+﻿using Newtonsoft.Json;
+using NLog;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -31,6 +35,9 @@ namespace AutoMuteUs_Portable
         {
             InitializeComponent();
             InitializeNLog();
+#if PUBLISH
+            CheckUpdate();
+#endif
         }
 
         private void Window_ContentRendered(object sender, EventArgs e)
@@ -135,6 +142,7 @@ namespace AutoMuteUs_Portable
         private void Window_Closed(object sender, EventArgs e)
         {
             if (main != null) main.TerminateProcs();
+            Environment.Exit(0);
         }
 
         private void ResetButton_Click(object sender, RoutedEventArgs e)
@@ -142,5 +150,63 @@ namespace AutoMuteUs_Portable
             var resetWindow = new ResetWindow(main);
             resetWindow.Show();
         }
+
+#if PUBLISH
+        private async void CheckUpdate()
+        {
+            var logger = LogManager.GetLogger("Main");
+            
+            var CurrentInformationalVersion = (string)Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+
+            logger.Info($"Version: \"{CurrentInformationalVersion}\"");
+
+            Newtonsoft.Json.Linq.JArray AppVersionList;
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.UserAgent.Add(new System.Net.Http.Headers.ProductInfoHeaderValue("AutoMuteUs-Portable", CurrentInformationalVersion));
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+
+                var httpResponse = await client.GetAsync("https://api.github.com/repos/mtaku3/AutoMuteUs-Portable/git/matching-refs/tags");
+
+                if (!httpResponse.IsSuccessStatusCode)
+                {
+                    logger.Error("Failed to get refs/tags.");
+                    return;
+                }
+
+                var responseContent = await httpResponse.Content.ReadAsStringAsync();
+                AppVersionList = (Newtonsoft.Json.Linq.JArray)JsonConvert.DeserializeObject(responseContent);
+            }
+
+            var LatestVersion = AppVersionList.Last;
+            var LatestTag = ((string)LatestVersion["ref"]).Replace("refs/tags/", "");
+            var LatestInformationalVersion = (string)LatestVersion["object"]["sha"];
+
+            if (LatestInformationalVersion != CurrentInformationalVersion)
+            {
+
+                logger.Info($"New update detected: \"{CurrentInformationalVersion}\" => \"{LatestInformationalVersion}\"");
+                if (MessageBox.Show($"There's newer version \"{LatestTag}\" xD\nDo you wanna check it out on Github?", "Update Checker", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    string url = "https://github.com/mtaku3/AutoMuteUs-Portable/releases/latest";
+
+                    try
+                    {
+                        Process.Start(url);
+                    }
+                    catch
+                    {
+                        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                        {
+                            url = url.Replace("&", "^&");
+                            Process.Start(new ProcessStartInfo("cmd", $"/c start {url}") { CreateNoWindow = true });
+                        }
+                    }
+                }
+            }
+        }
+#endif
+
     }
 }
