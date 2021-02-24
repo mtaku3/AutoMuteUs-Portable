@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -191,7 +192,7 @@ namespace AutoMuteUs_Portable
                 if (oldUser != newUser || oldPass != newPass)
                 {
                     logger.Info("Postgres started to setup.");
-                    var server_process = Main.CreateProcessFromArchive("postgres.zip", "postgres\\bin\\pg_ctl.exe", "-D data start", "postgres\\");
+                    var server_process = Main.CreateProcessFromArchive("postgres.zip", "postgres\\bin\\pg_ctl.exe", "-w -D data start", "postgres\\");
                     Main.RedirectProcessStandardIO("postgres", server_process);
                     server_process.Start();
                     server_process.BeginErrorReadLine();
@@ -381,18 +382,6 @@ namespace AutoMuteUs_Portable
                 }
             }
 
-            if (!Directory.Exists(Path.Combine(envPath, "logs\\")))
-            {
-                try
-                {
-                    Directory.CreateDirectory(Path.Combine(envPath, "logs\\"));
-                }
-                catch (Exception e)
-                {
-                    logger.Error($"Failed to create directory \"{Path.Combine(envPath, "logs\\")}\": {e.Message}");
-                }
-            }
-
             if (!Directory.Exists(Path.Combine(envPath, "postgres\\")) && RequireComponent("postgres"))
             {
                 LoadPostgresBinary();
@@ -575,8 +564,11 @@ namespace AutoMuteUs_Portable
                     {
                         MessageBox.Show(e.Message);
                         logger.Error(e.Message);
+
                         return;
                     }
+
+                    SaveUserVar(Key, Value);
                 }
                 else if (Key == "ARCHITECTURE")
                 {

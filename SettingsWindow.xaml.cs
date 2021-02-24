@@ -411,9 +411,9 @@ namespace AutoMuteUs_Portable
         {
             Close();
 
-            UpdateEnvVars();
-
             UpdateUserVars();
+
+            UpdateEnvVars();
         }
 
         [DllImport("user32.dll")]
