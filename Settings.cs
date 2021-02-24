@@ -381,6 +381,18 @@ namespace AutoMuteUs_Portable
                 }
             }
 
+            if (!Directory.Exists(Path.Combine(envPath, "logs\\")))
+            {
+                try
+                {
+                    Directory.CreateDirectory(Path.Combine(envPath, "logs\\"));
+                }
+                catch (Exception e)
+                {
+                    logger.Error($"Failed to create directory \"{Path.Combine(envPath, "logs\\")}\": {e.Message}");
+                }
+            }
+
             if (!Directory.Exists(Path.Combine(envPath, "postgres\\")) && RequireComponent("postgres"))
             {
                 LoadPostgresBinary();

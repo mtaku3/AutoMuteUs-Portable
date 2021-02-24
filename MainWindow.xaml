@@ -31,14 +31,16 @@
 
         <Grid Grid.Column="2" Grid.Row="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             
             <Grid x:Name="indicatorsGrid" VerticalAlignment="Top">
             </Grid>
 
-            <Button VerticalAlignment="Bottom" Grid.Row="1" Click="ResetButton_Click">RESET</Button>
+            <Button VerticalAlignment="Bottom" Grid.Row="1" Click="ExportLogButton_Click" Margin="0,0,0,2">EXPORT LOG</Button>
+            <Button VerticalAlignment="Bottom" Grid.Row="2" Click="ResetButton_Click" Margin="0,2,0,0">RESET</Button>
         </Grid>
     </Grid>
 </Window>

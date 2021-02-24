@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using NLog;
+using NLog.Targets;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -20,6 +21,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml;
+using Path = System.IO.Path;
 
 namespace AutoMuteUs_Portable
 {
@@ -30,6 +32,8 @@ namespace AutoMuteUs_Portable
     {
 
         public static Main main;
+
+        private static string LogFilePath;
 
         public MainWindow()
         {
@@ -131,12 +135,35 @@ namespace AutoMuteUs_Portable
             target.OnLog += writeLogText;
         }
 
+        public static void InitializeFileTarget()
+        {
+            var config = NLog.LogManager.Configuration;
+
+            LogFilePath = $"{Path.Combine(Path.GetTempPath(), $"AutoMuteUs-Portable")}.log";
+
+            var logger = NLog.LogManager.GetLogger("Main");
+            logger.Info($"Log output started: \"{LogFilePath}\"");
+
+            var fileTarget = new FileTarget()
+            {
+                FileName = LogFilePath,
+                DeleteOldFileOnStartup = true
+            };
+
+            config.AddTarget("LogFile", fileTarget);
+            config.AddRule(LogLevel.Trace, LogLevel.Fatal, "LogFile", "*");
+
+            NLog.LogManager.Configuration = config;
+        }
+
         private void InitializeNLog()
         {
             NLog.LogManager.Configuration = new NLog.Config.LoggingConfiguration();
 
             InitializeRichTextBoxTarget(mainLogTextBox, mainWriteLogText);
             InitializeRichTextBoxTarget(detailedLogTextBox, detailedWriteLogText);
+
+            InitializeFileTarget();
         }
 
         private void Window_Closed(object sender, EventArgs e)
@@ -149,6 +176,25 @@ namespace AutoMuteUs_Portable
         {
             var resetWindow = new ResetWindow();
             resetWindow.Show();
+        }
+
+        private void ExportLogButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show("To export current log, application will close the server.\nAre you sure to proceed?", "Caution", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+            {
+                return;
+            }
+
+            if (main != null) main.TerminateProcs();
+            var source = LogFilePath;
+            var dist = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "AutoMuteUs-Portable.log");
+            if (File.Exists(dist))
+            {
+                File.Delete(dist);
+            }
+            File.Move(source, dist);
+
+            MessageBox.Show($"Successfully put log into current executable directory: \"{dist}\"", "Output Log", MessageBoxButton.OK);
         }
 
 #if PUBLISH

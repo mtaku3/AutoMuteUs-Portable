@@ -224,9 +224,9 @@ namespace AutoMuteUs_Portable
 
             if (requiredComponents.Contains("postgres")) AddProc("postgres", CreateProcessFromArchive("postgres.zip", "postgres\\bin\\pg_ctl.exe", "-D data start", "postgres\\")); // postgres
             if (requiredComponents.Contains("redis"))  AddProc("redis", CreateProcessFromArchive("redis.zip", "redis\\redis-server.exe")); // redis
-            if (requiredComponents.Contains("wingman")) AddProc("wingman", CreateProcessFromExecutable("wingman.exe")); // wingman
-            if (requiredComponents.Contains("galactus"))  AddProc("galactus", CreateProcessFromExecutable("galactus.exe")); // galactus
             if (requiredComponents.Contains("automuteus"))  AddProc("automuteus", CreateProcessFromExecutable("automuteus.exe")); // automuteus
+            if (requiredComponents.Contains("galactus"))  AddProc("galactus", CreateProcessFromExecutable("galactus.exe")); // galactus
+            if (requiredComponents.Contains("wingman")) AddProc("wingman", CreateProcessFromExecutable("wingman.exe")); // wingman
         }
 
         private void InitializeProcIndicators()
