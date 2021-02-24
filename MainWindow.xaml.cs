@@ -187,7 +187,7 @@ namespace AutoMuteUs_Portable
 
             if (main != null) main.TerminateProcs();
             var source = LogFilePath;
-            var dist = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "AutoMuteUs-Portable.log");
+            var dist = Path.Combine(AppContext.BaseDirectory, "AutoMuteUs-Portable.log");
             if (File.Exists(dist))
             {
                 File.Delete(dist);
