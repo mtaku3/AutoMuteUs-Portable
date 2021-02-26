@@ -2,7 +2,8 @@
 
 # Portable AutoMuteUs For Windows
 
-![GitHub release (latest by SemVer including pre-releases)](https://img.shields.io/github/downloads-pre/mtaku3/AutoMuteUs-Portable/latest/total?color=green&sort=semver)
+![GitHub all releases](https://img.shields.io/github/downloads/mtaku3/AutoMuteUs-Portable/total?label=Total%20Downloads)
+![GitHub release (latest by SemVer including pre-releases)](https://img.shields.io/github/downloads-pre/mtaku3/AutoMuteUs-Portable/latest/total?label=Latest%20Downloads&sort=semver)
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/mtaku3/AutoMuteUs-Portable/releaser-v1)
 
 ## What is this?

@@ -1,7 +1,8 @@
 # Portable AutoMuteUs For Windows
 
-![GitHub release (latest by SemVer including pre-releases)](https://img.shields.io/github/downloads-pre/mtaku3/AutoMuteUs-Portable/latest/total?color=green&sort=semver)
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/mtaku3/AutoMuteUs-Portable/releaser-v1)
+![GitHub all releases](https://img.shields.io/github/downloads/mtaku3/AutoMuteUs-Portable/total?label=%E5%90%88%E8%A8%88%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89%E6%95%B0)
+![GitHub release (latest by SemVer including pre-releases)](https://img.shields.io/github/downloads-pre/mtaku3/AutoMuteUs-Portable/latest/total?label=%E6%9C%80%E6%96%B0%E7%89%88%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89%E6%95%B0&sort=semver)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/mtaku3/AutoMuteUs-Portable/releaser-v2?label=%E3%83%93%E3%83%AB%E3%83%89)
 
 ## 概要
 これは[AutoMuteUs(セルフホスト)](https://github.com/automuteus)のポータブル版です。 そのためインストールは不要です。
@@ -27,7 +28,7 @@ noteに図解付き徹底解説作成しました！[こちら](https://note.com
 
 まず初めに、これはWindows専用です。
 
-1.  最新版をダウンロードしてください。 <a href="https://github.com/mtaku3/AutoMuteUs-Portable/releases/latest/download/AutoMuteUs-Portable-x64.exe"><img alt="GitHub release (latest SemVer including pre-releases)" src="https://img.shields.io/github/v/release/mtaku3/AutoMuteUs-Portable?color=blue&include_prereleases&label=download&sort=semver"></a>
+1.  最新版をダウンロードしてください。 <a href="https://github.com/mtaku3/AutoMuteUs-Portable/releases/latest/download/AutoMuteUs-Portable-x64.exe"><img alt="GitHub release (latest SemVer)" src="https://img.shields.io/github/v/release/mtaku3/AutoMuteUs-Portable?label=%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89&sort=semver"></a>
 
     32ビット版のダウンロードリンクは[こちら](https://github.com/mtaku3/AutoMuteUs-Portable/releases/latest/download/AutoMuteUs-Portable-x86.exe)
 
