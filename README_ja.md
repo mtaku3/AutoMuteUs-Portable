@@ -27,7 +27,7 @@ noteに図解付き徹底解説作成しました！[こちら](https://note.com
 
 まず初めに、これはWindows専用です。
 
-1.  最新版をダウンロードしてください。 <a href="https://github.com/mtaku3/AutoMuteUs-Portable/releases/latest/download/AutoMuteUs-Portable.exe"><img alt="GitHub release (latest SemVer including pre-releases)" src="https://img.shields.io/github/v/release/mtaku3/AutoMuteUs-Portable?color=blue&include_prereleases&label=download&sort=semver"></a>
+1.  最新版をダウンロードしてください。 <a href="https://github.com/mtaku3/AutoMuteUs-Portable/releases/latest/download/AutoMuteUs-Portable-x64.exe"><img alt="GitHub release (latest SemVer including pre-releases)" src="https://img.shields.io/github/v/release/mtaku3/AutoMuteUs-Portable?color=blue&include_prereleases&label=download&sort=semver"></a>
 2.  Discordボットを作成してください。 手順は[こちら(英語)](https://github.com/denverquane/automuteus/blob/master/BOT_README.md)
 3.  `AutoMuteUs-Portable.exe`を起動してください。 最初の起動では、`Settings`画面が立ち上がります。
 4.  Windows Defenderの注意画面が出たら、`詳細情報`を押した後、`実行`をクリックしてください。
