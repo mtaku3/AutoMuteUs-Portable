@@ -74,13 +74,18 @@ jobs:
       - name: Install dependencies
         run: dotnet restore "AutoMuteUs-Portable.csproj"
       
-      - name: Publish
+      - name: Publish For x86
         run: |
-          dotnet publish "AutoMuteUs-Portable.csproj" -p:PublishProfile=PubProfile -p:AssemblyVersion=${{ steps.gitversion.outputs.assemblySemFileVer }} -p:FileVersion=${{ steps.gitversion.outputs.assemblySemFileVer }} -p:InformationalVersion=${{ steps.gitversion.outputs.Sha }}
+          dotnet publish "AutoMuteUs-Portable.csproj" -p:PublishProfile=PubX86Profile -p:AssemblyVersion=${{ steps.gitversion.outputs.assemblySemFileVer }} -p:FileVersion=${{ steps.gitversion.outputs.assemblySemFileVer }} -p:InformationalVersion=${{ steps.gitversion.outputs.Sha }}
+
+      - name: Publish For x64
+        run: |
+          dotnet publish "AutoMuteUs-Portable.csproj" -p:PublishProfile=PubX64Profile -p:AssemblyVersion=${{ steps.gitversion.outputs.assemblySemFileVer }} -p:FileVersion=${{ steps.gitversion.outputs.assemblySemFileVer }} -p:InformationalVersion=${{ steps.gitversion.outputs.Sha }}
 
       - name: Relocate
         run: |
-          mv bin\\Release\\net5.0-windows\\publish\\AutoMuteUs-Portable.exe ..\AutoMuteUs-Portable.exe
+          mv bin\\Release\\net5.0-windows\\publish\\x86\\AutoMuteUs-Portable.exe ..\AutoMuteUs-Portable-x86.exe
+          mv bin\\Release\\net5.0-windows\\publish\\x64\\AutoMuteUs-Portable.exe ..\AutoMuteUs-Portable-x64.exe
 
       - name: Create release
         id: create_release
@@ -93,15 +98,26 @@ jobs:
           draft: false
           prerelease: false
       
-      - name: Upload exe
-        id: upload-release-asset
+      - name: Upload x86 exe
+        id: upload-release-asset-x86
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ..\AutoMuteUs-Portable.exe
-          asset_name: AutoMuteUs-Portable.exe
+          asset_path: ..\AutoMuteUs-Portable-x86.exe
+          asset_name: AutoMuteUs-Portable-x86.exe
+          asset_content_type: application/vnd.microsoft.portable-executable
+
+      - name: Upload x64 exe
+        id: upload-release-asset-x64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ..\AutoMuteUs-Portable-x64.exe
+          asset_name: AutoMuteUs-Portable-x64.exe
           asset_content_type: application/vnd.microsoft.portable-executable
 
       - name: Run GoReleaser
