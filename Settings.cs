@@ -48,7 +48,7 @@ namespace AutoMuteUs_Portable
 
                 if (!File.Exists(Path.Combine(GetUserVar("EnvPath"), ".env")))
                 {
-                    SaveUserVar("EnvPath", Path.Combine(Path.GetTempPath(), "AutoMuteUs-Portable\\"));
+                    SaveUserVar("EnvPath", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AutoMuteUs-Portable\\"));
                     if (!Directory.Exists(GetUserVar("EnvPath"))) Directory.CreateDirectory(GetUserVar("EnvPath"));
                     DownloadEnv(GetUserVar("EnvPath"), GetUserVar("ARCHITECTURE"));
                 }
@@ -613,8 +613,6 @@ namespace AutoMuteUs_Portable
                     {
                         MessageBox.Show(e.Message);
                         logger.Error(e.Message);
-
-                        return;
                     }
 
                     SaveUserVar(Key, Value);
