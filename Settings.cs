@@ -173,7 +173,8 @@ namespace AutoMuteUs_Portable
 
             try
             {
-                Process process;
+                Process process, server_process = null;
+                bool IsServerStartUp = false;
                 if (!Directory.Exists(Path.Combine(GetUserVar("EnvPath"), "postgres\\data")))
                 {
                     logger.Info("Initializing Postgres server.");
@@ -187,16 +188,43 @@ namespace AutoMuteUs_Portable
                     UpdatePostgresUser(newUser);
                     oldUser = newUser;
                     oldPass = "";
+
+                    server_process = Main.CreateProcessFromArchive("postgres.zip", "postgres\\bin\\pg_ctl.exe", "-w -D data start", "postgres\\");
+                    Main.RedirectProcessStandardIO("postgres", server_process);
+                    server_process.Start();
+                    server_process.BeginErrorReadLine();
+                    server_process.BeginOutputReadLine();
+                    IsServerStartUp = true;
+
+                    logger.Info("Initializing Postgres database using postgres.sql");
+                    process = Main.CreateProcessFromArchive("postgres.zip", "postgres\\bin\\psql.exe", $"-U {newUser} -f postgres.sql", "postgres\\");
+                    process.Start();
+                    process.BeginErrorReadLine();
+                    process.BeginOutputReadLine();
+                    process.WaitForExit();
+                    if (process.ExitCode != 0)
+                    {
+                        logger.Error("Failed to initialize Postgres database properly.");
+                        logger.Error($"Initialize manually.");
+                    }
+                    else
+                    {
+                        logger.Info($"Successfully initialized Postgres database");
+                    }
                 }
 
                 if (oldUser != newUser || oldPass != newPass)
                 {
                     logger.Info("Postgres started to setup.");
-                    var server_process = Main.CreateProcessFromArchive("postgres.zip", "postgres\\bin\\pg_ctl.exe", "-w -D data start", "postgres\\");
-                    Main.RedirectProcessStandardIO("postgres", server_process);
-                    server_process.Start();
-                    server_process.BeginErrorReadLine();
-                    server_process.BeginOutputReadLine();
+                    if (!IsServerStartUp)
+                    {
+                        server_process = Main.CreateProcessFromArchive("postgres.zip", "postgres\\bin\\pg_ctl.exe", "-w -D data start", "postgres\\");
+                        Main.RedirectProcessStandardIO("postgres", server_process);
+                        server_process.Start();
+                        server_process.BeginErrorReadLine();
+                        server_process.BeginOutputReadLine();
+                        IsServerStartUp = true;
+                    }
 
                     if (oldUser != newUser)
                     {
@@ -206,7 +234,7 @@ namespace AutoMuteUs_Portable
                         process.Start();
                         process.BeginErrorReadLine();
                         process.BeginOutputReadLine();
-
+                        process.WaitForExit();
                         if (process.ExitCode != 0)
                         {
                             logger.Error("Postgres user name didn't set properly.");
@@ -243,7 +271,7 @@ namespace AutoMuteUs_Portable
 
                     try
                     {
-                        server_process.Kill();
+                        if (server_process != null) server_process.Kill();
                     }
                     catch
                     {
@@ -339,6 +367,11 @@ namespace AutoMuteUs_Portable
                     logger.Info("Postgres' binary successfully loaded.");
                 };
             }
+
+            if (!File.Exists(Path.Combine(envPath, "postgres\\postgres.sql"))) 
+            {
+                LoadPostgresSql();
+            }
         }
 
         public static void LoadDiffEnvs(string envPath, string ARCHITECTURE)
@@ -351,6 +384,22 @@ namespace AutoMuteUs_Portable
                 string result = client.DownloadString(url);
                 File.WriteAllText(path, result);
                 logger.Info("diffenvs.json successfully loaded.");
+            }
+        }
+
+        public static void LoadPostgresSql()
+        {
+            var envPath = GetUserVar("EnvPath");
+
+            var url = $"https://raw.githubusercontent.com/AutoMuteUs-Portable/automuteus/{GetUserVar("AUTOMUTEUS_TAG")}/storage/postgres.sql";
+
+            logger.Info("postgres.sql has been downloading.");
+            using (WebClient client = new WebClient())
+            {
+                var path = Path.Combine(envPath, "postgres\\postgres.sql");
+                string result = client.DownloadString(url);
+                File.WriteAllText(path, result);
+                logger.Info("postgres.sql successfully loaded.");
             }
         }
 

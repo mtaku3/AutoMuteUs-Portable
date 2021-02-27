@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -134,6 +135,7 @@ namespace AutoMuteUs_Portable
                 var ellipse = IndicatorControls[proc.Key]["Ellipse"] as Ellipse;
                 ellipse.Dispatcher.Invoke((Action)(() => ellipse.Fill = Brushes.LimeGreen));
                 logger["Main"].Info($"{proc.Key} started.");
+                Thread.Sleep(500);
             }
         }
 
@@ -224,9 +226,9 @@ namespace AutoMuteUs_Portable
 
             if (requiredComponents.Contains("postgres")) AddProc("postgres", CreateProcessFromArchive("postgres.zip", "postgres\\bin\\pg_ctl.exe", "-D data start", "postgres\\")); // postgres
             if (requiredComponents.Contains("redis"))  AddProc("redis", CreateProcessFromArchive("redis.zip", "redis\\redis-server.exe")); // redis
-            if (requiredComponents.Contains("automuteus"))  AddProc("automuteus", CreateProcessFromExecutable("automuteus.exe")); // automuteus
             if (requiredComponents.Contains("galactus"))  AddProc("galactus", CreateProcessFromExecutable("galactus.exe")); // galactus
             if (requiredComponents.Contains("wingman")) AddProc("wingman", CreateProcessFromExecutable("wingman.exe")); // wingman
+            if (requiredComponents.Contains("automuteus"))  AddProc("automuteus", CreateProcessFromExecutable("automuteus.exe")); // automuteus
         }
 
         private void InitializeProcIndicators()
