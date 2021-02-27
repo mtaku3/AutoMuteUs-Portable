@@ -12,9 +12,11 @@ This is portable version of [AutoMuteUs(self-hosting)](https://github.com/automu
 Note that this is not AmongUsCapture. this is its server side ✊
 
 ## Caution
-Binaries has been updated for newer AutoMuteUs Portable version. So that AutoMuteUs Portable under v2.0.0 doesn't work properly.
+I found a bug that AutoMuteUs Portable won't initialize Postgres database so that AutoMuteUs won't store player stats properly.
 
-Please use later than v2.1.0
+I fixed in v2.2.5. So please use later than v2.2.5.
+
+I recommend you to initialize your Postgres again.
 
 ## Installation Guide
 First of all, this supports only windows
