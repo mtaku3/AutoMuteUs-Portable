@@ -138,14 +138,21 @@ namespace AutoMuteUs_Portable
                         process.Kill();
                         process.WaitForExit();
                     }
-                    ellipse = IndicatorControls[proc.Key]["Ellipse"] as Ellipse;
-                    ellipse.Dispatcher.Invoke((Action)(() => ellipse.Fill = Brushes.Red));
-
-                    logger["Main"].Info($"{proc.Key} closed.");
                 }
                 catch
                 {
                 }
+
+                try
+                {
+                    ellipse = IndicatorControls[proc.Key]["Ellipse"] as Ellipse;
+                    ellipse.Dispatcher.Invoke((Action)(() => ellipse.Fill = Brushes.Red));
+                }
+                catch
+                {
+                }
+
+                logger["Main"].Info($"{proc.Key} closed.");
             }
 
             if (requiredComponent.Contains("postgres")) TerminatePostgresServer();

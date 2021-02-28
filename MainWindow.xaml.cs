@@ -207,8 +207,10 @@ namespace AutoMuteUs_Portable
             if (main != null) main.TerminateProcs();
             Task.Factory.StartNew(() =>
             {
+                MessageBox.Show("Do not close the app until new message box be shown.", "Caution", MessageBoxButton.OK);
                 Settings.LoadSettings(true);
-                Environment.Exit(0);
+                LogManager.GetLogger("Main").Info("To host AutoMuteUs again, please relaunch AutoMuteUs Portable.");
+                MessageBox.Show("To host AutoMuteUs again, please relaunch AutoMuteUs Portable.", "Caution", MessageBoxButton.OK);
             });
         }
 
