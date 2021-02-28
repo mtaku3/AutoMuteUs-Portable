@@ -13,7 +13,6 @@ namespace AutoMuteUs_Portable.Properties {
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.8.1.0")]
-    [System.Configuration.SettingsProvider(typeof(AutoMuteUs_Portable.CustomSettingsProvider))]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -81,6 +80,42 @@ namespace AutoMuteUs_Portable.Properties {
             }
             set {
                 this["ARCHITECTURE"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool AUTOMUTEUS_AUTORESTART {
+            get {
+                return ((bool)(this["AUTOMUTEUS_AUTORESTART"]));
+            }
+            set {
+                this["AUTOMUTEUS_AUTORESTART"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool GALACTUS_AUTORESTART {
+            get {
+                return ((bool)(this["GALACTUS_AUTORESTART"]));
+            }
+            set {
+                this["GALACTUS_AUTORESTART"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool WINGMAN_AUTORESTART {
+            get {
+                return ((bool)(this["WINGMAN_AUTORESTART"]));
+            }
+            set {
+                this["WINGMAN_AUTORESTART"] = value;
             }
         }
     }

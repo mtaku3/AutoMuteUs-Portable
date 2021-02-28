@@ -42,14 +42,21 @@ namespace AutoMuteUs_Portable
                         UserVars.Add(property, (string)Properties.Settings.Default[property]);
                 }
 
+                while (!Directory.Exists(GetUserVar("EnvPath")))
+                {
+                    STATask.Run(() =>
+                    {
+                        var chooseEnvPathWindow = new ChooseEnvPathWindow();
+                        chooseEnvPathWindow.ShowDialog();
+                    }).Wait();
+                }
+
                 logger.Info($"EnvPath: {GetUserVar("EnvPath")}");
 
                 var requiredComponent = Main.RequiredComponents[GetUserVar("ARCHITECTURE")];
 
                 if (!File.Exists(Path.Combine(GetUserVar("EnvPath"), ".env")))
                 {
-                    SaveUserVar("EnvPath", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AutoMuteUs-Portable\\"));
-                    if (!Directory.Exists(GetUserVar("EnvPath"))) Directory.CreateDirectory(GetUserVar("EnvPath"));
                     DownloadEnv(GetUserVar("EnvPath"), GetUserVar("ARCHITECTURE"));
                 }
 
@@ -549,6 +556,8 @@ namespace AutoMuteUs_Portable
 
         private static void WriteEnvVar(string Key, string Value)
         {
+            logger.Debug($"{Key}: \"{GetEnvVar(Key)}\" => \"{Value}\"");
+
             var envPath = GetUserVar("EnvPath");
 
             EnvVars[Key] = Value;
@@ -593,10 +602,83 @@ namespace AutoMuteUs_Portable
 
         private static void SaveUserVar(string Key, string Value)
         {
+            logger.Debug($"{Key}: \"{GetUserVar(Key)}\" => \"{Value}\"");
+
             UserVars[Key] = Value;
 
             Properties.Settings.Default[Key] = Value;
             Properties.Settings.Default.Save();
+        }
+
+        private static void DirectoryMove(string OldDirectory, string NewDirectory)
+        {
+            if (!Directory.Exists(OldDirectory))
+            {
+                return;
+            }
+
+            var stack = new Stack<Dictionary<string, string>>();
+            stack.Push(new Dictionary<string, string>()
+            {
+                { "src", OldDirectory },
+                { "dest", NewDirectory }
+            });
+
+            string src, dest;
+            while (stack.Count != 0)
+            {
+                var cur = stack.Pop();
+                src = cur["src"];
+                dest = cur["dest"];
+                if (!Directory.Exists(dest))
+                {
+                    Directory.Move(src, dest);
+                }
+                else
+                {
+                    string[] filePaths = Directory.GetFiles(src);
+                    foreach (string filePath in filePaths)
+                    {
+                        File.Move(filePath, Path.Combine(dest, Path.GetFileName(filePath)), true);
+                    }
+
+                    string[] directoryPaths = Directory.GetDirectories(src);
+                    foreach (string directoryPath in directoryPaths)
+                    {
+                        stack.Push(new Dictionary<string, string>()
+                        {
+                            { "src", directoryPath },
+                            { "dest", Path.Combine(dest, Path.GetFileName(directoryPath)) }
+                        });
+                    }
+                }
+            }
+
+            if (Directory.Exists(OldDirectory))
+            {
+                Directory.Delete(OldDirectory);
+            }
+        }
+
+        private static void EnvPathChange(string OldDirectory, string NewDirectory)
+        {
+            if (!Directory.Exists(OldDirectory))
+            {
+                MessageBox.Show($"{OldDirectory} doesn't exist.");
+                logger.Error($"{OldDirectory} doesn't exist.");
+                return;
+            }
+
+            try
+            {
+                DirectoryMove(OldDirectory, NewDirectory);
+
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Failed to move EnvPath: {e.Message}");
+                logger.Error($"Failed to move EnvPath: {e.Message}");
+            }
         }
 
         public static void SetUserVar(string Key, string Value)
@@ -605,15 +687,7 @@ namespace AutoMuteUs_Portable
             {
                 if (Key == "EnvPath")
                 {
-                    try
-                    {
-                        Directory.Move(GetUserVar("EnvPath"), Value);
-                    }
-                    catch (Exception e)
-                    {
-                        MessageBox.Show(e.Message);
-                        logger.Error(e.Message);
-                    }
+                    EnvPathChange(GetUserVar("EnvPath"), Value);
 
                     SaveUserVar(Key, Value);
                 }

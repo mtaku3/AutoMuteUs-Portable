@@ -183,34 +183,16 @@ namespace AutoMuteUs_Portable
                 }
                 else if (variable.Key == "EnvPath")
                 {
-                    var buttonWidth = 20;
-
-                    grid.ColumnDefinitions.Add(new ColumnDefinition()
+                    var changeEnvPathButton = new Button()
                     {
-                        Width = GridLength.Auto
-                    });
-
-                    var textBox = new TextBox()
-                    {
-                        Width = 300 - buttonWidth,
-                        Text = variable.Value,
+                        Width = 300,
+                        Content = "Change",
                         Name = variable.Key
                     };
-                    grid.Children.Add(textBox);
-                    Grid.SetColumn(textBox, 1);
-                    controls.Add("TextBox", textBox);
-
-                    var folderBrowserOpenButton = new Button()
-                    {
-                        Content = "...",
-                        Width = buttonWidth,
-                        VerticalAlignment = VerticalAlignment.Stretch,
-                        HorizontalAlignment = HorizontalAlignment.Stretch
-                    };
-                    folderBrowserOpenButton.Click += FolderBrowserOpenButton_Click;
-                    grid.Children.Add(folderBrowserOpenButton);
-                    Grid.SetColumn(folderBrowserOpenButton, 2);
-                    controls.Add("FolderBrowserOpenButton", folderBrowserOpenButton);
+                    changeEnvPathButton.Click += ChangeEnvPathButton_Click;
+                    grid.Children.Add(changeEnvPathButton);
+                    Grid.SetColumn(changeEnvPathButton, 1);
+                    controls.Add("Button", changeEnvPathButton);
                 }
                 else
                 {
@@ -307,6 +289,15 @@ namespace AutoMuteUs_Portable
             stackPanel.Children.Add(button);
         }
 
+        private void ChangeEnvPathButton_Click(object sender, RoutedEventArgs e)
+        {
+            STATask.Run(() =>
+            {
+                var chooseEnvPathWindow = new ChooseEnvPathWindow();
+                chooseEnvPathWindow.ShowDialog();
+            }).Wait();
+        }
+
         private void FolderBrowserOpenButton_Click(object sender, RoutedEventArgs e)
         {
             var browser = new System.Windows.Forms.FolderBrowserDialog();
@@ -352,7 +343,6 @@ namespace AutoMuteUs_Portable
 
                 if (OldEnvVars[variable.Key] != textBox.Text)
                 {
-                    logger.Debug($"{variable.Key}: \"{OldEnvVars[variable.Key]}\" => \"{textBox.Text}\"");
                     Settings.SetEnvVar(variable.Key, textBox.Text);
                 }
             }
@@ -382,9 +372,12 @@ namespace AutoMuteUs_Portable
 
                     if (OldUserVars[variable.Key] != (string)comboBox.SelectedValue)
                     {
-                        logger.Debug($"{variable.Key}: \"{OldUserVars[variable.Key]}\" => \"{(string)comboBox.SelectedValue}\"");
                         Settings.SetUserVar(variable.Key, (string)comboBox.SelectedValue);
                     }
+                }
+                else if (variable.Key == "EnvPath")
+                {
+                    continue;
                 }
                 else
                 {
@@ -398,7 +391,6 @@ namespace AutoMuteUs_Portable
 
                     if (OldUserVars[variable.Key] != textBox.Text)
                     {
-                        logger.Debug($"{variable.Key}: \"{OldUserVars[variable.Key]}\" => \"{textBox.Text}\"");
                         Settings.SetUserVar(variable.Key, textBox.Text);
                     }
                 }
