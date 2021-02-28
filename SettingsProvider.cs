@@ -16,7 +16,7 @@ namespace AutoMuteUs_Portable
         const string CONFIG = "configuration";
         const string USER_SETTINGS = "userSettings";
         const string SETTING = "setting";
-        string UserConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AutoMuteUs-Portable.config");
+        public static string UserConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AutoMuteUs-Portable.config");
 
         /// <summary>
         /// Loads the file into memory.

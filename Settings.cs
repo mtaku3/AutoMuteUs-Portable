@@ -25,8 +25,10 @@ namespace AutoMuteUs_Portable
 
         public static Dictionary<string, Dictionary<string, string>> VersionList;
 
-        public static void LoadSettings()
+        public static void LoadSettings(bool ForceToSet = false)
         {
+            var ForceToLoad = ForceToSet;
+
             while (true)
             {
                 EnvVars = new Dictionary<string, string>();
@@ -35,14 +37,19 @@ namespace AutoMuteUs_Portable
 
                 GetListFromGithub();
 
-                var properties = new[] { "EnvPath", "ARCHITECTURE", "AUTOMUTEUS_TAG", "GALACTUS_TAG", "WINGMAN_TAG" };
+                var properties = new[] { "EnvPath", "ARCHITECTURE", "AUTOMUTEUS_TAG", "GALACTUS_TAG", "WINGMAN_TAG", "AUTOMUTEUS_AUTORESTART", "GALACTUS_AUTORESTART", "WINGMAN_AUTORESTART" };
 
                 foreach (string property in properties)
                 {
-                        UserVars.Add(property, (string)Properties.Settings.Default[property]);
+                    UserVars.Add(property, (string)Properties.Settings.Default[property]);
                 }
 
-                while (!Directory.Exists(GetUserVar("EnvPath")))
+                logger.Debug("UserVars loaded.");
+                logger.Debug("########## UserVars ##########");
+                logger.Debug(JsonConvert.SerializeObject(UserVars));
+                logger.Debug("##############################");
+
+                if (!Directory.Exists(GetUserVar("EnvPath")))
                 {
                     STATask.Run(() =>
                     {
@@ -72,21 +79,22 @@ namespace AutoMuteUs_Portable
                 logger.Debug(JsonConvert.SerializeObject(EnvVars));
                 logger.Debug("#############################");
 
-                if (CheckAllRequiredVariable(UserVars, EnvVars))
+                if (CheckAllRequiredVariable(UserVars, EnvVars) || ForceToSet)
                 {
                     STATask.Run(() =>
                     {
                         var settingsWindow = new SettingsWindow();
                         settingsWindow.ShowDialog();
                     }).Wait();
+                    ForceToSet = false;
                 }
                 else
                 {
                     try
                     {
-                        LoadBinaries();
+                        LoadBinaries(ForceToLoad);
                         if (requiredComponent.Contains("postgres")) SetupPostgres();
-                        break;
+                        return;
                     }
                     catch (Exception e)
                     {
@@ -421,7 +429,7 @@ namespace AutoMuteUs_Portable
             return false;
         }
 
-        public static void LoadBinaries()
+        public static void LoadBinaries(bool ForceToLoad = false)
         {
             var envPath = GetUserVar("EnvPath");
 
@@ -438,7 +446,7 @@ namespace AutoMuteUs_Portable
                 }
             }
 
-            if (!Directory.Exists(Path.Combine(envPath, "postgres\\")) && RequireComponent("postgres"))
+            if ((!Directory.Exists(Path.Combine(envPath, "postgres\\")) && RequireComponent("postgres")))
             {
                 LoadPostgresBinary();
             }
@@ -448,7 +456,7 @@ namespace AutoMuteUs_Portable
                 LoadRedisBinary();
             }
 
-            if (!File.Exists(Path.Combine(envPath, ".env")))
+            if (!File.Exists(Path.Combine(envPath, ".env")) || ForceToLoad)
             {
                 string[] allLines = new string[EnvVars.Count];
 
@@ -464,22 +472,22 @@ namespace AutoMuteUs_Portable
                 logger.Info($"File .env saved in {envPath}.");
             }
 
-            if (!File.Exists(Path.Combine(envPath, "diffenvs.json")))
+            if (!File.Exists(Path.Combine(envPath, "diffenvs.json")) || ForceToLoad)
             {
                 LoadDiffEnvs(envPath, GetUserVar("ARCHITECTURE"));
             }
 
-            if (!File.Exists(Path.Combine(envPath, "automuteus.exe")) && RequireComponent("automuteus"))
+            if (!File.Exists(Path.Combine(envPath, "automuteus.exe")) || ForceToLoad && RequireComponent("automuteus"))
             {
                 LoadAutomuteusExecutable();
             }
 
-            if (!File.Exists(Path.Combine(envPath, "galactus.exe")) && RequireComponent("galactus"))
+            if (!File.Exists(Path.Combine(envPath, "galactus.exe")) || ForceToLoad && RequireComponent("galactus"))
             {
                 LoadGalactusExecutable();
             }
 
-            if (!File.Exists(Path.Combine(envPath, "wingman.exe")) && RequireComponent("wingman"))
+            if (!File.Exists(Path.Combine(envPath, "wingman.exe")) || ForceToLoad && RequireComponent("wingman"))
             {
                 LoadWingmanExecutable();
             }
@@ -664,8 +672,11 @@ namespace AutoMuteUs_Portable
         {
             if (!Directory.Exists(OldDirectory))
             {
-                MessageBox.Show($"{OldDirectory} doesn't exist.");
-                logger.Error($"{OldDirectory} doesn't exist.");
+                if (!Directory.Exists(NewDirectory))
+                {
+                    Directory.CreateDirectory(NewDirectory);
+                }
+
                 return;
             }
 

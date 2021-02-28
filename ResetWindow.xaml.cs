@@ -39,8 +39,11 @@ namespace AutoMuteUs_Portable
 
             if (MainWindow.main != null) MainWindow.main.TerminateProcs();
 
-            Properties.Settings.Default.Reset();
-            File.Delete(Path.Combine(Settings.GetUserVar("EnvPath"), ".env"));
+            Properties.Settings.Default.DeleteConfig();
+            if (File.Exists(Path.Combine(Settings.GetUserVar("EnvPath"), ".env")))
+            {
+                File.Delete(Path.Combine(Settings.GetUserVar("EnvPath"), ".env"));
+            }
 
             MessageBox.Show("After you close this window, application will close.\nPlease start the application manually.", "RESTART CAUTION", MessageBoxButton.OK);
             RestartApplication = true;

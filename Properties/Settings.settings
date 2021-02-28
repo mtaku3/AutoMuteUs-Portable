@@ -17,13 +17,13 @@
     <Setting Name="ARCHITECTURE" Type="System.String" Scope="User">
       <Value Profile="(Default)">v7</Value>
     </Setting>
-    <Setting Name="AUTOMUTEUS_AUTORESTART" Type="System.Boolean" Scope="User">
+    <Setting Name="AUTOMUTEUS_AUTORESTART" Type="System.String" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="GALACTUS_AUTORESTART" Type="System.Boolean" Scope="User">
+    <Setting Name="GALACTUS_AUTORESTART" Type="System.String" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="WINGMAN_AUTORESTART" Type="System.Boolean" Scope="User">
+    <Setting Name="WINGMAN_AUTORESTART" Type="System.String" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>

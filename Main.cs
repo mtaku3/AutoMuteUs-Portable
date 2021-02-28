@@ -23,8 +23,10 @@ namespace AutoMuteUs_Portable
 
         private readonly Dictionary<string, NLog.Logger> logger = new Dictionary<string, NLog.Logger>();
         private readonly Dictionary<string, Process> Procs = new Dictionary<string, Process>();
-        private Dictionary<string, Dictionary<string, UIElement>> IndicatorControls;
+        private static Dictionary<string, Dictionary<string, UIElement>> IndicatorControls;
         private MainWindow mainWindow;
+
+        private bool CancelLoop = false;
 
         public static readonly Dictionary<string, string[]> RequiredComponents = new Dictionary<string, string[]>()
         {
@@ -68,6 +70,21 @@ namespace AutoMuteUs_Portable
             Task.Factory.StartNew(() => RunLoop());
         }
 
+        private bool IsAutoRestartEnabled(string Key)
+        {
+            switch (Key)
+            {
+                case "automuteus":
+                    return Settings.GetUserVar("AUTOMUTEUS_AUTORESTART") == "True";
+                case "galactus":
+                    return Settings.GetUserVar("GALACTUS_AUTORESTART") == "True";
+                case "wingman":
+                    return Settings.GetUserVar("WINGMAN_AUTORESTART") == "True";
+                default:
+                    return false;
+            }
+        }
+
         private void RunLoop()
         {
             while (true)
@@ -76,9 +93,27 @@ namespace AutoMuteUs_Portable
                 {
                     var process = proc.Value;
 
-                    if (process.HasExited && proc.Key != "postgres")
+                    try
                     {
-                        TerminateProcs();
+                        if (process != null && process.HasExited && proc.Key != "postgres")
+                        {
+                            if (IsAutoRestartEnabled(proc.Key))
+                            {
+                                RestartProc(proc);
+                                continue;
+                            }
+
+                            TerminateProcs();
+                            return;
+                        }
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        process = null;
+                    }
+
+                    if (CancelLoop)
+                    {
                         return;
                     }
                 }
@@ -87,6 +122,8 @@ namespace AutoMuteUs_Portable
 
         public void TerminateProcs()
         {
+            CancelLoop = true;
+
             var requiredComponent = Main.RequiredComponents[Settings.GetUserVar("ARCHITECTURE")];
 
             Ellipse ellipse;
@@ -124,6 +161,23 @@ namespace AutoMuteUs_Portable
             LogManager.GetLogger(process).Error(e.Data);
         }
 
+        private void RestartProc(KeyValuePair<string, Process> proc)
+        {
+            if (proc.Key == "automuteus") AddProc("postgres", CreateProcessFromArchive("postgres.zip", "postgres\\bin\\pg_ctl.exe", "-D data start", "postgres\\")); // postgres
+            if (proc.Key == "redis") AddProc("redis", CreateProcessFromArchive("redis.zip", "redis\\redis-server.exe")); // redis
+            if (proc.Key == "galactus") AddProc("galactus", CreateProcessFromExecutable("galactus.exe")); // galactus
+            if (proc.Key == "wingman") AddProc("wingman", CreateProcessFromExecutable("wingman.exe")); // wingman
+            if (proc.Key == "automuteus") AddProc("automuteus", CreateProcessFromExecutable("automuteus.exe")); // automuteus
+
+            var process = Procs[proc.Key];
+            process.Start();
+            process.BeginErrorReadLine();
+            process.BeginOutputReadLine();
+            var ellipse = IndicatorControls[proc.Key]["Ellipse"] as Ellipse;
+            ellipse.Dispatcher.Invoke((Action)(() => ellipse.Fill = Brushes.LimeGreen));
+            logger["Main"].Info($"{proc.Key} auto restarted.");
+        }
+
         private void StartProcs()
         {
             foreach (var proc in Procs)
@@ -135,7 +189,6 @@ namespace AutoMuteUs_Portable
                 var ellipse = IndicatorControls[proc.Key]["Ellipse"] as Ellipse;
                 ellipse.Dispatcher.Invoke((Action)(() => ellipse.Fill = Brushes.LimeGreen));
                 logger["Main"].Info($"{proc.Key} started.");
-                Thread.Sleep(500);
             }
         }
 
@@ -165,6 +218,9 @@ namespace AutoMuteUs_Portable
         {
             try
             {
+                if (!File.Exists(Path.Combine(Settings.GetUserVar("EnvPath"), "postgres\\bin\\postgres.exe"))) {
+                    return;
+                }
                 var server_process = Main.CreateProcessFromArchive("postgres.zip", "postgres\\bin\\pg_ctl.exe", "-D data stop", "postgres\\");
                 Main.RedirectProcessStandardIO("postgres", server_process);
                 server_process.Start();
@@ -172,6 +228,16 @@ namespace AutoMuteUs_Portable
                 server_process.BeginOutputReadLine();
                 server_process.WaitForExit();
                 MainLogger.Info("postgres closed.");
+
+                Ellipse ellipse = null;
+                try
+                {
+                    if (IndicatorControls != null && IndicatorControls.ContainsKey("postgres")) ellipse = IndicatorControls["postgres"]["Ellipse"] as Ellipse;
+                }
+                catch
+                { 
+                }
+                if (ellipse != null) ellipse.Dispatcher.Invoke((Action)(() => ellipse.Fill = Brushes.Red));
             }
             catch
             {
@@ -217,7 +283,8 @@ namespace AutoMuteUs_Portable
         private void AddProc(string key, Process process)
         {
             RedirectProcessStandardIO(key, process);
-            Procs.Add(key, process);
+            if (!Procs.ContainsKey(key)) Procs.Add(key, process);
+            else Procs[key] = process;
         }
 
         private void InitializeProcs()

@@ -53,6 +53,15 @@ namespace AutoMuteUs_Portable
                 case "WINGMAN_TAG":
                     ComponentName = "wingman";
                     break;
+                case "AUTOMUTEUS_AUTORESTART":
+                    ComponentName = "automuteus";
+                    break;
+                case "GALACTUS_AUTORESTART":
+                    ComponentName = "galactus";
+                    break;
+                case "WINGMAN_AUTORESTART":
+                    ComponentName = "wingman";
+                    break;
                 default:
                     return false;
             }
@@ -193,6 +202,17 @@ namespace AutoMuteUs_Portable
                     grid.Children.Add(changeEnvPathButton);
                     Grid.SetColumn(changeEnvPathButton, 1);
                     controls.Add("Button", changeEnvPathButton);
+                }
+                else if (variable.Key == "AUTOMUTEUS_AUTORESTART" || variable.Key == "GALACTUS_AUTORESTART" || variable.Key == "WINGMAN_AUTORESTART")
+                {
+                    var checkBox = new CheckBox()
+                    {
+                        Name = variable.Key,
+                        IsChecked = variable.Value == "True"
+                    };
+                    grid.Children.Add(checkBox);
+                    Grid.SetColumn(checkBox, 1);
+                    controls.Add("CheckBox", checkBox);
                 }
                 else
                 {
@@ -378,6 +398,19 @@ namespace AutoMuteUs_Portable
                 else if (variable.Key == "EnvPath")
                 {
                     continue;
+                }
+                else if (variable.Key == "AUTOMUTEUS_AUTORESTART" || variable.Key == "GALACTUS_AUTORESTART" || variable.Key == "WINGMAN_AUTORESTART")
+                {
+                    if (SkipComponent(variable.Key)) continue;
+
+                    CheckBox checkBox = AllControls[variable.Key]["CheckBox"] as CheckBox;
+
+                    var Value = (bool)checkBox.IsChecked ? "True" : "False";
+
+                    if (OldUserVars[variable.Key] != Value)
+                    {
+                        Settings.SetUserVar(variable.Key, Value);
+                    }
                 }
                 else
                 {

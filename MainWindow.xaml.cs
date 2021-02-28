@@ -197,6 +197,21 @@ namespace AutoMuteUs_Portable
             MessageBox.Show($"Successfully put log into current executable directory: \"{dist}\"", "Output Log", MessageBoxButton.OK);
         }
 
+        private void SettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show("To change settings, application will close the server.\nAre you sure to proceed?", "Caution", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+            {
+                return;
+            }
+
+            if (main != null) main.TerminateProcs();
+            Task.Factory.StartNew(() =>
+            {
+                Settings.LoadSettings(true);
+                Environment.Exit(0);
+            });
+        }
+
 #if PUBLISH
         private async void CheckUpdate()
         {
