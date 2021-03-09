@@ -199,7 +199,6 @@ namespace AutoMuteUs_Portable
                     process.BeginErrorReadLine();
                     process.BeginOutputReadLine();
                     process.WaitForExit();
-                    logger.Info($"Initialized Postgres server.");
                     oldPass = "";
 
                     server_process = Main.CreateProcessFromArchive("postgres.zip", "postgres\\bin\\pg_ctl.exe", "-w -D data start", "postgres\\");
@@ -209,7 +208,6 @@ namespace AutoMuteUs_Portable
                     server_process.BeginOutputReadLine();
                     IsServerStartUp = true;
 
-                    logger.Info("Creating database named \"root\".");
                     process = Main.CreateProcessFromArchive("postgres.zip", "postgres\\bin\\psql.exe", $"-U root -d postgres -c \"CREATE DATABASE root owner root;\"");
                     Main.RedirectProcessStandardIO("postgres", process);
                     process.Start();
@@ -218,7 +216,6 @@ namespace AutoMuteUs_Portable
                     process.WaitForExit();
                     logger.Info("Created database named \"root\".");
 
-                    logger.Info($"Creating user named \"{newUser}\".");
                     process = Main.CreateProcessFromArchive("postgres.zip", "postgres\\bin\\createuser.exe", $"-U root --superuser {newUser}");
                     Main.RedirectProcessStandardIO("postgres", process);
                     process.Start();
@@ -227,14 +224,16 @@ namespace AutoMuteUs_Portable
                     process.WaitForExit();
                     logger.Info($"Created user named \"{newUser}\".");
 
-                    logger.Info($"Creating database named \"{newUser}\".");
-                    process = Main.CreateProcessFromArchive("postgres.zip", "postgres\\bin\\psql.exe", $"-U root -c \"CREATE DATABASE {newUser} owner {newUser};\"");
-                    Main.RedirectProcessStandardIO("postgres", process);
-                    process.Start();
-                    process.BeginErrorReadLine();
-                    process.BeginOutputReadLine();
-                    process.WaitForExit();
-                    logger.Info($"Creating database named \"{newUser}\".");
+                    if (newUser != "postgres")
+                    {
+                        process = Main.CreateProcessFromArchive("postgres.zip", "postgres\\bin\\psql.exe", $"-U root -c \"ALTER DATABASE postgres RENAME TO {newUser};\"");
+                        Main.RedirectProcessStandardIO("postgres", process);
+                        process.Start();
+                        process.BeginErrorReadLine();
+                        process.BeginOutputReadLine();
+                        process.WaitForExit();
+                        logger.Info($"Renamed the database to \"{newUser}\".");
+                    }
                     UpdatePostgresUser(newUser);
                     oldUser = newUser;
 
