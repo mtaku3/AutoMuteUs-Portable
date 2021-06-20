@@ -7,11 +7,21 @@
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/mtaku3/AutoMuteUs-Portable/releaser-v1)
 
 ## What is this?
+
 This is portable version of [AutoMuteUs(self-hosting)](https://github.com/automuteus). So that no need to install anything.
 
 Note that this is not AmongUsCapture. this is its server side ✊
 
+## Update Information
+
+I'll be posting updates on [Twitter(@DYZdK2oir7Pm)](https://twitter.com/DYZdK2oir7Pm) as they become available. Please follow me.
+
+Also, please feel free to contact me if you have any questions or problems.
+
+Please note that all posts are in Japanese.
+
 ## Caution
+
 I found a bug that AutoMuteUs Portable won't initialize Postgres database so that AutoMuteUs won't store player stats properly.
 
 I fixed in v2.2.5. So please use later than v2.2.5.
@@ -19,6 +29,7 @@ I fixed in v2.2.5. So please use later than v2.2.5.
 I recommend you to initialize your Postgres again.
 
 ## Installation Guide
+
 First of all, this supports only windows
 
 1.  Download the latest version here <a href="https://github.com/mtaku3/AutoMuteUs-Portable/releases/latest/download/AutoMuteUs-Portable-x64.exe"><img alt="GitHub release (latest SemVer including pre-releases)" src="https://img.shields.io/github/v/release/mtaku3/AutoMuteUs-Portable?color=blue&include_prereleases&label=download&sort=semver"></a>
@@ -37,6 +48,7 @@ First of all, this supports only windows
 8.  Logs will appear in MainWindow's log text box. If you've followed the instruction correctly, now you get the Self-Hosted AutoMuteUs Bot. Congrats :partying_face:
 
 ## Something went wrong?
+
 If there's some trouble, try RESET Feature 👍
 
 1.  Run `AutoMuteUs-Portable.exe`. MainWindow named `AutoMuteUs Portable` will appear.
@@ -46,6 +58,7 @@ If there's some trouble, try RESET Feature 👍
 5.  Run `AutoMuteUs-Portable.exe` again. Follow <a href="#installation-guide">Installation Guide</a>
 
 ## Binary Repositories
+
 Required binaries will be downloaded from release of repositories below 👇
 
 - automuteus.exe : https://github.com/AutoMuteUs-Portable/automuteus/releases
