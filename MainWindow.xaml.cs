@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -40,6 +41,7 @@ namespace AutoMuteUs_Portable
             InitializeComponent();
             InitializeNLog();
 #if PUBLISH
+            CheckRVCUpdate();
             CheckUpdate();
 #endif
         }
@@ -215,6 +217,28 @@ namespace AutoMuteUs_Portable
         }
 
 #if PUBLISH
+        private void CheckRVCUpdate()
+        {
+            var logger = LogManager.GetLogger("Main");
+
+            var rvc_hash = SettingsWindow.CheckRVCHash();
+            var rvc = SettingsWindow.CheckRVC();
+            if (rvc_hash == null || rvc == null) return;
+
+            if (Properties.Settings.Default.RVC_Hash != rvc_hash && Properties.Settings.Default.RVC_Hash != "")
+            {
+                String message = "Recommended Version Combination has been updated\n" +
+                    "Check it on Settings.";
+
+                foreach (var item in rvc)
+                {
+                    message += $"\n{item.Key.ToString()} : {item.Value.ToString()}";
+                }
+
+                MessageBox.Show(message, "RVC UPDATE", MessageBoxButton.OK);
+            }
+        }
+
         private async void CheckUpdate()
         {
             var logger = LogManager.GetLogger("Main");

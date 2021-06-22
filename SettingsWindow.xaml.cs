@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Path = System.IO.Path;
 using System.Security.Cryptography;
+using System.Net;
 
 namespace AutoMuteUs_Portable
 {
@@ -28,6 +29,7 @@ namespace AutoMuteUs_Portable
         private Dictionary<string, string> OldEnvVars;
         private Dictionary<string, string> OldUserVars;
 
+        public static bool useRecommendedVersionCombination = false;
 
         private Dictionary<string, Dictionary<string, UIElement>> AllControls;
 
@@ -310,6 +312,121 @@ namespace AutoMuteUs_Portable
             button.AddHandler(Button.ClickEvent, new RoutedEventHandler(cancelBtn_Click));
 
             stackPanel.Children.Add(button);
+
+            button = new Button()
+            {
+                Content = "Use Recommemded Version Combination",
+                Name = "UseRVCBtn",
+                VerticalContentAlignment = VerticalAlignment.Center,
+                HorizontalContentAlignment = HorizontalAlignment.Center,
+                Margin = new Thickness(0, 5, 0, 0)
+            };
+
+            button.AddHandler(Button.ClickEvent, new RoutedEventHandler(useRVCBtn_Click));
+
+            stackPanel.Children.Add(button);
+
+            ApplyRecommendedVersionCombination();
+        }
+
+        public static String CheckRVCHash()
+        {
+            var logger = LogManager.GetLogger("Main");
+
+            Newtonsoft.Json.Linq.JObject rvc_hash;
+
+            logger.Info("RVC Hash has been downloading.");
+            try
+            {
+                using (WebClient client = new WebClient())
+                {
+                    string downloadedString = client.DownloadString("https://api.github.com/repos/mtaku3/AutoMuteUs-Portable/contents/rvc.json");
+                    rvc_hash = (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(downloadedString);
+                    logger.Debug(downloadedString);
+                }
+            }
+            catch
+            {
+                logger.Error("Failed to download RVC Hash.");
+                return null;
+            }
+
+            if (!rvc_hash.ContainsKey("sha"))
+            {
+                logger.Error("Failed to download RVC Hash.");
+                return null;
+            }
+
+            return rvc_hash.GetValue("sha").ToString();
+        }
+
+        public static Newtonsoft.Json.Linq.JObject CheckRVC()
+        {
+            var logger = LogManager.GetLogger("Main");
+
+            Newtonsoft.Json.Linq.JObject rvc;
+
+            logger.Info("RVC has been downloading.");
+            try
+            {
+                using (WebClient client = new WebClient())
+                {
+                    string downloadedString = client.DownloadString("https://raw.githubusercontent.com/mtaku3/AutoMuteUs-Portable/main/rvc.json");
+                    if (downloadedString.Contains("404"))
+                    {
+                        logger.Error("Failed to download RVC.");
+                        return null;
+                    }
+                    rvc = (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(downloadedString);
+                    logger.Debug(downloadedString);
+                }
+            }
+            catch
+            {
+                logger.Error("Failed to download RVC.");
+                return null;
+            }
+
+            return rvc;
+        }
+
+        private void ApplyRecommendedVersionCombination()
+        {
+            if (!useRecommendedVersionCombination) return;
+
+            var logger = LogManager.GetLogger("Main");
+
+            var rvc_hash = CheckRVCHash();
+            var rvc = CheckRVC();
+
+            if (rvc_hash == null || rvc == null) return;
+
+            if (Properties.Settings.Default.RVC_Hash != rvc_hash)
+            {
+                var comboBox = AllControls["ARCHITECTURE"]["ComboBox"] as ComboBox;
+                comboBox.SelectedValue = rvc["ARCHITECTURE"];
+                if (OldUserVars["ARCHITECTURE"] != (string)comboBox.SelectedValue)
+                {
+                    UpdateUserVars();
+                    Close();
+                    return;
+                }
+
+                foreach (var item in rvc)
+                {
+                    comboBox = AllControls[item.Value.ToString()]["ComboBox"] as ComboBox;
+                    if (comboBox == null) continue;
+                    comboBox.SelectedValue = rvc[item.Key];
+                }
+                useRecommendedVersionCombination = false;
+            }
+        }
+
+        private void useRVCBtn_Click(object sender, RoutedEventArgs e)
+        {
+            useRecommendedVersionCombination = true;
+
+            ApplyRecommendedVersionCombination();
         }
 
         private void ChangeEnvPathButton_Click(object sender, RoutedEventArgs e)

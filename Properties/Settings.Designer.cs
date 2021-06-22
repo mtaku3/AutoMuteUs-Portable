@@ -118,5 +118,17 @@ namespace AutoMuteUs_Portable.Properties {
                 this["WINGMAN_AUTORESTART"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string RVC_Hash {
+            get {
+                return ((string)(this["RVC_Hash"]));
+            }
+            set {
+                this["RVC_Hash"] = value;
+            }
+        }
     }
 }

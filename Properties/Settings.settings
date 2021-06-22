@@ -26,5 +26,8 @@
     <Setting Name="WINGMAN_AUTORESTART" Type="System.String" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="RVC_Hash" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

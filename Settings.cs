@@ -41,7 +41,7 @@ namespace AutoMuteUs_Portable
 
                 foreach (string property in properties)
                 {
-                    UserVars.Add(property, (string)Properties.Settings.Default[property]);
+                    if (property != "RVC_Hash") UserVars.Add(property, (string)Properties.Settings.Default[property]);
                 }
 
                 logger.Debug("UserVars loaded.");
@@ -56,6 +56,8 @@ namespace AutoMuteUs_Portable
                         var chooseEnvPathWindow = new ChooseEnvPathWindow();
                         chooseEnvPathWindow.ShowDialog();
                     }).Wait();
+
+                    SettingsWindow.useRecommendedVersionCombination = true;
                 }
 
                 logger.Info($"EnvPath: {GetUserVar("EnvPath")}");
