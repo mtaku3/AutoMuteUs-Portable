@@ -40,15 +40,15 @@ namespace AutoMuteUs_Portable
         {
             InitializeComponent();
             InitializeNLog();
-#if PUBLISH
-            CheckRVCUpdate();
-            CheckUpdate();
-#endif
         }
 
         private void Window_ContentRendered(object sender, EventArgs e)
         {
             Task.Factory.StartNew(() => {
+#if PUBLISH
+                CheckRVCUpdate();
+                CheckUpdate();
+#endif
                 Settings.LoadSettings();
                 main = new Main(this);
             });
@@ -225,8 +225,9 @@ namespace AutoMuteUs_Portable
             var rvc = SettingsWindow.CheckRVC();
             if (rvc_hash == null || rvc == null) return;
 
-            if (Properties.Settings.Default.RVC_Hash != rvc_hash && Properties.Settings.Default.RVC_Hash != "")
+            if (Properties.Settings.Default.RVC_Hash != rvc_hash || Properties.Settings.Default.RVC_Hash == "")
             {
+                logger.Info($"New update detected: \"{Properties.Settings.Default.RVC_Hash}\" => \"{rvc_hash}\"");
                 String message = "Recommended Version Combination has been updated\n" +
                     "Check it on Settings.";
 
@@ -236,6 +237,9 @@ namespace AutoMuteUs_Portable
                 }
 
                 MessageBox.Show(message, "RVC UPDATE", MessageBoxButton.OK);
+
+                Properties.Settings.Default.RVC_Hash = rvc_hash;
+                Properties.Settings.Default.Save();
             }
         }
 

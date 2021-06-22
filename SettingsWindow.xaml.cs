@@ -31,6 +31,8 @@ namespace AutoMuteUs_Portable
 
         public static bool useRecommendedVersionCombination = false;
 
+        public bool hasClosed { get; private set; }
+
         private Dictionary<string, Dictionary<string, UIElement>> AllControls;
 
         private static RNGCryptoServiceProvider provider = new RNGCryptoServiceProvider();
@@ -39,6 +41,12 @@ namespace AutoMuteUs_Portable
         {
             InitializeComponent();
             InitializeControls();
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            hasClosed = true;
         }
 
         private bool SkipComponent(string Key)
@@ -404,25 +412,22 @@ namespace AutoMuteUs_Portable
 
             if (rvc_hash == null || rvc == null) return;
 
-            if (Properties.Settings.Default.RVC_Hash != rvc_hash)
+            var comboBox = AllControls["ARCHITECTURE"]["ComboBox"] as ComboBox;
+            comboBox.SelectedValue = rvc.GetValue("ARCHITECTURE").ToString();
+            if (OldUserVars["ARCHITECTURE"] != (string)comboBox.SelectedValue)
             {
-                var comboBox = AllControls["ARCHITECTURE"]["ComboBox"] as ComboBox;
-                comboBox.SelectedValue = rvc.GetValue("ARCHITECTURE").ToString();
-                if (OldUserVars["ARCHITECTURE"] != (string)comboBox.SelectedValue)
-                {
-                    UpdateUserVars();
-                    Close();
-                    return;
-                }
-
-                foreach (var item in rvc)
-                {
-                    if (!AllControls.ContainsKey(item.Key.ToString())) continue;
-                    comboBox = AllControls[item.Key.ToString()]["ComboBox"] as ComboBox;
-                    comboBox.SelectedValue = rvc.GetValue(item.Key).ToString();
-                }
-                useRecommendedVersionCombination = false;
+                UpdateUserVars();
+                Close();
+                return;
             }
+
+            foreach (var item in rvc)
+            {
+                if (!AllControls.ContainsKey(item.Key.ToString())) continue;
+                comboBox = AllControls[item.Key.ToString()]["ComboBox"] as ComboBox;
+                comboBox.SelectedValue = rvc.GetValue(item.Key).ToString();
+            }
+            useRecommendedVersionCombination = false;
         }
 
         private void useRVCBtn_Click(object sender, RoutedEventArgs e)

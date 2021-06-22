@@ -86,7 +86,7 @@ namespace AutoMuteUs_Portable
                     STATask.Run(() =>
                     {
                         var settingsWindow = new SettingsWindow();
-                        settingsWindow.ShowDialog();
+                        if (!settingsWindow.hasClosed) settingsWindow.ShowDialog();
                     }).Wait();
                     ForceToSet = false;
                 }
