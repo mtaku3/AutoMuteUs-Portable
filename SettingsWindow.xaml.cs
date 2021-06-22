@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Path = System.IO.Path;
+using System.Security.Cryptography;
 
 namespace AutoMuteUs_Portable
 {
@@ -29,6 +30,8 @@ namespace AutoMuteUs_Portable
 
 
         private Dictionary<string, Dictionary<string, UIElement>> AllControls;
+
+        private static RNGCryptoServiceProvider provider = new RNGCryptoServiceProvider();
 
         public SettingsWindow()
         {
@@ -345,6 +348,38 @@ namespace AutoMuteUs_Portable
             }
         }
 
+        private static char GenerateChar()
+        {
+            string CapitalLetters = "QWERTYUIOPASDFGHJKLZXCVBNM";
+            string SmallLetters = "qwertyuiopasdfghjklzxcvbnm";
+            string Digits = "0123456789";
+            string availableChars = CapitalLetters + SmallLetters + Digits;
+
+            var byteArray = new byte[1];
+            char c;
+
+            do
+            {
+                provider.GetBytes(byteArray);
+                c = (char)byteArray[0];
+            } while (!availableChars.Any(x => x == c));
+
+            return c;
+        }
+
+        private static string GeneratePassword()
+        {
+            int PasswordLength = 20;
+
+            StringBuilder sb = new StringBuilder();
+            for (int n = 0; n < PasswordLength; n++)
+            {
+                sb = sb.Append(GenerateChar());
+            }
+
+            return sb.ToString();
+        }
+
         private void UpdateEnvVars()
         {
             var logger = LogManager.GetLogger("Main");
@@ -357,8 +392,20 @@ namespace AutoMuteUs_Portable
 
                 if (Settings.CheckRequiredVariable(variable.Key, textBox.Text) != null)
                 {
-                    MessageBox.Show($"{variable.Key} is required to fill.\nFill it and try again.");
-                    return;
+                    if (variable.Key == "POSTGRES_PASS")
+                    {
+                        if (MessageBox.Show($"POSTGRESS_PASS is required to fill. Do you want to use auto generated password?", "PASSWORD GENERATOR", MessageBoxButton.YesNo) == MessageBoxResult.No)
+                            return;
+
+                        textBox.Text = GeneratePassword();
+
+                        MessageBox.Show($"POSTGRES_PASS is set as \"{textBox.Text}\".", "PASSWORD GENERATOR", MessageBoxButton.OK);
+                    }
+                    else
+                    {
+                        MessageBox.Show($"{variable.Key} is required to fill.\nFill it and try again.");
+                        return;
+                    }
                 }
 
                 if (OldEnvVars[variable.Key] != textBox.Text)
