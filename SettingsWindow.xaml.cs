@@ -340,6 +340,9 @@ namespace AutoMuteUs_Portable
             {
                 using (WebClient client = new WebClient())
                 {
+                    client.Headers.Add("accept", "application/json");
+                    client.Headers.Add("User-Agent", "request");
+
                     string downloadedString = client.DownloadString("https://api.github.com/repos/mtaku3/AutoMuteUs-Portable/contents/rvc.json");
                     rvc_hash = (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(downloadedString);
                     logger.Debug(downloadedString);
@@ -404,7 +407,7 @@ namespace AutoMuteUs_Portable
             if (Properties.Settings.Default.RVC_Hash != rvc_hash)
             {
                 var comboBox = AllControls["ARCHITECTURE"]["ComboBox"] as ComboBox;
-                comboBox.SelectedValue = rvc["ARCHITECTURE"];
+                comboBox.SelectedValue = rvc.GetValue("ARCHITECTURE").ToString();
                 if (OldUserVars["ARCHITECTURE"] != (string)comboBox.SelectedValue)
                 {
                     UpdateUserVars();
@@ -414,9 +417,9 @@ namespace AutoMuteUs_Portable
 
                 foreach (var item in rvc)
                 {
-                    comboBox = AllControls[item.Value.ToString()]["ComboBox"] as ComboBox;
-                    if (comboBox == null) continue;
-                    comboBox.SelectedValue = rvc[item.Key];
+                    if (!AllControls.ContainsKey(item.Key.ToString())) continue;
+                    comboBox = AllControls[item.Key.ToString()]["ComboBox"] as ComboBox;
+                    comboBox.SelectedValue = rvc.GetValue(item.Key).ToString();
                 }
                 useRecommendedVersionCombination = false;
             }
