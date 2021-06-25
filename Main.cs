@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -132,12 +133,14 @@ namespace AutoMuteUs_Portable
             {
                 try
                 {
+                    if (proc.Key == "postgres") TerminatePostgresServer();
+                    else if (proc.Key == "redis") TerminateRedisServer();
+
                     var process = proc.Value;
-                    if (!process.HasExited)
-                    {
-                        process.Kill();
-                        process.WaitForExit();
-                    }
+                    if (process.HasExited) throw new Exception();
+
+                    process.Kill();
+                    process.WaitForExit();
                 }
                 catch
                 {
@@ -154,8 +157,6 @@ namespace AutoMuteUs_Portable
 
                 logger["Main"].Info($"{proc.Key} closed.");
             }
-
-            if (requiredComponent.Contains("postgres")) TerminatePostgresServer();
         }
 
         private static void StandardOutputHandler(string process, object sender, DataReceivedEventArgs e)
@@ -170,7 +171,7 @@ namespace AutoMuteUs_Portable
 
         private void RestartProc(KeyValuePair<string, Process> proc)
         {
-            if (proc.Key == "automuteus") AddProc("postgres", CreateProcessFromArchive("postgres.zip", "postgres\\bin\\pg_ctl.exe", "-D data start", "postgres\\")); // postgres
+            if (proc.Key == "postgres") AddProc("postgres", CreateProcessFromArchive("postgres.zip", "postgres\\bin\\pg_ctl.exe", "-D data start", "postgres\\")); // postgres
             if (proc.Key == "redis") AddProc("redis", CreateProcessFromArchive("redis.zip", "redis\\redis-server.exe")); // redis
             if (proc.Key == "galactus") AddProc("galactus", CreateProcessFromExecutable("galactus.exe")); // galactus
             if (proc.Key == "wingman") AddProc("wingman", CreateProcessFromExecutable("wingman.exe")); // wingman
@@ -253,6 +254,39 @@ namespace AutoMuteUs_Portable
             }
         }
 
+        public static void TerminateRedisServer()
+        {
+            try
+            {
+                if (!File.Exists(Path.Combine(Settings.GetUserVar("EnvPath"), "redis\\redis-server.exe")))
+                {
+                    return;
+                }
+                var server_process = Main.CreateProcessFromArchive("redis.zip", "redis\\redis-cli.exe", "shutdown");
+                Main.RedirectProcessStandardIO("redis", server_process);
+                server_process.Start();
+                server_process.BeginErrorReadLine();
+                server_process.BeginOutputReadLine();
+                server_process.WaitForExit();
+                MainLogger.Info("redis closed.");
+
+                Ellipse ellipse = null;
+                try
+                {
+                    if (IndicatorControls != null && IndicatorControls.ContainsKey("redis")) ellipse = IndicatorControls["redis"]["Ellipse"] as Ellipse;
+                }
+                catch
+                {
+                }
+                if (ellipse != null) ellipse.Dispatcher.Invoke((Action)(() => ellipse.Fill = Brushes.Red));
+            }
+            catch
+            {
+                MainLogger.Error("Failed to close redis.");
+                MainLogger.Error("Try to close manually.");
+            }
+        }
+
         public static Process CreateProcessFromExecutable(string FileName, string Arguments = "", string WorkingDir = "")
         {
             string envPath = Settings.GetUserVar("EnvPath");
@@ -294,9 +328,29 @@ namespace AutoMuteUs_Portable
             else Procs[key] = process;
         }
 
+        private void DownloadRedisCli()
+        {
+            var requiredComponents = RequiredComponents[Settings.GetUserVar("ARCHITECTURE")];
+
+            if (requiredComponents.Contains("redis") && Directory.Exists(Path.Combine(Properties.Settings.Default.EnvPath, "redis\\")) && !File.Exists(Path.Combine(Properties.Settings.Default.EnvPath, "redis\\redis-cli.exe")))
+            {
+                var envPath = Properties.Settings.Default.EnvPath;
+
+                MainLogger.Info("redis-cli.exe has been downloading.");
+                using (WebClient client = new WebClient())
+                {
+                    var path = Path.Combine(envPath, "redis\\redis-cli.exe");
+                    client.DownloadFile("https://github.com/mtaku3/AutoMuteUs-Portable/releases/download/v2.4.1/redis-cli.exe", path);
+                    MainLogger.Info("redis-cli.exe successfully loaded.");
+                }
+            }
+        }
+
         private void InitializeProcs()
         {
             var requiredComponents = RequiredComponents[Settings.GetUserVar("ARCHITECTURE")];
+
+            DownloadRedisCli();
 
             if (requiredComponents.Contains("postgres")) AddProc("postgres", CreateProcessFromArchive("postgres.zip", "postgres\\bin\\pg_ctl.exe", "-D data start", "postgres\\")); // postgres
             if (requiredComponents.Contains("redis"))  AddProc("redis", CreateProcessFromArchive("redis.zip", "redis\\redis-server.exe")); // redis
