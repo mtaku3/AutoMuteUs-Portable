@@ -195,7 +195,7 @@ namespace AutoMuteUs_Portable
                 if (!Directory.Exists(Path.Combine(GetUserVar("EnvPath"), "postgres\\data")))
                 {
                     logger.Info("Initializing Postgres server.");
-                    process = Main.CreateProcessFromArchive("postgres.zip", "postgres\\bin\\initdb.exe", $"-E UTF8 -U root -A trust --lc-messages=en_US -D data", "postgres\\");
+                    process = Main.CreateProcessFromArchive("postgres.zip", "postgres\\bin\\initdb.exe", $"-E UTF8 -U root -A trust -D data", "postgres\\");
                     Main.RedirectProcessStandardIO("postgres", process);
                     process.Start();
                     process.BeginErrorReadLine();
