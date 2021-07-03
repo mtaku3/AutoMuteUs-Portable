@@ -1,5 +1,6 @@
 ﻿using Ionic.Zip;
 using Newtonsoft.Json;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -203,11 +204,11 @@ namespace AutoMuteUs_Portable
                     process.WaitForExit();
                     oldPass = "";
 
-                    server_process = Main.CreateProcessFromArchive("postgres.zip", "postgres\\bin\\pg_ctl.exe", "-w -D data start", "postgres\\");
-                    Main.RedirectProcessStandardIO("postgres", server_process);
+                    server_process = Main.CreateProcessFromArchive("postgres.zip", "postgres\\bin\\pg_ctl.exe", "start -w -D data", "postgres\\");
                     server_process.Start();
-                    server_process.BeginErrorReadLine();
-                    server_process.BeginOutputReadLine();
+                    _ = Main.ConsumeOutputReader("postgres", server_process.StandardOutput);
+                    _ = Main.ConsumeErrorReader("postgres", server_process.StandardError);
+                    if (!server_process.HasExited) server_process.WaitForExit();
                     IsServerStartUp = true;
 
                     process = Main.CreateProcessFromArchive("postgres.zip", "postgres\\bin\\psql.exe", $"-U root -d postgres -c \"CREATE DATABASE root owner root;\"");
@@ -262,11 +263,11 @@ namespace AutoMuteUs_Portable
                     logger.Info("Postgres started to setup.");
                     if (!IsServerStartUp)
                     {
-                        server_process = Main.CreateProcessFromArchive("postgres.zip", "postgres\\bin\\pg_ctl.exe", "-w -D data start", "postgres\\");
-                        Main.RedirectProcessStandardIO("postgres", server_process);
+                        server_process = Main.CreateProcessFromArchive("postgres.zip", "postgres\\bin\\pg_ctl.exe", "start -w -D data", "postgres\\");
                         server_process.Start();
-                        server_process.BeginErrorReadLine();
-                        server_process.BeginOutputReadLine();
+                        _ = Main.ConsumeOutputReader("postgres", server_process.StandardOutput);
+                        _ = Main.ConsumeErrorReader("postgres", server_process.StandardError);
+                        if (!server_process.HasExited) server_process.WaitForExit();
                         IsServerStartUp = true;
                     }
 
@@ -324,7 +325,7 @@ namespace AutoMuteUs_Portable
 
                     try
                     {
-                        if (server_process != null) server_process.Kill();
+                        Main.TerminatePostgresServer();
                     }
                     catch
                     {
@@ -332,7 +333,7 @@ namespace AutoMuteUs_Portable
                     }
                     try
                     {
-                        Main.TerminatePostgresServer();
+                        if (server_process != null) server_process.Kill();
                     }
                     catch
                     {

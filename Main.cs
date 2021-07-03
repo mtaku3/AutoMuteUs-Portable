@@ -171,13 +171,14 @@ namespace AutoMuteUs_Portable
 
         private void RestartProc(KeyValuePair<string, Process> proc)
         {
-            if (proc.Key == "postgres") AddProc("postgres", CreateProcessFromArchive("postgres.zip", "postgres\\bin\\pg_ctl.exe", "-D data start", "postgres\\")); // postgres
+            if (proc.Key == "postgres") AddProc("postgres", CreateProcessFromArchive("postgres.zip", "postgres\\bin\\pg_ctl.exe", "start -D data", "postgres\\")); // postgres
             if (proc.Key == "redis") AddProc("redis", CreateProcessFromArchive("redis.zip", "redis\\redis-server.exe")); // redis
             if (proc.Key == "galactus") AddProc("galactus", CreateProcessFromExecutable("galactus.exe")); // galactus
             if (proc.Key == "wingman") AddProc("wingman", CreateProcessFromExecutable("wingman.exe")); // wingman
             if (proc.Key == "automuteus") AddProc("automuteus", CreateProcessFromExecutable("automuteus.exe")); // automuteus
 
             var process = Procs[proc.Key];
+
             process.Start();
             process.BeginErrorReadLine();
             process.BeginOutputReadLine();
@@ -229,11 +230,10 @@ namespace AutoMuteUs_Portable
                 if (!File.Exists(Path.Combine(Settings.GetUserVar("EnvPath"), "postgres\\bin\\postgres.exe"))) {
                     return;
                 }
-                var server_process = Main.CreateProcessFromArchive("postgres.zip", "postgres\\bin\\pg_ctl.exe", "-D data stop", "postgres\\");
-                Main.RedirectProcessStandardIO("postgres", server_process);
+                var server_process = Main.CreateProcessFromArchive("postgres.zip", "postgres\\bin\\pg_ctl.exe", "stop -w -D data", "postgres\\");
                 server_process.Start();
-                server_process.BeginErrorReadLine();
-                server_process.BeginOutputReadLine();
+                _ = Main.ConsumeOutputReader("postgres", server_process.StandardOutput);
+                _ = Main.ConsumeErrorReader("postgres", server_process.StandardError);
                 server_process.WaitForExit();
                 MainLogger.Info("postgres closed.");
 
@@ -328,6 +328,26 @@ namespace AutoMuteUs_Portable
             else Procs[key] = process;
         }
 
+        public async static Task ConsumeOutputReader(string name, TextReader reader)
+        {
+            string text;
+
+            while ((text = await reader.ReadLineAsync()) != null)
+            {
+                LogManager.GetLogger(name).Info(text);
+            }
+        }
+
+        public async static Task ConsumeErrorReader(string name, TextReader reader)
+        {
+            string text;
+
+            while ((text = await reader.ReadLineAsync()) != null)
+            {
+                LogManager.GetLogger(name).Error(text);
+            }
+        }
+
         private void DownloadRedisCli()
         {
             var requiredComponents = RequiredComponents[Settings.GetUserVar("ARCHITECTURE")];
@@ -352,7 +372,7 @@ namespace AutoMuteUs_Portable
 
             DownloadRedisCli();
 
-            if (requiredComponents.Contains("postgres")) AddProc("postgres", CreateProcessFromArchive("postgres.zip", "postgres\\bin\\pg_ctl.exe", "-D data start", "postgres\\")); // postgres
+            if (requiredComponents.Contains("postgres")) AddProc("postgres", CreateProcessFromArchive("postgres.zip", "postgres\\bin\\pg_ctl.exe", "start -D data", "postgres\\")); // postgres
             if (requiredComponents.Contains("redis"))  AddProc("redis", CreateProcessFromArchive("redis.zip", "redis\\redis-server.exe")); // redis
             if (requiredComponents.Contains("galactus"))  AddProc("galactus", CreateProcessFromExecutable("galactus.exe")); // galactus
             if (requiredComponents.Contains("wingman")) AddProc("wingman", CreateProcessFromExecutable("wingman.exe")); // wingman
