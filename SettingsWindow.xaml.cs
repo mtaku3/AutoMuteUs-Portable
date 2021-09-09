@@ -323,7 +323,7 @@ namespace AutoMuteUs_Portable
 
             button = new Button()
             {
-                Content = "Use Recommemded Version Combination",
+                Content = "Use Recommended Version Combination",
                 Name = "UseRVCBtn",
                 VerticalContentAlignment = VerticalAlignment.Center,
                 HorizontalContentAlignment = HorizontalAlignment.Center,
