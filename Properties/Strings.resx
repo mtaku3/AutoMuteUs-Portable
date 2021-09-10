@@ -1,0 +1,431 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="MainWindow_DetailedLogLabel" xml:space="preserve">
+    <value>DetailedLogging</value>
+  </data>
+  <data name="MainWindow_ExportLogBtn" xml:space="preserve">
+    <value>EXPORT LOG</value>
+  </data>
+  <data name="MainWindow_MainLogLabel" xml:space="preserve">
+    <value>MainLogging</value>
+  </data>
+  <data name="MainWindow_ResetBtn" xml:space="preserve">
+    <value>RESET</value>
+  </data>
+  <data name="MainWindow_SettingsBtn" xml:space="preserve">
+    <value>SETTINGS</value>
+  </data>
+  <data name="ResetWindow_ResetAllPropertiesBtn" xml:space="preserve">
+    <value>RESET ALL PROPERTIES</value>
+  </data>
+  <data name="ResetWindow_DeleteAllBinariesBtn" xml:space="preserve">
+    <value>DELETE ALL BINARIES</value>
+  </data>
+  <data name="ResetWindow_Title" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="SettingsWindow_Title" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="SettingsWindow_SaveBtn" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="SettingsWindow_CancelBtn" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="SettingsWindow_UseRVCBtn" xml:space="preserve">
+    <value>Use Recommended Version Combination</value>
+  </data>
+  <data name="SettingsWindow_ChangeEnvPathBtn" xml:space="preserve">
+    <value>Change</value>
+  </data>
+  <data name="MainLogger_LogOutputStarted" xml:space="preserve">
+    <value>Log output started:</value>
+  </data>
+  <data name="MainWindow_ExportLogBtn_Caution_Text" xml:space="preserve">
+    <value>To export current log, application will close the server.
+Are you sure to proceed?</value>
+  </data>
+  <data name="MainWindow_ExportLogBtn_Caution_Title" xml:space="preserve">
+    <value>Caution</value>
+  </data>
+  <data name="MainWindow_ExportLogBtn_Result_Title" xml:space="preserve">
+    <value>Output Log</value>
+  </data>
+  <data name="MainWindow_ExportLogBtn_Result_Text" xml:space="preserve">
+    <value>Successfully put log into current executable directory:</value>
+  </data>
+  <data name="MainWindow_SettingsBtn_Caution#1_Title" xml:space="preserve">
+    <value>Change</value>
+  </data>
+  <data name="MainWindow_SettingsBtn_Caution#1_Text" xml:space="preserve">
+    <value>To change settings, application will close the server.
+Are you sure to proceed?</value>
+  </data>
+  <data name="MainWindow_SettingsBtn_Caution#2_Title" xml:space="preserve">
+    <value>Caution</value>
+  </data>
+  <data name="MainWindow_SettingsBtn_Caution#2_Text" xml:space="preserve">
+    <value>Do not close the app until new message box be shown.</value>
+  </data>
+  <data name="MainLogger_RelaunchApp" xml:space="preserve">
+    <value>To host AutoMuteUs again, please relaunch AutoMuteUs Portable.</value>
+  </data>
+  <data name="MainWindow_SettingsBtn_Caution#3_Title" xml:space="preserve">
+    <value>Caution</value>
+  </data>
+  <data name="MainWindow_SettingsBtn_Caution#3_Text" xml:space="preserve">
+    <value>To host AutoMuteUs again, please relaunch AutoMuteUs Portable.</value>
+  </data>
+  <data name="MainLogger_RVCHash_UpdateDetected" xml:space="preserve">
+    <value>Update of Recommended Version Combination detected:</value>
+  </data>
+  <data name="MainWindow_RVCUpdate_Title" xml:space="preserve">
+    <value>Recommended Version Combination update</value>
+  </data>
+  <data name="MainWindow_RVCUpdate_Text" xml:space="preserve">
+    <value>Recommended Version Combination has been updated.
+Check it on Settings.</value>
+  </data>
+  <data name="MainLogger_Version" xml:space="preserve">
+    <value>Version:</value>
+  </data>
+  <data name="MainLogger_HttpClientRequestFailed" xml:space="preserve">
+    <value>Failed to get refs/tags.</value>
+  </data>
+  <data name="MainLogger_CheckUpdate_UpdateDetected" xml:space="preserve">
+    <value>Update of AutoMuteUs Portable detected:</value>
+  </data>
+  <data name="MainWindow_CheckUpdate_UpdateDetected_Text#1" xml:space="preserve">
+    <value>There's newer version</value>
+  </data>
+  <data name="MainWindow_CheckUpdate_UpdateDetected_Text#2" xml:space="preserve">
+    <value>Do you wanna check it out on Github?</value>
+  </data>
+  <data name="MainWindow_CheckUpdate_UpdateDetected_Title" xml:space="preserve">
+    <value>Update Checker</value>
+  </data>
+  <data name="MainLogger_RVCHash_StartDownload" xml:space="preserve">
+    <value>Hash of Recommended Version Combination has been downloading.</value>
+  </data>
+  <data name="MainLogger_RVCHash_DownloadFailed" xml:space="preserve">
+    <value>Failed to download hash of Recommended Version Combination.</value>
+  </data>
+  <data name="MainLogger_RVC_StartDownload" xml:space="preserve">
+    <value>Recommended Version Combination has been downloading.</value>
+  </data>
+  <data name="MainLogger_RVC_DownloadFailed" xml:space="preserve">
+    <value>Failed to download Recommended Version Combination.</value>
+  </data>
+  <data name="SettingsWindow_UpdateEnvVars_PostgresPass_RequiredToFill_Text" xml:space="preserve">
+    <value>is required to fill. Do you want to use auto generated password?</value>
+  </data>
+  <data name="SettingsWindow_UpdateEnvVars_PostgresPass_RequiredToFill_Title" xml:space="preserve">
+    <value>PASSWORD GENERATOR</value>
+  </data>
+  <data name="SettingsWindow_UpdateEnvVars_PostgresPass_AutoGenerated_Text" xml:space="preserve">
+    <value>is set as</value>
+  </data>
+  <data name="SettingsWindow_UpdateEnvVars_PostgresPass_AutoGenerated_Title" xml:space="preserve">
+    <value>PASSWORD GENERATOR</value>
+  </data>
+  <data name="SettingsWindow_UpdateEnvVars_RequiredToFill_Text" xml:space="preserve">
+    <value>is required to fill.
+Fill it and try again.</value>
+  </data>
+  <data name="SettingsWindow_UpdateUserVars_RequiredToFill_Text" xml:space="preserve">
+    <value>is required to fill.
+Fill it and try again.</value>
+  </data>
+  <data name="ResetWindow_ResetAllProperties_RequireRestart_Text" xml:space="preserve">
+    <value>This operation requires restarting application.
+Are you sure to do?</value>
+  </data>
+  <data name="ResetWindow_ResetAllProperties_RequireRestart_Title" xml:space="preserve">
+    <value>RESET ALL PROPERTIES</value>
+  </data>
+  <data name="ResetWindow_RestartCaution_Text" xml:space="preserve">
+    <value>After you close this window, application will close.
+Please start the application manually.</value>
+  </data>
+  <data name="ResetWindow_RestartCaution_Title" xml:space="preserve">
+    <value>RESTART CAUTION</value>
+  </data>
+  <data name="ResetWindow_DeleteAllBinaries_RequireRestart_Text" xml:space="preserve">
+    <value>This operation requires restarting application.
+Are you sure to do?</value>
+  </data>
+  <data name="ResetWindow_DeleteAllBinaries_RequireRestart_Title" xml:space="preserve">
+    <value>DELETE ALL BINARIES</value>
+  </data>
+  <data name="MainLogger_AutoRestarted" xml:space="preserve">
+    <value>auto restarted.</value>
+  </data>
+  <data name="MainLogger_ProcessStarted" xml:space="preserve">
+    <value>started.</value>
+  </data>
+  <data name="MainLogger_PostgresClosed" xml:space="preserve">
+    <value>postgres closed.</value>
+  </data>
+  <data name="MainLogger_PostgresFailedToClose" xml:space="preserve">
+    <value>Failed to close postgres.</value>
+  </data>
+  <data name="MainLogger_TryCloseManually" xml:space="preserve">
+    <value>Try to close manually.</value>
+  </data>
+  <data name="MainLogger_RedisFailToClose" xml:space="preserve">
+    <value>Failed to close redis.</value>
+  </data>
+  <data name="MainLogger_RedisCli_StartDownload" xml:space="preserve">
+    <value>redis-cli.exe has been downloading.</value>
+  </data>
+  <data name="MainLogger_RedisCli_Loaded" xml:space="preserve">
+    <value>redis-cli.exe successfully loaded.</value>
+  </data>
+  <data name="MainLogger_FailToLoadBinary" xml:space="preserve">
+    <value>Failed to load binaries:</value>
+  </data>
+  <data name="MainLogger_EnvFile_StartDownload" xml:space="preserve">
+    <value>has been downloading.</value>
+  </data>
+  <data name="MainLogger_EnvFile_Loaded" xml:space="preserve">
+    <value>.env successfully loaded.</value>
+  </data>
+  <data name="MainLogger_Postgres_StartInitialize#1" xml:space="preserve">
+    <value>Initializing Postgres server.</value>
+  </data>
+  <data name="MainLogger_Postgres_DatabaseCreated" xml:space="preserve">
+    <value>Created database named:</value>
+  </data>
+  <data name="MainLogger_Postgres_UserCreated" xml:space="preserve">
+    <value>Created user named:</value>
+  </data>
+  <data name="MainLogger_Postgres_DatabaseRenamed" xml:space="preserve">
+    <value>Renamed the database to:</value>
+  </data>
+  <data name="MainLogger_Postgres_StartInitialize#2" xml:space="preserve">
+    <value>Initializing Postgres database using postgres.sql</value>
+  </data>
+  <data name="MainLogger_Postgres_FailToInitialize" xml:space="preserve">
+    <value>Failed to initialize Postgres database properly.</value>
+  </data>
+  <data name="MainLogger_Postgres_InitializeManually" xml:space="preserve">
+    <value>Initialize manually.</value>
+  </data>
+  <data name="MainLogger_Postgres_InitializedSuccessfully" xml:space="preserve">
+    <value>Successfully initialized Postgres database.</value>
+  </data>
+  <data name="MainLogger_Postgres_StartSetup" xml:space="preserve">
+    <value>Postgres started to setup.</value>
+  </data>
+  <data name="MainLogger_Postgres_RenameUser" xml:space="preserve">
+    <value>Updating Postgres user name:</value>
+  </data>
+  <data name="MainLogger_Postgres_FailToRenameUser" xml:space="preserve">
+    <value>Postgres user name didn't set properly.</value>
+  </data>
+  <data name="MainLogger_Postgres_TryRenameUserManually" xml:space="preserve">
+    <value>Set it manually. Current user name:</value>
+  </data>
+  <data name="MainLogger_Postgres_RenamedUserSuccessfully" xml:space="preserve">
+    <value>Postgres user name successfully set to</value>
+  </data>
+  <data name="MainLogger_Postgres_UpdatePass" xml:space="preserve">
+    <value>Updating Postgres pass:</value>
+  </data>
+  <data name="MainLogger_Postgres_FailToRenamePass" xml:space="preserve">
+    <value>Postgres password didn't set properly.</value>
+  </data>
+  <data name="MainLogger_Postgres_TryUpdatePasswordManually" xml:space="preserve">
+    <value>Set it manually. Current password:</value>
+  </data>
+  <data name="MainLogger_Postgres_UpdatedPasswordSuccessfully" xml:space="preserve">
+    <value>Postgres password successfully set to</value>
+  </data>
+  <data name="MainLogger_Postgres_FailToSetup" xml:space="preserve">
+    <value>Failed to setup Postgres:</value>
+  </data>
+  <data name="MainLogger_Wingman_StartDownload" xml:space="preserve">
+    <value>wingman.exe has been downloading.</value>
+  </data>
+  <data name="MainLogger_Wingman_Loaded" xml:space="preserve">
+    <value>wingman.exe successfully loaded.</value>
+  </data>
+  <data name="MainLogger_Galactus_StartDownload" xml:space="preserve">
+    <value>galactus.exe has been downloading.</value>
+  </data>
+  <data name="MainLogger_Galactus_Loaded" xml:space="preserve">
+    <value>galactus.exe successfully loaded.</value>
+  </data>
+  <data name="MainLogger_Automuteus_StartDownload" xml:space="preserve">
+    <value>automuteus.exe has been downloading.</value>
+  </data>
+  <data name="MainLogger_Automuteus_Loaded" xml:space="preserve">
+    <value>automuteus.exe successfully loaded.</value>
+  </data>
+  <data name="MainLogger_Redis_StartDownload" xml:space="preserve">
+    <value>redis.zip has been downloading.</value>
+  </data>
+  <data name="MainLogger_Redis_Loaded" xml:space="preserve">
+    <value>Redis' binary successfully loaded.</value>
+  </data>
+  <data name="MainLogger_Postgres_StartDownload" xml:space="preserve">
+    <value>postgres.zip has been downloading.</value>
+  </data>
+  <data name="MainLogger_Postgres_Loaded" xml:space="preserve">
+    <value>Postgres' binary successfully loaded.</value>
+  </data>
+  <data name="MainLogger_LoadDiffEnvs_StartDownload" xml:space="preserve">
+    <value>has been downloading.</value>
+  </data>
+  <data name="MainLogger_LoadDiffEnvs_Loaded" xml:space="preserve">
+    <value>diffenvs.json successfully loaded.</value>
+  </data>
+  <data name="MainLogger_Postgres_SQLFile_StartDownload" xml:space="preserve">
+    <value>postgres.sql has been downloading.</value>
+  </data>
+  <data name="MainLogger_Postgres_SQLFile_Loaded" xml:space="preserve">
+    <value>postgres.sql successfully loaded.</value>
+  </data>
+  <data name="MainLogger_LoadBinaries_FailToCreateDirectory" xml:space="preserve">
+    <value>Failed to create directory</value>
+  </data>
+  <data name="MainLogger_LoadBinaries_EnvFileSaved" xml:space="preserve">
+    <value>File .env saved in</value>
+  </data>
+  <data name="Settings_EnvPathChange_FailToMoveEnvPath_Text" xml:space="preserve">
+    <value>Failed to move EnvPath:</value>
+  </data>
+  <data name="MainLogger_EnvPathChange_FailToMoveEnvPath" xml:space="preserve">
+    <value>Failed to move EnvPath:</value>
+  </data>
+  <data name="ChooseEnvPathWindow_Title" xml:space="preserve">
+    <value>ChooseEnvPath</value>
+  </data>
+  <data name="ChooseEnvPathWindow_SaveBtn" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="ChooseEnvPathWindow_CancelBtn" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ChooseEnvPathWindow_EnvPath_RequiredToFill" xml:space="preserve">
+    <value>EnvPath is required to set properly.</value>
+  </data>
+</root>

@@ -4,8 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AutoMuteUs_Portable"
+        xmlns:lex="http://wpflocalizeextension.codeplex.com"
+        lex:LocalizeDictionary.DesignCulture="en"
+        lex:LocalizeDictionary.IncludeInvariantCulture="False"
+        lex:ResxLocalizationProvider.DefaultAssembly="AutoMuteUs-Portable"
+        lex:ResxLocalizationProvider.DefaultDictionary="Strings"
         mc:Ignorable="d"
-        Title="ChooseEnvPath" SizeToContent="WidthAndHeight" ResizeMode="NoResize">
+        Title="{lex:Loc ChooseEnvPathWindow_Title}" SizeToContent="WidthAndHeight" ResizeMode="NoResize">
     <StackPanel Margin="20">
         <Grid>
             <Grid.ColumnDefinitions>
@@ -18,7 +23,7 @@
             <TextBox x:Name="EnvPath" Grid.Column="1" Width="280" />
             <Button Grid.Column="2" Width="20" Click="FolderBrowserOpenButton_Click">...</Button>
         </Grid>
-        <Button x:Name="SaveBtn" Margin="0,5,0,0" Click="saveBtn_Click">Save</Button>
-        <Button x:Name="CancelBtn" Margin="0,5,0,0" Click="cancelBtn_Click">Cancel</Button>
+        <Button x:Name="SaveBtn" Margin="0,5,0,0" Click="saveBtn_Click" Content="{lex:Loc ChooseEnvPathWindow_SaveBtn}"/>
+        <Button x:Name="CancelBtn" Margin="0,5,0,0" Click="cancelBtn_Click" Content="{lex:Loc ChooseEnvPathWindow_CancelBtn}"/>
     </StackPanel>
 </Window>

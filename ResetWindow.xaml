@@ -4,15 +4,20 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AutoMuteUs_Portable"
+        xmlns:lex="http://wpflocalizeextension.codeplex.com"
+        lex:LocalizeDictionary.DesignCulture="en"
+        lex:LocalizeDictionary.IncludeInvariantCulture="False"
+        lex:ResxLocalizationProvider.DefaultAssembly="AutoMuteUs-Portable"
+        lex:ResxLocalizationProvider.DefaultDictionary="Strings"
         mc:Ignorable="d"
-        Title="Reset" SizeToContent="WidthAndHeight" Closed="Window_Closed" ResizeMode="NoResize">
+        Title="{lex:Loc ResetWindow_Title}" SizeToContent="WidthAndHeight" Closed="Window_Closed" ResizeMode="NoResize">
     <Grid Margin="20">
         <Grid.RowDefinitions>
              <RowDefinition />
              <RowDefinition />
          </Grid.RowDefinitions>
-            
-        <Button HorizontalAlignment="Stretch" Margin="0,0,0,5" Click="ResetAllProperties">RESET ALL PROPERTIES</Button>
-        <Button HorizontalAlignment="Stretch" Grid.Row="1" Margin="0,5,0,0" Click="DeleteAllBinaries">DELETE ALL BINARIES</Button>
+
+        <Button HorizontalAlignment="Stretch" Margin="0,0,0,5" Click="ResetAllProperties" Content="{lex:Loc ResetWindow_ResetAllPropertiesBtn}"/>
+        <Button HorizontalAlignment="Stretch" Grid.Row="1" Margin="0,5,0,0" Click="DeleteAllBinaries" Content="{lex:Loc ResetWindow_DeleteAllBinariesBtn}"/>
     </Grid>
 </Window>

@@ -208,7 +208,7 @@ namespace AutoMuteUs_Portable
                     var changeEnvPathButton = new Button()
                     {
                         Width = 300,
-                        Content = "Change",
+                        Content = LocalizationProvider.GetLocalizedValue<string>("SettingsWindow_ChangeEnvPathBtn"),
                         Name = variable.Key
                     };
                     changeEnvPathButton.Click += ChangeEnvPathButton_Click;
@@ -298,7 +298,7 @@ namespace AutoMuteUs_Portable
 
             var button = new Button()
             {
-                Content = "Save",
+                Content = LocalizationProvider.GetLocalizedValue<string>("SettingsWindow_SaveBtn"),
                 Name = "SaveBtn",
                 VerticalContentAlignment = VerticalAlignment.Center,
                 HorizontalContentAlignment = HorizontalAlignment.Center
@@ -310,7 +310,7 @@ namespace AutoMuteUs_Portable
 
             button = new Button()
             {
-                Content = "Cancel",
+                Content = LocalizationProvider.GetLocalizedValue<string>("SettingsWindow_CancelBtn"),
                 Name = "CancelBtn",
                 VerticalContentAlignment = VerticalAlignment.Center,
                 HorizontalContentAlignment = HorizontalAlignment.Center,
@@ -323,7 +323,7 @@ namespace AutoMuteUs_Portable
 
             button = new Button()
             {
-                Content = "Use Recommended Version Combination",
+                Content = LocalizationProvider.GetLocalizedValue<string>("SettingsWindow_UseRVCBtn"),
                 Name = "UseRVCBtn",
                 VerticalContentAlignment = VerticalAlignment.Center,
                 HorizontalContentAlignment = HorizontalAlignment.Center,
@@ -343,7 +343,7 @@ namespace AutoMuteUs_Portable
 
             Newtonsoft.Json.Linq.JObject rvc_hash;
 
-            logger.Info("RVC Hash has been downloading.");
+            logger.Info(LocalizationProvider.GetLocalizedValue<string>("MainLogger_RVCHash_StartDownload"));
             try
             {
                 using (WebClient client = new WebClient())
@@ -358,13 +358,13 @@ namespace AutoMuteUs_Portable
             }
             catch
             {
-                logger.Error("Failed to download RVC Hash.");
+                logger.Error(LocalizationProvider.GetLocalizedValue<string>("MainLogger_RVCHash_DownloadFailed"));
                 return null;
             }
 
             if (!rvc_hash.ContainsKey("sha"))
             {
-                logger.Error("Failed to download RVC Hash.");
+                logger.Error(LocalizationProvider.GetLocalizedValue<string>("MainLogger_RVCHash_DownloadFailed"));
                 return null;
             }
 
@@ -377,7 +377,7 @@ namespace AutoMuteUs_Portable
 
             Newtonsoft.Json.Linq.JObject rvc;
 
-            logger.Info("RVC has been downloading.");
+            logger.Info(LocalizationProvider.GetLocalizedValue<string>("MainLogger_RVC_StartDownload"));
             try
             {
                 using (WebClient client = new WebClient())
@@ -385,7 +385,7 @@ namespace AutoMuteUs_Portable
                     string downloadedString = client.DownloadString("https://raw.githubusercontent.com/mtaku3/AutoMuteUs-Portable/main/rvc.json");
                     if (downloadedString.Contains("404"))
                     {
-                        logger.Error("Failed to download RVC.");
+                        logger.Error(LocalizationProvider.GetLocalizedValue<string>("MainLogger_RVC_DownloadFailed"));
                         return null;
                     }
                     rvc = (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(downloadedString);
@@ -394,7 +394,7 @@ namespace AutoMuteUs_Portable
             }
             catch
             {
-                logger.Error("Failed to download RVC.");
+                logger.Error(LocalizationProvider.GetLocalizedValue<string>("MainLogger_RVC_DownloadFailed"));
                 return null;
             }
 
@@ -437,13 +437,13 @@ namespace AutoMuteUs_Portable
             ApplyRecommendedVersionCombination();
         }
 
-        private void ChangeEnvPathButton_Click(object sender, RoutedEventArgs e)
+        private async void ChangeEnvPathButton_Click(object sender, RoutedEventArgs e)
         {
-            STATask.Run(() =>
+            await STATask.Run(() =>
             {
                 var chooseEnvPathWindow = new ChooseEnvPathWindow();
                 chooseEnvPathWindow.ShowDialog();
-            }).Wait();
+            });
         }
 
         private void FolderBrowserOpenButton_Click(object sender, RoutedEventArgs e)
@@ -519,16 +519,16 @@ namespace AutoMuteUs_Portable
                 {
                     if (variable.Key == "POSTGRES_PASS")
                     {
-                        if (MessageBox.Show($"POSTGRESS_PASS is required to fill. Do you want to use auto generated password?", "PASSWORD GENERATOR", MessageBoxButton.YesNo) == MessageBoxResult.No)
+                        if (MessageBox.Show($"POSTGRESS_PASS {LocalizationProvider.GetLocalizedValue<string>("SettingsWindow_UpdateEnvVars_PostgresPass_RequiredToFill_Text")}", LocalizationProvider.GetLocalizedValue<string>("SettingsWindow_UpdateEnvVars_PostgresPass_RequiredToFill_Title"), MessageBoxButton.YesNo) == MessageBoxResult.No)
                             return;
 
                         textBox.Text = GeneratePassword();
 
-                        MessageBox.Show($"POSTGRES_PASS is set as \"{textBox.Text}\".", "PASSWORD GENERATOR", MessageBoxButton.OK);
+                        MessageBox.Show($"POSTGRES_PASS {LocalizationProvider.GetLocalizedValue<string>("SettingsWindow_UpdateEnvVars_PostgresPass_AutoGenerated_Text")} \"{textBox.Text}\"", LocalizationProvider.GetLocalizedValue<string>("SettingsWindow_UpdateEnvVars_PostgresPass_AutoGenerated_Title"), MessageBoxButton.OK);
                     }
                     else
                     {
-                        MessageBox.Show($"{variable.Key} is required to fill.\nFill it and try again.");
+                        MessageBox.Show($"{variable.Key} {LocalizationProvider.GetLocalizedValue<string>("SettingsWindow_UpdateEnvVars_RequiredToFill_Text")}");
                         return;
                     }
                 }
@@ -558,7 +558,7 @@ namespace AutoMuteUs_Portable
 
                     if (Settings.CheckRequiredVariable(variable.Key, (string)comboBox.SelectedValue) != null)
                     {
-                        MessageBox.Show($"{variable.Key} is required to fill.\nFill it and try again.");
+                        MessageBox.Show($"{variable.Key} {LocalizationProvider.GetLocalizedValue<string>("SettingsWindow_UpdateUserVars_RequiredToFill_Text")}");
                         return;
                     }
 
@@ -590,7 +590,7 @@ namespace AutoMuteUs_Portable
 
                     if (Settings.CheckRequiredVariable(variable.Key, textBox.Text) != null)
                     {
-                        MessageBox.Show($"{variable.Key} is required to fill.\nFill it and try again.");
+                        MessageBox.Show($"{variable.Key} {LocalizationProvider.GetLocalizedValue<string>("SettingsWindow_UpdateUserVars_RequiredToFill_Text")}");
                         return;
                     }
 

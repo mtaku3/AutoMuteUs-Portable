@@ -5,6 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:AutoMuteUs_Portable"
+        xmlns:lex="http://wpflocalizeextension.codeplex.com"
+        lex:LocalizeDictionary.DesignCulture="en"
+        lex:LocalizeDictionary.IncludeInvariantCulture="False"
+        lex:ResxLocalizationProvider.DefaultAssembly="AutoMuteUs-Portable"
+        lex:ResxLocalizationProvider.DefaultDictionary="Strings"
         mc:Ignorable="d"
         Title="AutoMuteUs Portable" Height="450" Width="800" ContentRendered="Window_ContentRendered" Closed="Window_Closed">
     <Window.Resources>
@@ -21,8 +26,8 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <TextBlock FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,5,0">MainLogging</TextBlock>
-        <TextBlock FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Margin="5,0,0,0">DetailedLogging</TextBlock>
+        <TextBlock FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,5,0" Text="{lex:Loc MainWindow_MainLogLabel}"/>
+        <TextBlock FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Margin="5,0,0,0" Text="{lex:Loc MainWindow_DetailedLogLabel}"/>
 
         <RichTextBox x:Name="mainLogTextBox" FontFamily="Consolas" IsReadOnly="True" FontSize="14" Background="Black" Grid.Row="1" />
 
@@ -34,14 +39,22 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             
             <Grid x:Name="indicatorsGrid" VerticalAlignment="Top">
             </Grid>
 
-            <Button VerticalAlignment="Bottom" Grid.Row="1" Margin="0,0,0,2" Click="SettingsButton_Click">SETTINGS</Button>
-            <Button VerticalAlignment="Bottom" Grid.Row="2" Click="ExportLogButton_Click" Margin="0,2,0,2">EXPORT LOG</Button>
-            <Button VerticalAlignment="Bottom" Grid.Row="3" Click="ResetButton_Click" Margin="0,2,0,0">RESET</Button>
+            <ComboBox x:Name="LanguageComboBox"
+                      VerticalAlignment="Bottom" Margin="0,0,0,2"
+                      ItemsSource="{Binding AvailableCultures}"
+                      DisplayMemberPath="NativeName"
+                      SelectedValuePath="LCID"
+                      SelectedValue="{Binding SelectedCultureId}"
+                      SelectedItem="{Binding SelectedCulture}"/>
+            <Button VerticalAlignment="Bottom" Grid.Row="2" Margin="0,2,0,2" Click="SettingsButton_Click" Content="{lex:Loc MainWindow_SettingsBtn}"/>
+            <Button VerticalAlignment="Bottom" Grid.Row="3" Click="ExportLogButton_Click" Margin="0,2,0,2" Content="{lex:Loc MainWindow_ExportLogBtn}"/>
+            <Button VerticalAlignment="Bottom" Grid.Row="4" Click="ResetButton_Click" Margin="0,2,0,0" Content="{lex:Loc MainWindow_ResetBtn}"/>
         </Grid>
     </Grid>
 </Window>

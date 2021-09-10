@@ -3,7 +3,10 @@ using NLog;
 using NLog.Targets;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -11,6 +14,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -36,15 +40,35 @@ namespace AutoMuteUs_Portable
 
         private static string LogFilePath;
 
+        public static ObservableCollection<CultureInfo> availableCultures = new ObservableCollection<CultureInfo>()
+        {
+            new CultureInfo("en"),
+            new CultureInfo("ja")
+        };
+
         public MainWindow()
         {
+            if (Properties.Settings.Default.Language == "") Properties.Settings.Default.Language = CultureInfo.InstalledUICulture.TwoLetterISOLanguageName;
+            if (availableCultures.IndexOf(new CultureInfo(Properties.Settings.Default.Language)) == -1) Properties.Settings.Default.Language = "en";
+            Properties.Settings.Default.Save();
+
+            var culture = new CultureInfo(Properties.Settings.Default.Language);
+
+            Thread.CurrentThread.CurrentCulture = culture;
+            Thread.CurrentThread.CurrentUICulture = culture;
+
+            WPFLocalizeExtension.Engine.LocalizeDictionary.Instance.Culture = Thread.CurrentThread.CurrentCulture;
+
+            //this.DataContext = new CultureComboBoxViewModel(culture);
+
             InitializeComponent();
+
             InitializeNLog();
         }
 
         private void Window_ContentRendered(object sender, EventArgs e)
         {
-            Task.Factory.StartNew(() => {
+            Task.Run(() => {
 #if PUBLISH
                 CheckRVCUpdate();
                 CheckUpdate();
@@ -144,7 +168,7 @@ namespace AutoMuteUs_Portable
             LogFilePath = $"{Path.Combine(Path.GetTempPath(), $"AutoMuteUs-Portable")}.log";
 
             var logger = NLog.LogManager.GetLogger("Main");
-            logger.Info($"Log output started: \"{LogFilePath}\"");
+            logger.Info($"{LocalizationProvider.GetLocalizedValue<string>("MainLogger_LogOutputStarted")} \"{LogFilePath}\"");
 
             var fileTarget = new FileTarget()
             {
@@ -182,7 +206,7 @@ namespace AutoMuteUs_Portable
 
         private void ExportLogButton_Click(object sender, RoutedEventArgs e)
         {
-            if (MessageBox.Show("To export current log, application will close the server.\nAre you sure to proceed?", "Caution", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+            if (MessageBox.Show(LocalizationProvider.GetLocalizedValue<string>("MainWindow_ExportLogBtn_Caution_Text"), LocalizationProvider.GetLocalizedValue<string>("MainWindow_ExportLogBtn_Caution_Title"), MessageBoxButton.YesNo) != MessageBoxResult.Yes)
             {
                 return;
             }
@@ -196,25 +220,71 @@ namespace AutoMuteUs_Portable
             }
             File.Move(source, dist);
 
-            MessageBox.Show($"Successfully put log into current executable directory: \"{dist}\"", "Output Log", MessageBoxButton.OK);
+            MessageBox.Show($"{LocalizationProvider.GetLocalizedValue<string>("MainWindow_ExportLogBtn_Result_Text")} \"{dist}\"", LocalizationProvider.GetLocalizedValue<string>("MainWindow_ExportLogBtn_Result_Title"), MessageBoxButton.OK);
         }
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            if (MessageBox.Show("To change settings, application will close the server.\nAre you sure to proceed?", "Caution", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+            if (MessageBox.Show(LocalizationProvider.GetLocalizedValue<string>("MainWindow_SettingsBtn_Caution#1_Text"), LocalizationProvider.GetLocalizedValue<string>("MainWindow_SettingsBtn_Caution#1_Title"), MessageBoxButton.YesNo) != MessageBoxResult.Yes)
             {
                 return;
             }
 
             if (main != null) main.TerminateProcs();
-            Task.Factory.StartNew(() =>
+            Task.Run(() =>
             {
-                MessageBox.Show("Do not close the app until new message box be shown.", "Caution", MessageBoxButton.OK);
+                MessageBox.Show(LocalizationProvider.GetLocalizedValue<string>("MainWindow_SettingsBtn_Caution#2_Text"), LocalizationProvider.GetLocalizedValue<string>("MainWindow_SettingsBtn_Caution#2_Title"), MessageBoxButton.OK);
                 Settings.LoadSettings(true);
-                LogManager.GetLogger("Main").Info("To host AutoMuteUs again, please relaunch AutoMuteUs Portable.");
-                MessageBox.Show("To host AutoMuteUs again, please relaunch AutoMuteUs Portable.", "Caution", MessageBoxButton.OK);
+                LogManager.GetLogger("Main").Info(LocalizationProvider.GetLocalizedValue<string>("MainLogger_RelaunchApp"));
+                MessageBox.Show(LocalizationProvider.GetLocalizedValue<string>("MainWindow_SettingsBtn_Caution#3_Text"), LocalizationProvider.GetLocalizedValue<string>("MainWindow_SettingsBtn_Caution#3_Title"), MessageBoxButton.OK);
             });
         }
+
+        public static void UpdateLanguage(CultureInfo culture)
+        {
+            Properties.Settings.Default.Language = culture.Name;
+            Properties.Settings.Default.Save();
+
+            Thread.CurrentThread.CurrentCulture = culture;
+            Thread.CurrentThread.CurrentUICulture = culture;
+
+            WPFLocalizeExtension.Engine.LocalizeDictionary.Instance.Culture = Thread.CurrentThread.CurrentCulture;
+        }
+
+        public class CultureComboBoxViewModel
+        {
+            public CultureComboBoxViewModel(CultureInfo culture)
+            {
+                if (AvailableCultures.IndexOf(culture) != -1) selectedCulture = culture;
+                else selectedCulture = new CultureInfo("en");
+            }
+
+            public ObservableCollection<CultureInfo> AvailableCultures
+            {
+                get { return MainWindow.availableCultures; }
+            }
+
+            private int selectedCultureId;
+
+            public int SelectedCultureId
+            {
+                get { return selectedCultureId; }
+                set { selectedCultureId = value; }
+            }
+
+            private CultureInfo selectedCulture;
+
+            public CultureInfo SelectedCulture
+            {
+                get { return selectedCulture; }
+                set
+                {
+                    selectedCulture = value;
+                    UpdateLanguage(value);
+                }
+            }
+        }
+
 
 #if PUBLISH
         private void CheckRVCUpdate()
@@ -227,16 +297,15 @@ namespace AutoMuteUs_Portable
 
             if (Properties.Settings.Default.RVC_Hash != rvc_hash || Properties.Settings.Default.RVC_Hash == "")
             {
-                logger.Info($"New update detected: \"{Properties.Settings.Default.RVC_Hash}\" => \"{rvc_hash}\"");
-                String message = "Recommended Version Combination has been updated\n" +
-                    "Check it on Settings.";
+                logger.Info($"{LocalizationProvider.GetLocalizedValue<string>("MainLogger_RVCHash_UpdateDetected")} \"{Properties.Settings.Default.RVC_Hash}\" => \"{rvc_hash}\"");
+                String message = LocalizationProvider.GetLocalizedValue<string>("MainWindow_RVCUpdate_Text");
 
                 foreach (var item in rvc)
                 {
                     message += $"\n{item.Key.ToString()} : {item.Value.ToString()}";
                 }
 
-                MessageBox.Show(message, "RVC UPDATE", MessageBoxButton.OK);
+                MessageBox.Show(message, LocalizationProvider.GetLocalizedValue<string>("MainWindow_RVCUpdate_Title"), MessageBoxButton.OK);
 
                 Properties.Settings.Default.RVC_Hash = rvc_hash;
                 Properties.Settings.Default.Save();
@@ -249,7 +318,7 @@ namespace AutoMuteUs_Portable
             
             var CurrentInformationalVersion = (string)Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
 
-            logger.Info($"Version: \"{CurrentInformationalVersion}\"");
+            logger.Info($"{LocalizationProvider.GetLocalizedValue<string>("MainLogger_Version")} \"{CurrentInformationalVersion}\"");
 
             Newtonsoft.Json.Linq.JArray AppVersionList;
 
@@ -262,7 +331,7 @@ namespace AutoMuteUs_Portable
 
                 if (!httpResponse.IsSuccessStatusCode)
                 {
-                    logger.Error("Failed to get refs/tags.");
+                    logger.Error(LocalizationProvider.GetLocalizedValue<string>("MainLogger_HttpClientRequestFailed"));
                     return;
                 }
 
@@ -277,8 +346,8 @@ namespace AutoMuteUs_Portable
             if (LatestInformationalVersion != CurrentInformationalVersion)
             {
 
-                logger.Info($"New update detected: \"{CurrentInformationalVersion}\" => \"{LatestInformationalVersion}\"");
-                if (MessageBox.Show($"There's newer version \"{LatestTag}\" xD\nDo you wanna check it out on Github?", "Update Checker", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                logger.Info($"{LocalizationProvider.GetLocalizedValue<string>("MainLogger_CheckUpdate_UpdateDetected")} \"{CurrentInformationalVersion}\" => \"{LatestInformationalVersion}\"");
+                if (MessageBox.Show($"{LocalizationProvider.GetLocalizedValue<string>("MainWindow_CheckUpdate_UpdateDetected_Text#1")} \"{LatestTag}\"\n{LocalizationProvider.GetLocalizedValue<string>("MainWindow_CheckUpdate_UpdateDetected_Text#2")}", LocalizationProvider.GetLocalizedValue<string>("MainWindow_CheckUpdate_UpdateDetected_Title"), MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
                     string url = "https://github.com/mtaku3/AutoMuteUs-Portable/releases/latest";
 
@@ -298,6 +367,5 @@ namespace AutoMuteUs_Portable
             }
         }
 #endif
-
     }
 }

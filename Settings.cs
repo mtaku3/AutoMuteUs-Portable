@@ -26,12 +26,14 @@ namespace AutoMuteUs_Portable
 
         public static Dictionary<string, Dictionary<string, string>> VersionList;
 
-        public static void LoadSettings(bool ForceToSet = false)
+        public static async void LoadSettings(bool ForceToSet = false)
         {
             var ForceToLoad = ForceToSet;
 
             while (true)
             {
+                Task.Delay(100).Wait();
+
                 EnvVars = new Dictionary<string, string>();
                 UserVars = new Dictionary<string, string>();
                 EnvLines = new Dictionary<string, int>();
@@ -84,11 +86,11 @@ namespace AutoMuteUs_Portable
 
                 if (CheckAllRequiredVariable(UserVars, EnvVars) || ForceToSet)
                 {
-                    STATask.Run(() =>
+                    await STATask.Run(() =>
                     {
                         var settingsWindow = new SettingsWindow();
                         if (!settingsWindow.hasClosed) settingsWindow.ShowDialog();
-                    }).Wait();
+                    });
                     ForceToSet = false;
                 }
                 else
@@ -101,7 +103,7 @@ namespace AutoMuteUs_Portable
                     }
                     catch (Exception e)
                     {
-                        logger.Error($"Failed to load binaries: {e.Message}");
+                        logger.Error($"{LocalizationProvider.GetLocalizedValue<string>("MainLogger_FailToLoadBinary")} {e.Message}");
                         continue;
                     }
                 }
@@ -152,13 +154,13 @@ namespace AutoMuteUs_Portable
         public static void DownloadEnv(string envPath, string ARCHITECTURE)
         {
             var url = $"https://raw.githubusercontent.com/mtaku3/AutoMuteUs-Portable/main/{ARCHITECTURE}.env";
-            logger.Info($"{ARCHITECTURE}.env has been downloading.");
+            logger.Info($"{ARCHITECTURE}.env {LocalizationProvider.GetLocalizedValue<string>("MainLogger_EnvFile_StartDownload")}");
             using (WebClient client = new WebClient())
             {
                 var path = Path.Combine(envPath, ".env");
                 string result = client.DownloadString(url);
                 File.WriteAllText(path, result);
-                logger.Info(".env successfully loaded.");
+                logger.Info(LocalizationProvider.GetLocalizedValue<string>("MainLogger_EnvFile_Loaded"));
                 LoadDiffEnvs(envPath, ARCHITECTURE);
                 SaveUserVar("ARCHITECTURE", ARCHITECTURE);
             }
@@ -195,7 +197,7 @@ namespace AutoMuteUs_Portable
                 bool IsServerStartUp = false;
                 if (!Directory.Exists(Path.Combine(GetUserVar("EnvPath"), "postgres\\data")))
                 {
-                    logger.Info("Initializing Postgres server.");
+                    logger.Info(LocalizationProvider.GetLocalizedValue<string>("MainLogger_Postgres_StartInitialize#1"));
                     process = Main.CreateProcessFromArchive("postgres.zip", "postgres\\bin\\initdb.exe", $"-E UTF8 -U root -A trust -D data", "postgres\\");
                     Main.RedirectProcessStandardIO("postgres", process);
                     process.Start();
@@ -217,7 +219,7 @@ namespace AutoMuteUs_Portable
                     process.BeginErrorReadLine();
                     process.BeginOutputReadLine();
                     process.WaitForExit();
-                    logger.Info("Created database named \"root\".");
+                    logger.Info($"{LocalizationProvider.GetLocalizedValue<string>("MainLogger_Postgres_DatabaseCreated")} \"root\".");
 
                     process = Main.CreateProcessFromArchive("postgres.zip", "postgres\\bin\\createuser.exe", $"-U root --superuser {newUser}");
                     Main.RedirectProcessStandardIO("postgres", process);
@@ -225,7 +227,7 @@ namespace AutoMuteUs_Portable
                     process.BeginErrorReadLine();
                     process.BeginOutputReadLine();
                     process.WaitForExit();
-                    logger.Info($"Created user named \"{newUser}\".");
+                    logger.Info($"{LocalizationProvider.GetLocalizedValue<string>("MainLogger_Postgres_UserCreated")} \"{newUser}\".");
 
                     if (newUser != "postgres")
                     {
@@ -235,12 +237,12 @@ namespace AutoMuteUs_Portable
                         process.BeginErrorReadLine();
                         process.BeginOutputReadLine();
                         process.WaitForExit();
-                        logger.Info($"Renamed the database to \"{newUser}\".");
+                        logger.Info($"{LocalizationProvider.GetLocalizedValue<string>("MainLogger_Postgres_DatabaseRenamed")} \"{newUser}\".");
                     }
                     UpdatePostgresUser(newUser);
                     oldUser = newUser;
 
-                    logger.Info("Initializing Postgres database using postgres.sql");
+                    logger.Info(LocalizationProvider.GetLocalizedValue<string>("MainLogger_Postgres_StartInitialize#2"));
                     process = Main.CreateProcessFromArchive("postgres.zip", "postgres\\bin\\psql.exe", $"-U {newUser} -f postgres.sql", "postgres\\");
                     Main.RedirectProcessStandardIO("postgres", process);
                     process.Start();
@@ -249,18 +251,18 @@ namespace AutoMuteUs_Portable
                     process.WaitForExit();
                     if (process.ExitCode != 0)
                     {
-                        logger.Error("Failed to initialize Postgres database properly.");
-                        logger.Error($"Initialize manually.");
+                        logger.Error(LocalizationProvider.GetLocalizedValue<string>("MainLogger_Postgres_FailToInitialize"));
+                        logger.Error(LocalizationProvider.GetLocalizedValue<string>("MainLogger_Postgres_InitializeManually"));
                     }
                     else
                     {
-                        logger.Info($"Successfully initialized Postgres database");
+                        logger.Info(LocalizationProvider.GetLocalizedValue<string>("MainLogger_Postgres_InitializedSuccessfully"));
                     }
                 }
 
                 if (oldUser != newUser || oldPass != newPass)
                 {
-                    logger.Info("Postgres started to setup.");
+                    logger.Info(LocalizationProvider.GetLocalizedValue<string>("MainLogger_Postgres_StartSetup"));
                     if (!IsServerStartUp)
                     {
                         server_process = Main.CreateProcessFromArchive("postgres.zip", "postgres\\bin\\pg_ctl.exe", "start -w -D data", "postgres\\");
@@ -273,7 +275,7 @@ namespace AutoMuteUs_Portable
 
                     if (oldUser != newUser)
                     {
-                        logger.Info($"Updating Postgres user name '{oldUser}' => '{newUser}'.");
+                        logger.Info($"{LocalizationProvider.GetLocalizedValue<string>("MainLogger_Postgres_RenameUser")} '{oldUser}' => '{newUser}'.");
                         process = Main.CreateProcessFromArchive("postgres.zip", "postgres\\bin\\psql.exe", $"-U root -c \"ALTER USER {oldUser} RENAME TO {newUser};\"", "postgres\\");
                         Main.RedirectProcessStandardIO("postgres", process);
                         process.Start();
@@ -291,19 +293,19 @@ namespace AutoMuteUs_Portable
 
                         if (process.ExitCode != 0)
                         {
-                            logger.Error("Postgres user name didn't set properly.");
-                            logger.Error($"Set it manually. Current user name: '{oldUser}'.");
+                            logger.Error(LocalizationProvider.GetLocalizedValue<string>("MainLogger_Postgres_FailToRenameUser"));
+                            logger.Error($"{LocalizationProvider.GetLocalizedValue<string>("MainLogger_Postgres_TryRenameUserManually")} '{oldUser}'.");
                         }
                         else
                         {
-                            logger.Info($"Postgres user name successfully set to '{newUser}'.");
+                            logger.Info($"{LocalizationProvider.GetLocalizedValue<string>("MainLogger_Postgres_RenamedUserSuccessfully")} '{newUser}'.");
                         }
                         UpdatePostgresUser(newUser);
                         oldUser = newUser;
                     }
                     if (oldPass != newPass)
                     {
-                        logger.Info($"Updating Postgres pass '{oldPass}' => '{newPass}'.");
+                        logger.Info($"{LocalizationProvider.GetLocalizedValue<string>("MainLogger_Postgres_UpdatePass")} '{oldPass}' => '{newPass}'.");
                         process = Main.CreateProcessFromArchive("postgres.zip", "postgres\\bin\\psql.exe", $"-U root -c \"ALTER USER {newUser} WITH PASSWORD '{newPass}';\"", "postgres\\");
                         Main.RedirectProcessStandardIO("postgres", process);
                         process.Start();
@@ -312,12 +314,12 @@ namespace AutoMuteUs_Portable
                         process.WaitForExit();
                         if (process.ExitCode != 0)
                         {
-                            logger.Error($"Postgres password didn't set properly.");
-                            logger.Error($"Set it manually. Current password: '{oldPass}'.");
+                            logger.Error(LocalizationProvider.GetLocalizedValue<string>("MainLogger_Postgres_FailToRenamePass"));
+                            logger.Error($"{LocalizationProvider.GetLocalizedValue<string>("MainLogger_Postgres_TryUpdatePasswordManually")} '{oldPass}'.");
                         }
                         else
                         {
-                            logger.Info($"Postgres password successfully set to '{newPass}'.");
+                            logger.Info($"{LocalizationProvider.GetLocalizedValue<string>("MainLogger_Postgres_UpdatedPasswordSuccessfully")} '{newPass}'.");
                         }
                         UpdatePostgresPass(newPass);
                         oldPass = newPass;
@@ -343,7 +345,7 @@ namespace AutoMuteUs_Portable
             }
             catch (Exception e)
             {
-                logger.Error($"Failed to setup Postgres: {e.Message}");
+                logger.Error($"{LocalizationProvider.GetLocalizedValue<string>("MainLogger_Postgres_FailToSetup")} {e.Message}");
                 return;
             }
         }
@@ -352,12 +354,12 @@ namespace AutoMuteUs_Portable
         {
             var envPath = GetUserVar("EnvPath");
 
-            logger.Info("wingman.exe has been downloading.");
+            logger.Info(LocalizationProvider.GetLocalizedValue<string>("MainLogger_Wingman_StartDownload"));
             using (WebClient client = new WebClient())
             {
                 var path = Path.Combine(envPath, "wingman.exe");
                 client.DownloadFile(VersionList["wingman"][GetUserVar("WINGMAN_TAG")], path);
-                logger.Info("wingman.exe successfully loaded.");
+                logger.Info(LocalizationProvider.GetLocalizedValue<string>("MainLogger_Wingman_Loaded"));
             }
         }
 
@@ -365,12 +367,12 @@ namespace AutoMuteUs_Portable
         {
             var envPath = GetUserVar("EnvPath");
 
-            logger.Info("galactus.exe has been downloading.");
+            logger.Info(LocalizationProvider.GetLocalizedValue<string>("MainLogger_Galactus_StartDownload"));
             using (WebClient client = new WebClient())
             {
                 var path = Path.Combine(envPath, "galactus.exe");
                 client.DownloadFile(VersionList["galactus"][GetUserVar("GALACTUS_TAG")], path);
-                logger.Info("galactus.exe successfully loaded.");
+                logger.Info(LocalizationProvider.GetLocalizedValue<string>("MainLogger_Galactus_Loaded"));
             }
         }
 
@@ -378,12 +380,12 @@ namespace AutoMuteUs_Portable
         {
             var envPath = GetUserVar("EnvPath");
 
-            logger.Info("automuteus.exe has been downloading.");
+            logger.Info(LocalizationProvider.GetLocalizedValue<string>("MainLogger_Automuteus_StartDownload"));
             using (WebClient client = new WebClient())
             {
                 var path = Path.Combine(envPath, "automuteus.exe");
                 client.DownloadFile(VersionList["automuteus"][GetUserVar("AUTOMUTEUS_TAG")], path);
-                logger.Info("automuteus.exe successfully loaded.");
+                logger.Info(LocalizationProvider.GetLocalizedValue<string>("MainLogger_Automuteus_Loaded"));
             }
         }
 
@@ -391,7 +393,7 @@ namespace AutoMuteUs_Portable
         {
             var envPath = GetUserVar("EnvPath");
 
-            logger.Info("redis.zip has been downloading.");
+            logger.Info(LocalizationProvider.GetLocalizedValue<string>("MainLogger_Redis_StartDownload"));
             using (WebClient client = new WebClient())
             {
                 var path = Path.Combine(envPath, "redis.zip");
@@ -400,7 +402,7 @@ namespace AutoMuteUs_Portable
                 {
                     path = envPath;
                     zipFile.ExtractAll(path, ExtractExistingFileAction.OverwriteSilently);
-                    logger.Info("Redis' binary successfully loaded.");
+                    logger.Info(LocalizationProvider.GetLocalizedValue<string>("MainLogger_Redis_Loaded"));
                 };
             }
         }
@@ -409,7 +411,7 @@ namespace AutoMuteUs_Portable
         {
             var envPath = GetUserVar("EnvPath");
 
-            logger.Info("postgres.zip has been downloading.");
+            logger.Info(LocalizationProvider.GetLocalizedValue<string>("MainLogger_Postgres_StartDownload"));
             using (WebClient client = new WebClient())
             {
                 var path = Path.Combine(envPath, "postgres.zip");
@@ -418,7 +420,7 @@ namespace AutoMuteUs_Portable
                 {
                     path = envPath;
                     zipFile.ExtractAll(path, ExtractExistingFileAction.OverwriteSilently);
-                    logger.Info("Postgres' binary successfully loaded.");
+                    logger.Info(LocalizationProvider.GetLocalizedValue<string>("MainLogger_Postgres_Loaded"));
                 };
             }
 
@@ -431,13 +433,13 @@ namespace AutoMuteUs_Portable
         public static void LoadDiffEnvs(string envPath, string ARCHITECTURE)
         {
             var url = $"https://raw.githubusercontent.com/mtaku3/AutoMuteUs-Portable/main/{ARCHITECTURE}.diffenvs.json";
-            logger.Info($"{ARCHITECTURE}.diffenvs.json has been downloading.");
+            logger.Info($"{ARCHITECTURE}.diffenvs.json {LocalizationProvider.GetLocalizedValue<string>("MainLogger_LoadDiffEnvs_StartDownload")}");
             using (WebClient client = new WebClient())
             {
                 var path = Path.Combine(envPath, "diffenvs.json");
                 string result = client.DownloadString(url);
                 File.WriteAllText(path, result);
-                logger.Info("diffenvs.json successfully loaded.");
+                logger.Info(LocalizationProvider.GetLocalizedValue<string>("MainLogger_LoadDiffEnvs_Loaded"));
             }
         }
 
@@ -447,13 +449,13 @@ namespace AutoMuteUs_Portable
 
             var url = $"https://raw.githubusercontent.com/AutoMuteUs-Portable/automuteus/{GetUserVar("AUTOMUTEUS_TAG")}/storage/postgres.sql";
 
-            logger.Info("postgres.sql has been downloading.");
+            logger.Info(LocalizationProvider.GetLocalizedValue<string>("MainLogger_Postgres_SQLFile_StartDownload"));
             using (WebClient client = new WebClient())
             {
                 var path = Path.Combine(envPath, "postgres\\postgres.sql");
                 string result = client.DownloadString(url);
                 File.WriteAllText(path, result);
-                logger.Info("postgres.sql successfully loaded.");
+                logger.Info(LocalizationProvider.GetLocalizedValue<string>("MainLogger_Postgres_SQLFile_Loaded"));
             }
         }
 
@@ -480,7 +482,7 @@ namespace AutoMuteUs_Portable
                 }
                 catch (Exception e)
                 {
-                    logger.Error($"Failed to create directory \"{envPath}\": {e.Message}");
+                    logger.Error($"{LocalizationProvider.GetLocalizedValue<string>("MainLogger_LoadBinaries_FailToCreateDirectory")} \"{envPath}\": {e.Message}");
                     return;
                 }
             }
@@ -508,7 +510,7 @@ namespace AutoMuteUs_Portable
 
                 File.WriteAllLines(Path.Combine(envPath, ".env"), allLines);
 
-                logger.Info($"File .env saved in {envPath}.");
+                logger.Info($"{LocalizationProvider.GetLocalizedValue<string>("MainLogger_LoadBinaries_EnvFileSaved")} {envPath}");
             }
 
             if (!File.Exists(Path.Combine(envPath, "diffenvs.json")) || ForceToLoad)
@@ -726,8 +728,8 @@ namespace AutoMuteUs_Portable
             }
             catch (Exception e)
             {
-                MessageBox.Show($"Failed to move EnvPath: {e.Message}");
-                logger.Error($"Failed to move EnvPath: {e.Message}");
+                MessageBox.Show($"{LocalizationProvider.GetLocalizedValue<string>("Settings_EnvPathChange_FailToMoveEnvPath_Text")} {e.Message}");
+                logger.Error($"{LocalizationProvider.GetLocalizedValue<string>("MainLogger_EnvPathChange_FailToMoveEnvPath")} {e.Message}");
             }
         }
 

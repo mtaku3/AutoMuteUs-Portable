@@ -64,11 +64,16 @@ namespace AutoMuteUs_Portable
         public Main(MainWindow mainWindow)
         {
             this.mainWindow = mainWindow;
+            Initialize();
+        }
+
+        private async void Initialize()
+        {
             InitializeLogger();
             InitializeProcs();
-            STATask.Run(() => InitializeProcIndicators()).Wait();
+            await STATask.Run(() => InitializeProcIndicators());
             StartProcs();
-            Task.Factory.StartNew(() => RunLoop());
+            Task.Run(RunLoop);
         }
 
         private bool IsAutoRestartEnabled(string Key)
@@ -90,6 +95,7 @@ namespace AutoMuteUs_Portable
         {
             while (true)
             {
+                Task.Delay(100).Wait();
                 foreach (var proc in Procs)
                 {
                     var process = proc.Value;
@@ -184,7 +190,7 @@ namespace AutoMuteUs_Portable
             process.BeginOutputReadLine();
             var ellipse = IndicatorControls[proc.Key]["Ellipse"] as Ellipse;
             ellipse.Dispatcher.Invoke((Action)(() => ellipse.Fill = Brushes.LimeGreen));
-            logger["Main"].Info($"{proc.Key} auto restarted.");
+            logger["Main"].Info($"{proc.Key} {LocalizationProvider.GetLocalizedValue<string>("MainLogger_AutoRestarted")}");
         }
 
         private void StartProcs()
@@ -197,7 +203,7 @@ namespace AutoMuteUs_Portable
                 process.BeginOutputReadLine();
                 var ellipse = IndicatorControls[proc.Key]["Ellipse"] as Ellipse;
                 ellipse.Dispatcher.Invoke((Action)(() => ellipse.Fill = Brushes.LimeGreen));
-                logger["Main"].Info($"{proc.Key} started.");
+                logger["Main"].Info($"{proc.Key} {LocalizationProvider.GetLocalizedValue<string>("MainLogger_ProcessStarted")}");
             }
         }
 
@@ -235,7 +241,7 @@ namespace AutoMuteUs_Portable
                 _ = Main.ConsumeOutputReader("postgres", server_process.StandardOutput);
                 _ = Main.ConsumeErrorReader("postgres", server_process.StandardError);
                 server_process.WaitForExit();
-                MainLogger.Info("postgres closed.");
+                MainLogger.Info(LocalizationProvider.GetLocalizedValue<string>("MainLogger_PostgresClosed"));
 
                 Ellipse ellipse = null;
                 try
@@ -249,8 +255,8 @@ namespace AutoMuteUs_Portable
             }
             catch
             {
-                MainLogger.Error("Failed to close postgres.");
-                MainLogger.Error("Try to close manually.");
+                MainLogger.Error(LocalizationProvider.GetLocalizedValue<string>("MainLogger_PostgresFailedToClose"));
+                MainLogger.Error(LocalizationProvider.GetLocalizedValue<string>("MainLogger_TryCloseManually"));
             }
         }
 
@@ -282,8 +288,8 @@ namespace AutoMuteUs_Portable
             }
             catch
             {
-                MainLogger.Error("Failed to close redis.");
-                MainLogger.Error("Try to close manually.");
+                MainLogger.Error(LocalizationProvider.GetLocalizedValue<string>("MainLogger_RedisFailToClose"));
+                MainLogger.Error(LocalizationProvider.GetLocalizedValue<string>("MainLogger_TryCloseManually"));
             }
         }
 
@@ -356,12 +362,12 @@ namespace AutoMuteUs_Portable
             {
                 var envPath = Properties.Settings.Default.EnvPath;
 
-                MainLogger.Info("redis-cli.exe has been downloading.");
+                MainLogger.Info(LocalizationProvider.GetLocalizedValue<string>("MainLogger_RedisCli_StartDownload"));
                 using (WebClient client = new WebClient())
                 {
                     var path = Path.Combine(envPath, "redis\\redis-cli.exe");
                     client.DownloadFile("https://github.com/mtaku3/AutoMuteUs-Portable/releases/download/v2.4.1/redis-cli.exe", path);
-                    MainLogger.Info("redis-cli.exe successfully loaded.");
+                    MainLogger.Info(LocalizationProvider.GetLocalizedValue<string>("MainLogger_RedisCli_Loaded"));
                 }
             }
         }
