@@ -437,9 +437,9 @@ namespace AutoMuteUs_Portable
             ApplyRecommendedVersionCombination();
         }
 
-        private async void ChangeEnvPathButton_Click(object sender, RoutedEventArgs e)
+        private void ChangeEnvPathButton_Click(object sender, RoutedEventArgs e)
         {
-            await STATask.Run(() =>
+            Application.Current.Dispatcher.Invoke((Action)delegate
             {
                 var chooseEnvPathWindow = new ChooseEnvPathWindow();
                 chooseEnvPathWindow.ShowDialog();

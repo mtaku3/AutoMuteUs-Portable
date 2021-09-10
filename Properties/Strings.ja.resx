@@ -428,4 +428,7 @@
   <data name="ChooseEnvPathWindow_EnvPath_RequiredToFill" xml:space="preserve">
     <value>EnvPathは正しく記入する必要があります。</value>
   </data>
+  <data name="MainLogger_ProcessClosed" xml:space="preserve">
+    <value>は停止しました。</value>
+  </data>
 </root>

@@ -428,4 +428,7 @@ Are you sure to do?</value>
   <data name="ChooseEnvPathWindow_EnvPath_RequiredToFill" xml:space="preserve">
     <value>EnvPath is required to set properly.</value>
   </data>
+  <data name="MainLogger_ProcessClosed" xml:space="preserve">
+    <value>closed.</value>
+  </data>
 </root>

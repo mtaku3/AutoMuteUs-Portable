@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace AutoMuteUs_Portable
 {
@@ -26,14 +27,12 @@ namespace AutoMuteUs_Portable
 
         public static Dictionary<string, Dictionary<string, string>> VersionList;
 
-        public static async void LoadSettings(bool ForceToSet = false)
+        public static void LoadSettings(bool ForceToSet = false)
         {
             var ForceToLoad = ForceToSet;
 
             while (true)
             {
-                Task.Delay(100).Wait();
-
                 EnvVars = new Dictionary<string, string>();
                 UserVars = new Dictionary<string, string>();
                 EnvLines = new Dictionary<string, int>();
@@ -54,11 +53,11 @@ namespace AutoMuteUs_Portable
 
                 if (!Directory.Exists(GetUserVar("EnvPath")))
                 {
-                    STATask.Run(() =>
+                    Application.Current.Dispatcher.Invoke((Action)delegate
                     {
                         var chooseEnvPathWindow = new ChooseEnvPathWindow();
                         chooseEnvPathWindow.ShowDialog();
-                    }).Wait();
+                    });
 
                     SettingsWindow.useRecommendedVersionCombination = true;
                 }
@@ -86,11 +85,12 @@ namespace AutoMuteUs_Portable
 
                 if (CheckAllRequiredVariable(UserVars, EnvVars) || ForceToSet)
                 {
-                    await STATask.Run(() =>
+                    Application.Current.Dispatcher.Invoke((Action)delegate
                     {
                         var settingsWindow = new SettingsWindow();
                         if (!settingsWindow.hasClosed) settingsWindow.ShowDialog();
                     });
+
                     ForceToSet = false;
                 }
                 else

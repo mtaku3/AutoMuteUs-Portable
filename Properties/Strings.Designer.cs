@@ -457,6 +457,15 @@ namespace AutoMuteUs_Portable.Properties {
         }
         
         /// <summary>
+        ///   closed. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string MainLogger_ProcessClosed {
+            get {
+                return ResourceManager.GetString("MainLogger_ProcessClosed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   started. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string MainLogger_ProcessStarted {

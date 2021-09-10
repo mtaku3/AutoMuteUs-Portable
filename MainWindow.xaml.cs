@@ -59,7 +59,7 @@ namespace AutoMuteUs_Portable
 
             WPFLocalizeExtension.Engine.LocalizeDictionary.Instance.Culture = Thread.CurrentThread.CurrentCulture;
 
-            //this.DataContext = new CultureComboBoxViewModel(culture);
+            this.DataContext = new CultureComboBoxViewModel(culture);
 
             InitializeComponent();
 

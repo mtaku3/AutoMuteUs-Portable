@@ -67,11 +67,11 @@ namespace AutoMuteUs_Portable
             Initialize();
         }
 
-        private async void Initialize()
+        private void Initialize()
         {
             InitializeLogger();
             InitializeProcs();
-            await STATask.Run(() => InitializeProcIndicators());
+            Application.Current.Dispatcher.Invoke((Action)delegate { InitializeProcIndicators(); });
             StartProcs();
             Task.Run(RunLoop);
         }
@@ -161,7 +161,7 @@ namespace AutoMuteUs_Portable
                 {
                 }
 
-                logger["Main"].Info($"{proc.Key} closed.");
+                logger["Main"].Info($"{proc.Key} {LocalizationProvider.GetLocalizedValue<string>("MainLogger_ProcessClosed")}");
             }
         }
 
