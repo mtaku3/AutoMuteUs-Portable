@@ -32,7 +32,7 @@ namespace AutoMuteUs_Portable
 
         private void ResetAllProperties(object sender, RoutedEventArgs e)
         {
-            if (MessageBox.Show("This operation requires restarting application.\nAre you sure to do?", "RESET ALL PROPERTIES", MessageBoxButton.YesNo) == MessageBoxResult.No)
+            if (MessageBox.Show(LocalizationProvider.GetLocalizedValue<string>("ResetWindow_ResetAllProperties_RequireRestart_Text"), LocalizationProvider.GetLocalizedValue<string>("ResetWindow_ResetAllProperties_RequireRestart_Title"), MessageBoxButton.YesNo) == MessageBoxResult.No)
             {
                 return;
             }
@@ -45,13 +45,13 @@ namespace AutoMuteUs_Portable
                 File.Delete(Path.Combine(Settings.GetUserVar("EnvPath"), ".env"));
             }
 
-            MessageBox.Show("After you close this window, application will close.\nPlease start the application manually.", "RESTART CAUTION", MessageBoxButton.OK);
+            MessageBox.Show(LocalizationProvider.GetLocalizedValue<string>("ResetWindow_RestartCaution_Text"), LocalizationProvider.GetLocalizedValue<string>("ResetWindow_RestartCaution_Title"), MessageBoxButton.OK);
             RestartApplication = true;
         }
 
         private void DeleteAllBinaries(object sender, RoutedEventArgs e)
         {
-            if (MessageBox.Show("This operation requires restarting application.\nAre you sure to do?", "DELETE ALL BINARIES", MessageBoxButton.YesNo) == MessageBoxResult.No)
+            if (MessageBox.Show(LocalizationProvider.GetLocalizedValue<string>("ResetWindow_DeleteAllBinaries_RequireRestart_Text"), LocalizationProvider.GetLocalizedValue<string>("ResetWindow_DeleteAllBinaries_RequireRestart_Title"), MessageBoxButton.YesNo) == MessageBoxResult.No)
             {
                 return;
             }
@@ -60,7 +60,7 @@ namespace AutoMuteUs_Portable
 
             RMRF(Settings.GetUserVar("EnvPath"));
 
-            MessageBox.Show("After you close this window, application will close.\nPlease start the application manually.", "RESTART CAUTION", MessageBoxButton.OK);
+            MessageBox.Show(LocalizationProvider.GetLocalizedValue<string>("ResetWindow_RestartCaution_Text"), LocalizationProvider.GetLocalizedValue<string>("ResetWindow_RestartCaution_Title"), MessageBoxButton.OK);
             RestartApplication = true;
         }
 

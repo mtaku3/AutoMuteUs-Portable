@@ -52,7 +52,7 @@ namespace AutoMuteUs_Portable
 
             if (!Directory.Exists(Settings.GetUserVar("EnvPath")))
             {
-                MessageBox.Show("EnvPath is required to set properly.");
+                MessageBox.Show(LocalizationProvider.GetLocalizedValue<string>("ChooseEnvPathWindow_EnvPath_RequiredToFill"));
                 return;
             }
 
