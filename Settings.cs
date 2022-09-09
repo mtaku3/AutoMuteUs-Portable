@@ -383,8 +383,16 @@ namespace AutoMuteUs_Portable
             logger.Info(LocalizationProvider.GetLocalizedValue<string>("MainLogger_Automuteus_StartDownload"));
             using (WebClient client = new WebClient())
             {
-                var path = Path.Combine(envPath, "automuteus.exe");
+                var path = Path.Combine(envPath, Path.GetFileName(VersionList["automuteus"][GetUserVar("AUTOMUTEUS_TAG")]));
                 client.DownloadFile(VersionList["automuteus"][GetUserVar("AUTOMUTEUS_TAG")], path);
+                if (Path.GetExtension(path) == ".zip")
+                {
+                    using (ZipFile zipFile = ZipFile.Read(path))
+                    {
+                        path = envPath;
+                        zipFile.ExtractAll(path, ExtractExistingFileAction.OverwriteSilently);
+                    };
+                }
                 logger.Info(LocalizationProvider.GetLocalizedValue<string>("MainLogger_Automuteus_Loaded"));
             }
         }
