@@ -1,6 +1,8 @@
 {
-  "theGreatSchism": "https://github.com/AutoMuteUs-Portable/galactus/releases/download/theGreatSchism/galactus.exe",
-  "v7-test": "https://github.com/AutoMuteUs-Portable/galactus/releases/download/v7-test/galactus.exe",
+  "3.1.0": "https://github.com/AutoMuteUs-Portable/galactus/releases/download/3.1.0/galactus.exe",
+  "3.0.0": "https://github.com/AutoMuteUs-Portable/galactus/releases/download/3.0.0/galactus.exe",
+  "2.4.3": "https://github.com/AutoMuteUs-Portable/galactus/releases/download/2.4.3/galactus.exe",
+  "2.4.2": "https://github.com/AutoMuteUs-Portable/galactus/releases/download/2.4.2/galactus.exe",
   "2.4.1": "https://github.com/AutoMuteUs-Portable/galactus/releases/download/2.4.1/galactus.exe",
   "2.4.0": "https://github.com/AutoMuteUs-Portable/galactus/releases/download/2.4.0/galactus.exe",
   "2.3.1": "https://github.com/AutoMuteUs-Portable/galactus/releases/download/2.3.1/galactus.exe",
@@ -28,5 +30,7 @@
   "v0.1.1": "https://github.com/AutoMuteUs-Portable/galactus/releases/download/v0.1.1/galactus.exe",
   "0.0.4": "https://github.com/AutoMuteUs-Portable/galactus/releases/download/0.0.4/galactus.exe",
   "v0.0.3": "https://github.com/AutoMuteUs-Portable/galactus/releases/download/v0.0.3/galactus.exe",
-  "v0.0.1": "https://github.com/AutoMuteUs-Portable/galactus/releases/download/v0.0.1/galactus.exe"
+  "v0.0.1": "https://github.com/AutoMuteUs-Portable/galactus/releases/download/v0.0.1/galactus.exe",
+  "theGreatSchism": "https://github.com/AutoMuteUs-Portable/galactus/releases/download/theGreatSchism/galactus.exe",
+  "v7-test": "https://github.com/AutoMuteUs-Portable/galactus/releases/download/v7-test/galactus.exe"
 }
