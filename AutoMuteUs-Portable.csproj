@@ -67,4 +67,6 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ProjectExtensions><VisualStudio><UserProperties v6_1diffenvs_1json__JsonSchema="https://docs.gradle.com/enterprise/admin/schema/gradle-enterprise-config-schema-5.json" /></VisualStudio></ProjectExtensions>
+
 </Project>

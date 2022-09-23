@@ -133,7 +133,11 @@ namespace AutoMuteUs_Portable
                 "WORKER_BOT_TOKENS",
                 "CAPTURE_TIMEOUT",
                 "AUTOMUTEUS_LISTENING",
-                "DISCORD_BOT_TOKEN_2"
+                "DISCORD_BOT_TOKEN_2",
+                "BASE_MAP_URL",
+                "AUTOMUTEUS_GLOBAL_PREFIX",
+                "SLASH_COMMAND_GUILD_IDS",
+                "STOP_GRACE_PERIOD"
             };
 
             if (EmptyAllowed.Contains(Key))
