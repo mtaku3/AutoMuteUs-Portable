@@ -1,10 +1,14 @@
-👉 <a href="https://github.com/mtaku3/AutoMuteUs-Portable/blob/main/README_ja.md">日本語</a>
+👉 <a href="https://github.com/mtaku3/AutoMuteUs-Portable/blob/old/README_ja.md">日本語</a>
 
 # Portable AutoMuteUs For Windows
 
 ![GitHub all releases](https://img.shields.io/github/downloads/mtaku3/AutoMuteUs-Portable/total?label=Total%20Downloads)
 ![GitHub release (latest by SemVer including pre-releases)](https://img.shields.io/github/downloads-pre/mtaku3/AutoMuteUs-Portable/latest/total?label=Latest%20Downloads&sort=semver)
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/mtaku3/AutoMuteUs-Portable/releaser-v1)
+
+## Important Notice
+
+AutoMuteUs Portable is now planning to have a major update from v3 to v4. This update contains a huge architecture change so that AutoMuteUs Portable below v3.1.0 will not work since the upcoming release of v4.
 
 ## What is this?
 
@@ -61,11 +65,11 @@ If there's some trouble, try RESET Feature 👍
 
 Required binaries will be downloaded from release of repositories below 👇
 
-- automuteus.exe : https://github.com/AutoMuteUs-Portable/automuteus/releases
-- galactus.exe : https://github.com/AutoMuteUs-Portable/galactus/releases
-- wingman.exe : https://github.com/AutoMuteUs-Portable/wingman
-- postgres.zip : https://github.com/AutoMuteUs-Portable/postgres/releases
-- redis.zip : https://github.com/AutoMuteUs-Portable/redis/releases
+- automuteus.exe : https://github.com/AutoMuteUs-Portable/old.automuteus/releases
+- galactus.exe : https://github.com/AutoMuteUs-Portable/old.galactus/releases
+- wingman.exe : https://github.com/AutoMuteUs-Portable/old.wingman/releases
+- postgres.zip : https://github.com/AutoMuteUs-Portable/old.postgres/releases
+- redis.zip : https://github.com/AutoMuteUs-Portable/old.redis/releases
 
 postgres.zip and redis.zip will be extracted after loaded binaries.
 

@@ -409,7 +409,7 @@ namespace AutoMuteUs_Portable
             using (WebClient client = new WebClient())
             {
                 var path = Path.Combine(envPath, "redis.zip");
-                client.DownloadFile("https://github.com/AutoMuteUs-Portable/redis/releases/download/5.0.10/redis.zip", path);
+                client.DownloadFile("https://github.com/AutoMuteUs-Portable/old.redis/releases/download/5.0.10/redis.zip", path);
                 using (ZipFile zipFile = ZipFile.Read(path))
                 {
                     path = envPath;
@@ -427,7 +427,7 @@ namespace AutoMuteUs_Portable
             using (WebClient client = new WebClient())
             {
                 var path = Path.Combine(envPath, "postgres.zip");
-                client.DownloadFile("https://github.com/AutoMuteUs-Portable/postgres/releases/download/12.6/postgres.zip", path);
+                client.DownloadFile("https://github.com/AutoMuteUs-Portable/old.postgres/releases/download/12.6/postgres.zip", path);
                 using (ZipFile zipFile = ZipFile.Read(path))
                 {
                     path = envPath;

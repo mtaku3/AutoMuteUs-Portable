@@ -4,6 +4,10 @@
 ![GitHub release (latest by SemVer including pre-releases)](https://img.shields.io/github/downloads-pre/mtaku3/AutoMuteUs-Portable/latest/total?label=%E6%9C%80%E6%96%B0%E7%89%88%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89%E6%95%B0&sort=semver)
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/mtaku3/AutoMuteUs-Portable/releaser-v2?label=%E3%83%93%E3%83%AB%E3%83%89)
 
+## 重要なお知らせ
+
+AutoMuteUs Portable は v3 から v4 のメジャーアップデートを計画しています。このアップデートではアーキテクチャの大幅な変更があるため v4 のアップデートと同時に v3.1.0 以前のバージョンは動作しなくなります。v3.1.0 以前のバージョンをご利用の方はお早めに v3.1.0 以降にアップデートするようお願いいたします。
+
 ## 概要
 
 これは[AutoMuteUs(セルフホスト)](https://github.com/automuteus)のポータブル版です。 そのためインストールは不要です。
@@ -68,11 +72,11 @@ note に図解付き徹底解説作成しました！[こちら](https://note.co
 
 必要なファイルは以下のレポジトリからダウンロードされます。 👇
 
-- automuteus.exe : https://github.com/AutoMuteUs-Portable/automuteus/releases
-- galactus.exe : https://github.com/AutoMuteUs-Portable/galactus/releases
-- wingman.exe : https://github.com/AutoMuteUs-Portable/wingman
-- postgres.zip : https://github.com/AutoMuteUs-Portable/postgres/releases
-- redis.zip : https://github.com/AutoMuteUs-Portable/redis/releases
+- automuteus.exe : https://github.com/AutoMuteUs-Portable/old.automuteus/releases
+- galactus.exe : https://github.com/AutoMuteUs-Portable/old.galactus/releases
+- wingman.exe : https://github.com/AutoMuteUs-Portable/old.wingman/releases
+- postgres.zip : https://github.com/AutoMuteUs-Portable/old.postgres/releases
+- redis.zip : https://github.com/AutoMuteUs-Portable/old.redis/releases
 
 postgres.zip と redis.zip はダウンロード後解凍されます。
 

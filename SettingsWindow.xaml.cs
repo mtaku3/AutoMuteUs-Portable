@@ -351,7 +351,7 @@ namespace AutoMuteUs_Portable
                     client.Headers.Add("accept", "application/json");
                     client.Headers.Add("User-Agent", "request");
 
-                    string downloadedString = client.DownloadString("https://api.github.com/repos/mtaku3/AutoMuteUs-Portable/contents/rvc.json");
+                    string downloadedString = client.DownloadString("https://api.github.com/repos/mtaku3/AutoMuteUs-Portable/contents/rvc.json?ref=old");
                     rvc_hash = (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(downloadedString);
                     logger.Debug(downloadedString);
                 }
