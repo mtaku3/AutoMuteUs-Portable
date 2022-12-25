@@ -1,8 +1,7 @@
 ﻿using ReactiveUI;
 
-namespace AutoMuteUs_Portable.UI.Main.ViewModels
+namespace AutoMuteUs_Portable.UI.Main.ViewModels;
+
+public class ViewModelBase : ReactiveObject
 {
-    public class ViewModelBase : ReactiveObject
-    {
-    }
 }

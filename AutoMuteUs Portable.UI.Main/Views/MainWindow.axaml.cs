@@ -1,12 +1,11 @@
 using Avalonia.Controls;
 
-namespace AutoMuteUs_Portable.UI.Main.Views
+namespace AutoMuteUs_Portable.UI.Main.Views;
+
+public partial class MainWindow : Window
 {
-    public partial class MainWindow : Window
+    public MainWindow()
     {
-        public MainWindow()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

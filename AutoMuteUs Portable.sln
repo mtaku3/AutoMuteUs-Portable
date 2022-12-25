@@ -5,7 +5,13 @@ VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoMuteUs Portable.UI.Main", "AutoMuteUs Portable.UI.Main\AutoMuteUs Portable.UI.Main.csproj", "{A8517789-62E5-42AB-BE1C-25EA6DFE1AC3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoMuteUs Portable", "AutoMuteUs Portable\AutoMuteUs Portable.csproj", "{4F3DFD2B-D2FC-4F62-B984-6FDCA2E6DC09}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoMuteUs Portable", "AutoMuteUs Portable\AutoMuteUs Portable.csproj", "{4F3DFD2B-D2FC-4F62-B984-6FDCA2E6DC09}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoMuteUs Portable.Core", "AutoMuteUs Portable.Core\AutoMuteUs Portable.Core.csproj", "{07D055D1-0FAB-4301-9462-609834C90CD7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoMuteUs Portable.Shared", "AutoMuteUs Portable.Shared\AutoMuteUs Portable.Shared.csproj", "{2878BC44-4393-4A70-A2D2-89B35977E820}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoMuteUs Portable.PocketBaseClient", "AutoMuteUs Portable.PocketBaseClient\AutoMuteUs Portable.PocketBaseClient.csproj", "{A1196DFE-76FD-4B9F-BA0F-837387DBC1FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +27,18 @@ Global
 		{4F3DFD2B-D2FC-4F62-B984-6FDCA2E6DC09}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F3DFD2B-D2FC-4F62-B984-6FDCA2E6DC09}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F3DFD2B-D2FC-4F62-B984-6FDCA2E6DC09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07D055D1-0FAB-4301-9462-609834C90CD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07D055D1-0FAB-4301-9462-609834C90CD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07D055D1-0FAB-4301-9462-609834C90CD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07D055D1-0FAB-4301-9462-609834C90CD7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2878BC44-4393-4A70-A2D2-89B35977E820}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2878BC44-4393-4A70-A2D2-89B35977E820}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2878BC44-4393-4A70-A2D2-89B35977E820}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2878BC44-4393-4A70-A2D2-89B35977E820}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1196DFE-76FD-4B9F-BA0F-837387DBC1FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1196DFE-76FD-4B9F-BA0F-837387DBC1FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1196DFE-76FD-4B9F-BA0F-837387DBC1FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1196DFE-76FD-4B9F-BA0F-837387DBC1FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

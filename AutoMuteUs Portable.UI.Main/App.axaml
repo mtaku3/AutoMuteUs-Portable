@@ -3,10 +3,10 @@
              xmlns:local="using:AutoMuteUs_Portable.UI.Main"
              x:Class="AutoMuteUs_Portable.UI.Main.App">
     <Application.DataTemplates>
-        <local:ViewLocator/>
+        <local:ViewLocator />
     </Application.DataTemplates>
 
     <Application.Styles>
-        <FluentTheme Mode="Light"/>
+        <FluentTheme Mode="Light" />
     </Application.Styles>
 </Application>
