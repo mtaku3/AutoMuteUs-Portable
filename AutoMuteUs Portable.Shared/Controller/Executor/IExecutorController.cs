@@ -1,4 +1,7 @@
-﻿namespace AutoMuteUs_Portable.Shared.Controller.Executor;
+﻿using System.Reactive.Subjects;
+using AutoMuteUs_Portable.Shared.Entity.ProgressInfo;
+
+namespace AutoMuteUs_Portable.Shared.Controller.Executor;
 
 public interface IExecutorController
 {
@@ -7,8 +10,8 @@ public interface IExecutorController
     public void Run();
     public void Stop();
     public void Restart();
-    public Task Install(Dictionary<string, string> parameters);
-    public Task Update(Dictionary<string, string> parameters);
-    public Task InstallBySimpleSettings(dynamic simpleSettings, dynamic executorConfigurationBase);
-    public Task UpdateBySimpleSettings(dynamic simpleSettings, dynamic executorConfigurationBase);
+    public Task Install(Dictionary<string, string> parameters, ISubject<ProgressInfo> progress);
+    public Task Update(Dictionary<string, string> parameters, ISubject<ProgressInfo> progress);
+    public Task InstallBySimpleSettings(dynamic simpleSettings, dynamic executorConfigurationBase, ISubject<ProgressInfo> progress);
+    public Task UpdateBySimpleSettings(dynamic simpleSettings, dynamic executorConfigurationBase, ISubject<ProgressInfo> progress);
 }
