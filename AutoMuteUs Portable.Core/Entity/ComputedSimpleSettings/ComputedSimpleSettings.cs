@@ -1,22 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMuteUs_Portable.Core.Entity.SimpleSettingsNS;
+﻿using AutoMuteUs_Portable.Core.Entity.SimpleSettingsNS;
 
-namespace AutoMuteUs_Portable.Core.Entity.ComputedSimpleSettingsNS
+namespace AutoMuteUs_Portable.Core.Entity.ComputedSimpleSettingsNS;
+
+public class ComputedSimpleSettings : SimpleSettings
 {
-    public class ComputedSimpleSettings : SimpleSettings
-    {
-        public Port port { get; set; }
-    }
+    public Port port { get; set; }
+}
 
-    public class Port
-    {
-        public int automuteus { get; set; }
-        public int galactus { get; set; }
-        public int postgresql { get; set; }
-        public int redis { get; set; }
-    }
+public class Port
+{
+    public int automuteus { get; set; }
+    public int galactus { get; set; }
+    public int postgresql { get; set; }
+    public int redis { get; set; }
 }

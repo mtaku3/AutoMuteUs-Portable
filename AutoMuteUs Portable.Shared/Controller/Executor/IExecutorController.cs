@@ -12,6 +12,10 @@ public interface IExecutorController
     public void Restart();
     public Task Install(Dictionary<string, string> parameters, ISubject<ProgressInfo> progress);
     public Task Update(Dictionary<string, string> parameters, ISubject<ProgressInfo> progress);
-    public Task InstallBySimpleSettings(dynamic simpleSettings, dynamic executorConfigurationBase, ISubject<ProgressInfo> progress);
-    public Task UpdateBySimpleSettings(dynamic simpleSettings, dynamic executorConfigurationBase, ISubject<ProgressInfo> progress);
+
+    public Task InstallBySimpleSettings(dynamic simpleSettings, dynamic executorConfigurationBase,
+        ISubject<ProgressInfo> progress);
+
+    public Task UpdateBySimpleSettings(dynamic simpleSettings, dynamic executorConfigurationBase,
+        ISubject<ProgressInfo> progress);
 }

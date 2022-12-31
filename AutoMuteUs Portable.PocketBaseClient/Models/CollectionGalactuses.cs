@@ -33,12 +33,12 @@ public class CollectionGalactuses : CollectionBase<Galactus>
     /// <summary> Query data at PocketBase, defining a Filter over collection 'galactuses' </summary>
     public CollectionQuery<CollectionGalactuses, Galactus> Filter(string filterString)
     {
-        return new(this, FilterQuery.Create(filterString));
+        return new CollectionQuery<CollectionGalactuses, Galactus>(this, FilterQuery.Create(filterString));
     }
 
     /// <summary> Query data at PocketBase, defining a Filter over collection 'galactuses' </summary>
     public CollectionQuery<CollectionGalactuses, Galactus> Filter(Func<Galactus.Filters, FilterQuery> filter)
     {
-        return new(this, filter(new Galactus.Filters()));
+        return new CollectionQuery<CollectionGalactuses, Galactus>(this, filter(new Galactus.Filters()));
     }
 }

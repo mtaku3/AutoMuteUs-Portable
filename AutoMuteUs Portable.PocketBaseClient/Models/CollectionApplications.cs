@@ -33,12 +33,12 @@ public class CollectionApplications : CollectionBase<Application>
     /// <summary> Query data at PocketBase, defining a Filter over collection 'applications' </summary>
     public CollectionQuery<CollectionApplications, Application> Filter(string filterString)
     {
-        return new(this, FilterQuery.Create(filterString));
+        return new CollectionQuery<CollectionApplications, Application>(this, FilterQuery.Create(filterString));
     }
 
     /// <summary> Query data at PocketBase, defining a Filter over collection 'applications' </summary>
     public CollectionQuery<CollectionApplications, Application> Filter(Func<Application.Filters, FilterQuery> filter)
     {
-        return new(this, filter(new Application.Filters()));
+        return new CollectionQuery<CollectionApplications, Application>(this, filter(new Application.Filters()));
     }
 }

@@ -33,12 +33,12 @@ public class CollectionPostgresqls : CollectionBase<Postgresql>
     /// <summary> Query data at PocketBase, defining a Filter over collection 'postgresqls' </summary>
     public CollectionQuery<CollectionPostgresqls, Postgresql> Filter(string filterString)
     {
-        return new(this, FilterQuery.Create(filterString));
+        return new CollectionQuery<CollectionPostgresqls, Postgresql>(this, FilterQuery.Create(filterString));
     }
 
     /// <summary> Query data at PocketBase, defining a Filter over collection 'postgresqls' </summary>
     public CollectionQuery<CollectionPostgresqls, Postgresql> Filter(Func<Postgresql.Filters, FilterQuery> filter)
     {
-        return new(this, filter(new Postgresql.Filters()));
+        return new CollectionQuery<CollectionPostgresqls, Postgresql>(this, filter(new Postgresql.Filters()));
     }
 }

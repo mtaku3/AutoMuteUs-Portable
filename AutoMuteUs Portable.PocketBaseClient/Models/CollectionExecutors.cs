@@ -33,12 +33,12 @@ public class CollectionExecutors : CollectionBase<Executor>
     /// <summary> Query data at PocketBase, defining a Filter over collection 'executors' </summary>
     public CollectionQuery<CollectionExecutors, Executor> Filter(string filterString)
     {
-        return new(this, FilterQuery.Create(filterString));
+        return new CollectionQuery<CollectionExecutors, Executor>(this, FilterQuery.Create(filterString));
     }
 
     /// <summary> Query data at PocketBase, defining a Filter over collection 'executors' </summary>
     public CollectionQuery<CollectionExecutors, Executor> Filter(Func<Executor.Filters, FilterQuery> filter)
     {
-        return new(this, filter(new Executor.Filters()));
+        return new CollectionQuery<CollectionExecutors, Executor>(this, filter(new Executor.Filters()));
     }
 }

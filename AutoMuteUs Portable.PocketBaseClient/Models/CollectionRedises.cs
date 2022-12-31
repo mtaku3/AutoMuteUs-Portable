@@ -33,12 +33,12 @@ public class CollectionRedises : CollectionBase<Redis>
     /// <summary> Query data at PocketBase, defining a Filter over collection 'redises' </summary>
     public CollectionQuery<CollectionRedises, Redis> Filter(string filterString)
     {
-        return new(this, FilterQuery.Create(filterString));
+        return new CollectionQuery<CollectionRedises, Redis>(this, FilterQuery.Create(filterString));
     }
 
     /// <summary> Query data at PocketBase, defining a Filter over collection 'redises' </summary>
     public CollectionQuery<CollectionRedises, Redis> Filter(Func<Redis.Filters, FilterQuery> filter)
     {
-        return new(this, filter(new Redis.Filters()));
+        return new CollectionQuery<CollectionRedises, Redis>(this, filter(new Redis.Filters()));
     }
 }

@@ -33,12 +33,12 @@ public class CollectionAutomuteuses : CollectionBase<Automuteus>
     /// <summary> Query data at PocketBase, defining a Filter over collection 'automuteuses' </summary>
     public CollectionQuery<CollectionAutomuteuses, Automuteus> Filter(string filterString)
     {
-        return new(this, FilterQuery.Create(filterString));
+        return new CollectionQuery<CollectionAutomuteuses, Automuteus>(this, FilterQuery.Create(filterString));
     }
 
     /// <summary> Query data at PocketBase, defining a Filter over collection 'automuteuses' </summary>
     public CollectionQuery<CollectionAutomuteuses, Automuteus> Filter(Func<Automuteus.Filters, FilterQuery> filter)
     {
-        return new(this, filter(new Automuteus.Filters()));
+        return new CollectionQuery<CollectionAutomuteuses, Automuteus>(this, filter(new Automuteus.Filters()));
     }
 }
