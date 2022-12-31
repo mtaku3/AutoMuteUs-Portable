@@ -18,10 +18,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Update="Utility\ZipFileProgressExtensions\SR.resx">
+		<EmbeddedResource Update="Utility\Dotnet\Common\SR.resx">
 			<UseVocaDbResManager>false</UseVocaDbResManager>
 			<GenerateResource>false</GenerateResource>
-			<CustomToolNamespace>AutoMuteUs_Portable.Shared.Utility.ZipFileProgressExtensionsNS</CustomToolNamespace>
+			<CustomToolNamespace>AutoMuteUs_Portable.Shared.Utility.Dotnet.Common</CustomToolNamespace>
 			<PartialClass>true</PartialClass>
 		</EmbeddedResource>
 	</ItemGroup>

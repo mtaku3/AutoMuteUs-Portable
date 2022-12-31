@@ -24,8 +24,9 @@
 //SOFTWARE.
 
 using System.IO.Compression;
+using AutoMuteUs_Portable.Shared.Utility.Dotnet.Common;
 
-namespace AutoMuteUs_Portable.Shared.Utility.ZipFileProgressExtensionsNS;
+namespace AutoMuteUs_Portable.Shared.Utility.Dotnet.ZipFileProgressExtensionsNS;
 
 public static class ZipFileProgressExtensions
 {
@@ -73,7 +74,7 @@ public static class ZipFileProgressExtensions
     /// </param>
     public static void ExtractToFile(this ZipArchiveEntry source, string destinationFileName)
     {
-        ExtractToFile(source, destinationFileName, false);
+        source.ExtractToFile(destinationFileName, false);
     }
 
     /// <summary>
@@ -156,7 +157,7 @@ public static class ZipFileProgressExtensions
 
     internal static void ExtractRelativeToDirectory(this ZipArchiveEntry source, string destinationDirectoryName)
     {
-        ExtractRelativeToDirectory(source, destinationDirectoryName, false);
+        source.ExtractRelativeToDirectory(destinationDirectoryName, false);
     }
 
     internal static void ExtractRelativeToDirectory(this ZipArchiveEntry source, string destinationDirectoryName,
@@ -256,7 +257,7 @@ public static class ZipFileProgressExtensions
     public static ZipArchiveEntry CreateEntryFromFile(this ZipArchive destination, string sourceFileName,
         string entryName)
     {
-        return DoCreateEntryFromFile(destination, sourceFileName, entryName, null);
+        return destination.DoCreateEntryFromFile(sourceFileName, entryName, null);
     }
 
 
@@ -313,7 +314,7 @@ public static class ZipFileProgressExtensions
     public static ZipArchiveEntry CreateEntryFromFile(this ZipArchive destination,
         string sourceFileName, string entryName, CompressionLevel compressionLevel)
     {
-        return DoCreateEntryFromFile(destination, sourceFileName, entryName, compressionLevel);
+        return destination.DoCreateEntryFromFile(sourceFileName, entryName, compressionLevel);
     }
 
     internal static ZipArchiveEntry DoCreateEntryFromFile(this ZipArchive destination,
@@ -407,7 +408,7 @@ public static class ZipFileProgressExtensions
     public static void ExtractToDirectory(this ZipArchive source, string destinationDirectoryName,
         IProgress<float>? progress = null)
     {
-        ExtractToDirectory(source, destinationDirectoryName, false, progress);
+        source.ExtractToDirectory(destinationDirectoryName, false, progress);
     }
 
     /// <summary>

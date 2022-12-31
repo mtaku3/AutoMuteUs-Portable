@@ -25,7 +25,7 @@
 
 using System.Resources;
 
-namespace AutoMuteUs_Portable.Shared.Utility.ZipFileProgressExtensionsNS;
+namespace AutoMuteUs_Portable.Shared.Utility.Dotnet.Common;
 
 internal static partial class SR
 {

@@ -23,7 +23,7 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //SOFTWARE.
 
-namespace AutoMuteUs_Portable.Shared.Utility.ZipFileProgressExtensionsNS;
+namespace AutoMuteUs_Portable.Shared.Utility.Dotnet.ZipFileProgressExtensionsNS;
 
 internal static class PathInternal
 {
