@@ -1,4 +1,4 @@
-// This file was generated automatically for the PocketBase Application AutoMuteUs Portable (http://localhost:8090)
+// This file was generated automatically for the PocketBase Application AutoMuteUs Portable (https://automuteus-portable.pockethost.io/)
 //    See CodeGenerationSummary.txt for more details
 //
 // PocketBaseClient-csharp project: https://github.com/iluvadev/PocketBaseClient-csharp
@@ -33,12 +33,12 @@ public class CollectionAutomuteuses : CollectionBase<Automuteus>
     /// <summary> Query data at PocketBase, defining a Filter over collection 'automuteuses' </summary>
     public CollectionQuery<CollectionAutomuteuses, Automuteus> Filter(string filterString)
     {
-        return new CollectionQuery<CollectionAutomuteuses, Automuteus>(this, FilterQuery.Create(filterString));
+        return new(this, FilterQuery.Create(filterString));
     }
 
     /// <summary> Query data at PocketBase, defining a Filter over collection 'automuteuses' </summary>
     public CollectionQuery<CollectionAutomuteuses, Automuteus> Filter(Func<Automuteus.Filters, FilterQuery> filter)
     {
-        return new CollectionQuery<CollectionAutomuteuses, Automuteus>(this, filter(new Automuteus.Filters()));
+        return new(this, filter(new Automuteus.Filters()));
     }
 }

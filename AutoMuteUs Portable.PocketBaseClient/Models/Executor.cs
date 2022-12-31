@@ -1,4 +1,4 @@
-// This file was generated automatically for the PocketBase Application AutoMuteUs Portable (http://localhost:8090)
+// This file was generated automatically for the PocketBase Application AutoMuteUs Portable (https://automuteus-portable.pockethost.io/)
 //    See CodeGenerationSummary.txt for more details
 //
 // PocketBaseClient-csharp project: https://github.com/iluvadev/PocketBaseClient-csharp
@@ -26,9 +26,8 @@ public partial class Executor : ItemBase
 
         if (itemBase is Executor item)
         {
-            Name = item.Name;
             Version = item.Version;
-            Sha256 = item.Sha256;
+            Hashes = item.Hashes;
             Type = item.Type;
             DownloadUrl = item.DownloadUrl;
         }
@@ -55,19 +54,6 @@ public partial class Executor : ItemBase
 
     #region Field Properties
 
-    private string? _Name;
-
-    /// <summary> Maps to 'name' field in PocketBase </summary>
-    [JsonPropertyName("name")]
-    [PocketBaseField("i4edf6ih", "name", true, false, true, "text")]
-    [Display(Name = "Name")]
-    [Required(ErrorMessage = @"name is required")]
-    public string? Name
-    {
-        get => Get(() => _Name);
-        set => Set(value, ref _Name);
-    }
-
     private string? _Version;
 
     /// <summary> Maps to 'version' field in PocketBase </summary>
@@ -81,18 +67,20 @@ public partial class Executor : ItemBase
         set => Set(value, ref _Version);
     }
 
-    private string? _Sha256;
+    private string? _Hashes;
 
-    /// <summary> Maps to 'sha256' field in PocketBase </summary>
-    [JsonPropertyName("sha256")]
-    [PocketBaseField("ml2kgn4z", "sha256", true, false, false, "text")]
-    [Display(Name = "Sha256")]
-    [Required(ErrorMessage = @"sha256 is required")]
-    [RegularExpression(@"^[A-Fa-f0-9]{64}$", ErrorMessage = @"Pattern '^[A-Fa-f0-9]{64}$' not match")]
-    public string? Sha256
+    /// <summary> Maps to 'hashes' field in PocketBase </summary>
+    [JsonPropertyName("hashes")]
+    [PocketBaseField("ml2kgn4z", "hashes", false, false, false, "text")]
+    [Display(Name = "Hashes")]
+    [RegularExpression(
+        @"^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$",
+        ErrorMessage =
+            @"Pattern '^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$' not match")]
+    public string? Hashes
     {
-        get => Get(() => _Sha256);
-        set => Set(value, ref _Sha256);
+        get => Get(() => _Hashes);
+        set => Set(value, ref _Hashes);
     }
 
     private TypeEnum? _Type;
@@ -113,9 +101,8 @@ public partial class Executor : ItemBase
 
     /// <summary> Maps to 'download_url' field in PocketBase </summary>
     [JsonPropertyName("download_url")]
-    [PocketBaseField("poisfsns", "download_url", true, false, false, "text")]
+    [PocketBaseField("poisfsns", "download_url", false, false, false, "text")]
     [Display(Name = "Download_url")]
-    [Required(ErrorMessage = @"download_url is required")]
     [RegularExpression(
         @"^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$",
         ErrorMessage =

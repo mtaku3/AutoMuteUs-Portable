@@ -1,4 +1,4 @@
-// This file was generated automatically for the PocketBase Application AutoMuteUs Portable (http://localhost:8090)
+// This file was generated automatically for the PocketBase Application AutoMuteUs Portable (https://automuteus-portable.pockethost.io/)
 //    See CodeGenerationSummary.txt for more details
 //
 // PocketBaseClient-csharp project: https://github.com/iluvadev/PocketBaseClient-csharp
@@ -17,7 +17,7 @@ public class AutoMuteUsPortableDataService : DataServiceBase
 {
     #region Constructor
 
-    public AutoMuteUsPortableDataService(global::PocketBaseClient.PocketBaseClientApplication app) : base(app)
+    public AutoMuteUsPortableDataService(PocketBaseClientApplication app) : base(app)
     {
         // Collections
         ExecutorsCollection = new CollectionExecutors(this);

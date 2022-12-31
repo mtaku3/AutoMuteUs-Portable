@@ -1,4 +1,4 @@
-// This file was generated automatically for the PocketBase Application AutoMuteUs Portable (http://localhost:8090)
+// This file was generated automatically for the PocketBase Application AutoMuteUs Portable (https://automuteus-portable.pockethost.io/)
 //    See CodeGenerationSummary.txt for more details
 //
 // PocketBaseClient-csharp project: https://github.com/iluvadev/PocketBaseClient-csharp
@@ -33,12 +33,12 @@ public class CollectionRedises : CollectionBase<Redis>
     /// <summary> Query data at PocketBase, defining a Filter over collection 'redises' </summary>
     public CollectionQuery<CollectionRedises, Redis> Filter(string filterString)
     {
-        return new CollectionQuery<CollectionRedises, Redis>(this, FilterQuery.Create(filterString));
+        return new(this, FilterQuery.Create(filterString));
     }
 
     /// <summary> Query data at PocketBase, defining a Filter over collection 'redises' </summary>
     public CollectionQuery<CollectionRedises, Redis> Filter(Func<Redis.Filters, FilterQuery> filter)
     {
-        return new CollectionQuery<CollectionRedises, Redis>(this, filter(new Redis.Filters()));
+        return new(this, filter(new Redis.Filters()));
     }
 }

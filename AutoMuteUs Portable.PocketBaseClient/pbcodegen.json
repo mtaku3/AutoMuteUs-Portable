@@ -3,35 +3,22 @@
   "Namespace": "AutoMuteUs_Portable.PocketBaseClient",
   "PocketBaseApplication": {
     "appName": "AutoMuteUs Portable",
-    "appUrl": "http://localhost:8090"
+    "appUrl": "https://automuteus-portable.pockethost.io/"
   },
   "SchemaDate": "2022-12-25T01:20:21.2589435Z",
   "Collections": [
     {
       "Id": "tle5m1crcgn0h3m",
       "Created": "2022/12/25 9:40:25",
-      "Updated": "2022/12/25 10:19:00",
+      "Updated": "2022/12/31 13:24:12",
       "Name": "executors",
       "System": false,
-      "ListRule": null,
-      "ViewRule": null,
+      "ListRule": "",
+      "ViewRule": "",
       "CreateRule": null,
       "UpdateRule": null,
       "DeleteRule": null,
       "Schema": [
-        {
-          "Id": "i4edf6ih",
-          "Name": "name",
-          "Type": "text",
-          "System": false,
-          "Required": true,
-          "Unique": true,
-          "Options": {
-            "min": null,
-            "max": null,
-            "pattern": ""
-          }
-        },
         {
           "Id": "hwcfmqju",
           "Name": "version",
@@ -47,15 +34,15 @@
         },
         {
           "Id": "ml2kgn4z",
-          "Name": "sha256",
+          "Name": "hashes",
           "Type": "text",
           "System": false,
-          "Required": true,
+          "Required": false,
           "Unique": false,
           "Options": {
             "min": null,
             "max": null,
-            "pattern": "^[A-Fa-f0-9]{64}$"
+            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
           }
         },
         {
@@ -80,7 +67,7 @@
           "Name": "download_url",
           "Type": "text",
           "System": false,
-          "Required": true,
+          "Required": false,
           "Unique": false,
           "Options": {
             "min": null,
@@ -93,28 +80,15 @@
     {
       "Id": "2idyhkswler3xuj",
       "Created": "2022/12/25 9:50:57",
-      "Updated": "2022/12/25 10:19:04",
+      "Updated": "2022/12/31 13:24:12",
       "Name": "automuteuses",
       "System": false,
-      "ListRule": null,
-      "ViewRule": null,
+      "ListRule": "",
+      "ViewRule": "",
       "CreateRule": null,
       "UpdateRule": null,
       "DeleteRule": null,
       "Schema": [
-        {
-          "Id": "oglzqpfd",
-          "Name": "name",
-          "Type": "text",
-          "System": false,
-          "Required": true,
-          "Unique": true,
-          "Options": {
-            "min": null,
-            "max": null,
-            "pattern": ""
-          }
-        },
         {
           "Id": "k2dchnle",
           "Name": "version",
@@ -130,15 +104,15 @@
         },
         {
           "Id": "ci5nlhl9",
-          "Name": "sha256",
+          "Name": "hashes",
           "Type": "text",
           "System": false,
-          "Required": true,
+          "Required": false,
           "Unique": false,
           "Options": {
             "min": null,
             "max": null,
-            "pattern": "^[A-Fa-f0-9]{64}$"
+            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
           }
         },
         {
@@ -146,7 +120,7 @@
           "Name": "download_url",
           "Type": "text",
           "System": false,
-          "Required": true,
+          "Required": false,
           "Unique": false,
           "Options": {
             "min": null,
@@ -159,7 +133,7 @@
           "Name": "compatibleExecutors",
           "Type": "relation",
           "System": false,
-          "Required": true,
+          "Required": false,
           "Unique": false,
           "Options": {
             "maxSelect": null,
@@ -172,28 +146,15 @@
     {
       "Id": "ki4t07iokc8f3eg",
       "Created": "2022/12/25 9:59:35",
-      "Updated": "2022/12/25 10:19:08",
+      "Updated": "2022/12/31 13:24:12",
       "Name": "galactuses",
       "System": false,
-      "ListRule": null,
-      "ViewRule": null,
+      "ListRule": "",
+      "ViewRule": "",
       "CreateRule": null,
       "UpdateRule": null,
       "DeleteRule": null,
       "Schema": [
-        {
-          "Id": "x1dzx952",
-          "Name": "name",
-          "Type": "text",
-          "System": false,
-          "Required": true,
-          "Unique": true,
-          "Options": {
-            "min": null,
-            "max": null,
-            "pattern": ""
-          }
-        },
         {
           "Id": "bqq3r23t",
           "Name": "version",
@@ -209,15 +170,15 @@
         },
         {
           "Id": "1yrej26q",
-          "Name": "sha256",
+          "Name": "hashes",
           "Type": "text",
           "System": false,
-          "Required": true,
+          "Required": false,
           "Unique": false,
           "Options": {
             "min": null,
             "max": null,
-            "pattern": "^[A-Fa-f0-9]{64}$"
+            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
           }
         },
         {
@@ -225,7 +186,7 @@
           "Name": "download_url",
           "Type": "text",
           "System": false,
-          "Required": true,
+          "Required": false,
           "Unique": false,
           "Options": {
             "min": null,
@@ -238,7 +199,7 @@
           "Name": "compatibleExecutors",
           "Type": "relation",
           "System": false,
-          "Required": true,
+          "Required": false,
           "Unique": false,
           "Options": {
             "maxSelect": null,
@@ -251,28 +212,15 @@
     {
       "Id": "a7yc5nczru892st",
       "Created": "2022/12/25 9:59:35",
-      "Updated": "2022/12/25 10:19:12",
+      "Updated": "2022/12/31 13:24:12",
       "Name": "postgresqls",
       "System": false,
-      "ListRule": null,
-      "ViewRule": null,
+      "ListRule": "",
+      "ViewRule": "",
       "CreateRule": null,
       "UpdateRule": null,
       "DeleteRule": null,
       "Schema": [
-        {
-          "Id": "hp327ej4",
-          "Name": "name",
-          "Type": "text",
-          "System": false,
-          "Required": true,
-          "Unique": true,
-          "Options": {
-            "min": null,
-            "max": null,
-            "pattern": ""
-          }
-        },
         {
           "Id": "zrg75eu6",
           "Name": "version",
@@ -288,15 +236,15 @@
         },
         {
           "Id": "2x73jgyu",
-          "Name": "sha256",
+          "Name": "hashes",
           "Type": "text",
           "System": false,
-          "Required": true,
+          "Required": false,
           "Unique": false,
           "Options": {
             "min": null,
             "max": null,
-            "pattern": "^[A-Fa-f0-9]{64}$"
+            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
           }
         },
         {
@@ -304,7 +252,7 @@
           "Name": "download_url",
           "Type": "text",
           "System": false,
-          "Required": true,
+          "Required": false,
           "Unique": false,
           "Options": {
             "min": null,
@@ -317,7 +265,7 @@
           "Name": "compatibleExecutors",
           "Type": "relation",
           "System": false,
-          "Required": true,
+          "Required": false,
           "Unique": false,
           "Options": {
             "maxSelect": null,
@@ -330,28 +278,15 @@
     {
       "Id": "jmpts7of6rutxjn",
       "Created": "2022/12/25 9:59:35",
-      "Updated": "2022/12/25 10:19:16",
+      "Updated": "2022/12/31 13:24:12",
       "Name": "redises",
       "System": false,
-      "ListRule": null,
-      "ViewRule": null,
+      "ListRule": "",
+      "ViewRule": "",
       "CreateRule": null,
       "UpdateRule": null,
       "DeleteRule": null,
       "Schema": [
-        {
-          "Id": "1gp9b14a",
-          "Name": "name",
-          "Type": "text",
-          "System": false,
-          "Required": true,
-          "Unique": true,
-          "Options": {
-            "min": null,
-            "max": null,
-            "pattern": ""
-          }
-        },
         {
           "Id": "0l1cd4pm",
           "Name": "version",
@@ -367,15 +302,15 @@
         },
         {
           "Id": "0mzkpso2",
-          "Name": "sha256",
+          "Name": "hashes",
           "Type": "text",
           "System": false,
-          "Required": true,
+          "Required": false,
           "Unique": false,
           "Options": {
             "min": null,
             "max": null,
-            "pattern": "^[A-Fa-f0-9]{64}$"
+            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
           }
         },
         {
@@ -383,7 +318,7 @@
           "Name": "download_url",
           "Type": "text",
           "System": false,
-          "Required": true,
+          "Required": false,
           "Unique": false,
           "Options": {
             "min": null,
@@ -396,7 +331,7 @@
           "Name": "compatibleExecutors",
           "Type": "relation",
           "System": false,
-          "Required": true,
+          "Required": false,
           "Unique": false,
           "Options": {
             "maxSelect": null,
@@ -409,28 +344,15 @@
     {
       "Id": "ow8gm5ihysg7ljx",
       "Created": "2022/12/25 10:01:00",
-      "Updated": "2022/12/25 10:19:20",
+      "Updated": "2022/12/31 13:24:12",
       "Name": "appUpdators",
       "System": false,
-      "ListRule": null,
-      "ViewRule": null,
+      "ListRule": "",
+      "ViewRule": "",
       "CreateRule": null,
       "UpdateRule": null,
       "DeleteRule": null,
       "Schema": [
-        {
-          "Id": "gfqjxe5s",
-          "Name": "name",
-          "Type": "text",
-          "System": false,
-          "Required": true,
-          "Unique": true,
-          "Options": {
-            "min": null,
-            "max": null,
-            "pattern": ""
-          }
-        },
         {
           "Id": "svgrplz4",
           "Name": "version",
@@ -446,15 +368,15 @@
         },
         {
           "Id": "zgrcclyr",
-          "Name": "sha256",
+          "Name": "hashes",
           "Type": "text",
           "System": false,
-          "Required": true,
+          "Required": false,
           "Unique": false,
           "Options": {
             "min": null,
             "max": null,
-            "pattern": "^[A-Fa-f0-9]{64}$"
+            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
           }
         },
         {
@@ -462,7 +384,7 @@
           "Name": "download_url",
           "Type": "text",
           "System": false,
-          "Required": true,
+          "Required": false,
           "Unique": false,
           "Options": {
             "min": null,
@@ -475,28 +397,15 @@
     {
       "Id": "76t87z4iku0886q",
       "Created": "2022/12/25 10:03:33",
-      "Updated": "2022/12/25 10:19:23",
+      "Updated": "2022/12/31 13:24:12",
       "Name": "applications",
       "System": false,
-      "ListRule": null,
-      "ViewRule": null,
+      "ListRule": "",
+      "ViewRule": "",
       "CreateRule": null,
       "UpdateRule": null,
       "DeleteRule": null,
       "Schema": [
-        {
-          "Id": "vofsjb0u",
-          "Name": "name",
-          "Type": "text",
-          "System": false,
-          "Required": true,
-          "Unique": true,
-          "Options": {
-            "min": null,
-            "max": null,
-            "pattern": ""
-          }
-        },
         {
           "Id": "gaodbfln",
           "Name": "version",
@@ -512,15 +421,15 @@
         },
         {
           "Id": "zrrbclvi",
-          "Name": "sha256",
+          "Name": "hashes",
           "Type": "text",
           "System": false,
-          "Required": true,
+          "Required": false,
           "Unique": false,
           "Options": {
             "min": null,
             "max": null,
-            "pattern": "^[A-Fa-f0-9]{64}$"
+            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
           }
         },
         {
@@ -528,7 +437,7 @@
           "Name": "download_url",
           "Type": "text",
           "System": false,
-          "Required": true,
+          "Required": false,
           "Unique": false,
           "Options": {
             "min": null,
@@ -541,7 +450,7 @@
           "Name": "appUpdator",
           "Type": "relation",
           "System": false,
-          "Required": true,
+          "Required": false,
           "Unique": true,
           "Options": {
             "maxSelect": 1,
@@ -554,7 +463,7 @@
           "Name": "compatibleExecutors",
           "Type": "relation",
           "System": false,
-          "Required": true,
+          "Required": false,
           "Unique": false,
           "Options": {
             "maxSelect": null,
