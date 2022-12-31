@@ -7,9 +7,9 @@ public class ExecutorConfigurationBaseValidator : AbstractValidator<ExecutorConf
 {
     public ExecutorConfigurationBaseValidator()
     {
-        RuleFor(x => x.version).Must(Utils.ValidateSHA256);
+        RuleFor(x => x.version).NotEmpty();
         RuleFor(x => x.type).IsInEnum();
-        RuleFor(x => x.binaryVersion).Must(Utils.ValidateSHA256);
+        RuleFor(x => x.binaryVersion).NotEmpty();
         RuleFor(x => x.binaryDirectory).Must(x => Utils.ValidateDirectoryPath(x));
     }
 }
