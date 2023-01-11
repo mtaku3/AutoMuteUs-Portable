@@ -1,8 +1,8 @@
-﻿using AutoMuteUs_Portable.Shared.Entity.ExecutorConfigurationBaseNS;
+﻿using AutoMuteUs_Portable.Shared.Entity.ExecutorConfigurationSSNS;
 
 namespace AutoMuteUs_Portable.Core.Entity.SimpleSettingsBaseNS;
 
 public class SimpleSettingsBase
 {
-    public List<ExecutorConfigurationBase> executorConfigurations { get; set; }
+    public List<ExecutorConfigurationSS> executorConfigurations { get; set; }
 }

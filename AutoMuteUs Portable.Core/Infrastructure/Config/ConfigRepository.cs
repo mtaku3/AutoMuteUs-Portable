@@ -17,6 +17,11 @@ public class ConfigRepository : IConfigRepository
         var configs = JsonSerializer.Deserialize<List<Entity.ConfigNS.Config>>(text);
         if (configs == null) throw new SerializationException("Failed to deserialize config file as List<Config>");
 
+        foreach (var config in configs)
+            if (config.serverConfiguration.simpleSettings != null)
+                foreach (var executorConfiguration in config.serverConfiguration.simpleSettings.executorConfigurations)
+                    executorConfiguration._installedDirectory = config.installedDirectory;
+
         var validator = new ListValidator<Entity.ConfigNS.Config>(new ConfigValidator());
         validator.ValidateAndThrow(configs);
 
