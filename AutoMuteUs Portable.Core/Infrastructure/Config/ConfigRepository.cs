@@ -14,7 +14,7 @@ public class ConfigRepository : IConfigRepository
     public void Load(string filePath)
     {
         var text = File.ReadAllText(filePath);
-        var configs = JsonSerializer.Deserialize<List<Entity.ConfigNS.Config>>(text);
+        var configs = JsonSerializer.Deserialize<List<Entity.ConfigNS.Config>>(text, Utils.CustomJsonSerializerOptions);
         if (configs == null) throw new SerializationException("Failed to deserialize config file as List<Config>");
 
         foreach (var config in configs)
