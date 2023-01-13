@@ -9,11 +9,12 @@ public static partial class Utils
         var lines = txt.Split("\n");
         var hashes = new Dictionary<string, string>();
         foreach (var line in lines)
-        {
-            var hash = line.Substring(0, 40);
-            var fileName = line.Substring(41);
-            hashes[fileName] = hash.ToLower();
-        }
+            if (40 < line.Length)
+            {
+                var hash = line.Substring(0, 40);
+                var fileName = line.Substring(41);
+                hashes[fileName] = hash.ToLower();
+            }
 
         return hashes;
     }
