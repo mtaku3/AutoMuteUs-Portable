@@ -22,12 +22,12 @@ public static partial class Utils
     public static List<string> CompareHashes(string root, Dictionary<string, string> hashes)
     {
         var ret = new List<string>();
-        _CompareHashes(root, root, hashes, ret);
+        _CompareHashes(root, root, hashes, ref ret);
         return ret;
     }
 
     private static void _CompareHashes(string root, string target, Dictionary<string, string> hashes,
-        List<string> ret)
+        ref List<string> ret)
     {
         var files = Directory.GetFiles(target);
         var directories = Directory.GetDirectories(target);
@@ -40,7 +40,7 @@ public static partial class Utils
         foreach (var path in values)
             if (File.GetAttributes(path).HasFlag(FileAttributes.Directory))
             {
-                _CompareHashes(root, path, hashes, ret);
+                _CompareHashes(root, path, hashes, ref ret);
             }
             else
             {
@@ -48,21 +48,20 @@ public static partial class Utils
                 var relPath = Path.GetRelativePath(root, path).Replace(@"\", "/");
 
                 if (!hashes.ContainsKey(relPath)) continue;
-                hashes.Remove(relPath);
 
                 var originalHash = hashes[relPath];
 
                 using (var sha256 = SHA256.Create())
-                using (var stream = fileInfo.Open(FileMode.Open))
+                using (var stream = fileInfo.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
-                    var hash = sha256.ComputeHash(stream).ToString()?.ToLower();
-
-                    if (originalHash != hash) ret.Append(relPath);
+                    var hash = BitConverter.ToString(sha256.ComputeHash(stream)).Replace("-", string.Empty).ToLower();
+                    if (originalHash != hash) ret.Add(relPath);
                 }
+
+                hashes.Remove(relPath);
             }
 
         if (root == target)
-            foreach (var key in hashes.Keys)
-                ret.Append(key);
+            ret.AddRange(hashes.Keys);
     }
 }
