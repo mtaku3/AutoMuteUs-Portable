@@ -6,13 +6,13 @@ public static partial class Utils
 {
     public static Dictionary<string, string> ParseHashesTxt(string txt)
     {
-        var lines = txt.Split("\n");
+        var lines = txt.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
         var hashes = new Dictionary<string, string>();
         foreach (var line in lines)
-            if (40 < line.Length)
+            if (64 < line.Length)
             {
-                var hash = line.Substring(0, 40);
-                var fileName = line.Substring(41);
+                var hash = line.Substring(0, 64);
+                var fileName = line.Substring(65);
                 hashes[fileName] = hash.ToLower();
             }
 
