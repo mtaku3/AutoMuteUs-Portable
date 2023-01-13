@@ -1,6 +1,6 @@
 ﻿namespace AutoMuteUs_Portable.Shared.Entity.ProgressInfo;
 
-public class ProgressInfo : ProgressInfo<float>
+public class ProgressInfo : ProgressInfo<double>
 {
 }
 
