@@ -1,0 +1,478 @@
+{
+  "ProjectName": "AutoMuteUsPortable.PocketBaseClient",
+  "Namespace": "AutoMuteUsPortable.PocketBaseClient",
+  "PocketBaseApplication": {
+    "appName": "AutoMuteUs Portable",
+    "appUrl": "https://automuteus-portable.pockethost.io"
+  },
+  "SchemaDate": "2023-01-13T08:19:57.5808598Z",
+  "SingularizeAndPluralize": false,
+  "Collections": [
+    {
+      "Id": "tle5m1crcgn0h3m",
+      "Created": "2022/12/25 9:40:25",
+      "Updated": "2023/01/13 16:55:37",
+      "Name": "executor",
+      "System": false,
+      "ListRule": "",
+      "ViewRule": "",
+      "CreateRule": null,
+      "UpdateRule": null,
+      "DeleteRule": null,
+      "Schema": [
+        {
+          "Id": "hwcfmqju",
+          "Name": "version",
+          "Type": "text",
+          "System": false,
+          "Required": true,
+          "Unique": true,
+          "Options": {
+            "min": null,
+            "max": null,
+            "pattern": ""
+          }
+        },
+        {
+          "Id": "ml2kgn4z",
+          "Name": "hashes",
+          "Type": "text",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "min": null,
+            "max": null,
+            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
+          }
+        },
+        {
+          "Id": "psgibu4y",
+          "Name": "type",
+          "Type": "select",
+          "System": false,
+          "Required": true,
+          "Unique": false,
+          "Options": {
+            "maxSelect": 1,
+            "values": [
+              "automuteus",
+              "galactus",
+              "postgresql",
+              "redis"
+            ]
+          }
+        },
+        {
+          "Id": "poisfsns",
+          "Name": "download_url",
+          "Type": "text",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "min": null,
+            "max": null,
+            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "2idyhkswler3xuj",
+      "Created": "2022/12/25 9:50:57",
+      "Updated": "2023/01/13 16:55:37",
+      "Name": "automuteus",
+      "System": false,
+      "ListRule": "",
+      "ViewRule": "",
+      "CreateRule": null,
+      "UpdateRule": null,
+      "DeleteRule": null,
+      "Schema": [
+        {
+          "Id": "k2dchnle",
+          "Name": "version",
+          "Type": "text",
+          "System": false,
+          "Required": true,
+          "Unique": true,
+          "Options": {
+            "min": null,
+            "max": null,
+            "pattern": ""
+          }
+        },
+        {
+          "Id": "ci5nlhl9",
+          "Name": "hashes",
+          "Type": "text",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "min": null,
+            "max": null,
+            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
+          }
+        },
+        {
+          "Id": "0suhpprp",
+          "Name": "download_url",
+          "Type": "text",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "min": null,
+            "max": null,
+            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
+          }
+        },
+        {
+          "Id": "ovmgcceo",
+          "Name": "compatibleExecutors",
+          "Type": "relation",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "maxSelect": null,
+            "collectionId": "tle5m1crcgn0h3m",
+            "cascadeDelete": false
+          }
+        }
+      ]
+    },
+    {
+      "Id": "ki4t07iokc8f3eg",
+      "Created": "2022/12/25 9:59:35",
+      "Updated": "2023/01/13 16:55:37",
+      "Name": "galactus",
+      "System": false,
+      "ListRule": "",
+      "ViewRule": "",
+      "CreateRule": null,
+      "UpdateRule": null,
+      "DeleteRule": null,
+      "Schema": [
+        {
+          "Id": "bqq3r23t",
+          "Name": "version",
+          "Type": "text",
+          "System": false,
+          "Required": true,
+          "Unique": true,
+          "Options": {
+            "min": null,
+            "max": null,
+            "pattern": ""
+          }
+        },
+        {
+          "Id": "1yrej26q",
+          "Name": "hashes",
+          "Type": "text",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "min": null,
+            "max": null,
+            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
+          }
+        },
+        {
+          "Id": "vu4ylqa9",
+          "Name": "download_url",
+          "Type": "text",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "min": null,
+            "max": null,
+            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
+          }
+        },
+        {
+          "Id": "owy480ko",
+          "Name": "compatibleExecutors",
+          "Type": "relation",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "maxSelect": null,
+            "collectionId": "tle5m1crcgn0h3m",
+            "cascadeDelete": false
+          }
+        }
+      ]
+    },
+    {
+      "Id": "a7yc5nczru892st",
+      "Created": "2022/12/25 9:59:35",
+      "Updated": "2023/01/13 16:55:37",
+      "Name": "postgresql",
+      "System": false,
+      "ListRule": "",
+      "ViewRule": "",
+      "CreateRule": null,
+      "UpdateRule": null,
+      "DeleteRule": null,
+      "Schema": [
+        {
+          "Id": "zrg75eu6",
+          "Name": "version",
+          "Type": "text",
+          "System": false,
+          "Required": true,
+          "Unique": true,
+          "Options": {
+            "min": null,
+            "max": null,
+            "pattern": ""
+          }
+        },
+        {
+          "Id": "2x73jgyu",
+          "Name": "hashes",
+          "Type": "text",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "min": null,
+            "max": null,
+            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
+          }
+        },
+        {
+          "Id": "3gquzcrh",
+          "Name": "download_url",
+          "Type": "text",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "min": null,
+            "max": null,
+            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
+          }
+        },
+        {
+          "Id": "4d6o86dl",
+          "Name": "compatibleExecutors",
+          "Type": "relation",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "maxSelect": null,
+            "collectionId": "tle5m1crcgn0h3m",
+            "cascadeDelete": false
+          }
+        }
+      ]
+    },
+    {
+      "Id": "jmpts7of6rutxjn",
+      "Created": "2022/12/25 9:59:35",
+      "Updated": "2023/01/13 16:55:37",
+      "Name": "redis",
+      "System": false,
+      "ListRule": "",
+      "ViewRule": "",
+      "CreateRule": null,
+      "UpdateRule": null,
+      "DeleteRule": null,
+      "Schema": [
+        {
+          "Id": "0l1cd4pm",
+          "Name": "version",
+          "Type": "text",
+          "System": false,
+          "Required": true,
+          "Unique": true,
+          "Options": {
+            "min": null,
+            "max": null,
+            "pattern": ""
+          }
+        },
+        {
+          "Id": "0mzkpso2",
+          "Name": "hashes",
+          "Type": "text",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "min": null,
+            "max": null,
+            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
+          }
+        },
+        {
+          "Id": "y3xvrb55",
+          "Name": "download_url",
+          "Type": "text",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "min": null,
+            "max": null,
+            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
+          }
+        },
+        {
+          "Id": "19esueem",
+          "Name": "compatibleExecutors",
+          "Type": "relation",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "maxSelect": null,
+            "collectionId": "tle5m1crcgn0h3m",
+            "cascadeDelete": false
+          }
+        }
+      ]
+    },
+    {
+      "Id": "ow8gm5ihysg7ljx",
+      "Created": "2022/12/25 10:01:00",
+      "Updated": "2023/01/13 16:55:37",
+      "Name": "appUpdator",
+      "System": false,
+      "ListRule": "",
+      "ViewRule": "",
+      "CreateRule": null,
+      "UpdateRule": null,
+      "DeleteRule": null,
+      "Schema": [
+        {
+          "Id": "svgrplz4",
+          "Name": "version",
+          "Type": "text",
+          "System": false,
+          "Required": true,
+          "Unique": true,
+          "Options": {
+            "min": null,
+            "max": null,
+            "pattern": ""
+          }
+        },
+        {
+          "Id": "zgrcclyr",
+          "Name": "hashes",
+          "Type": "text",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "min": null,
+            "max": null,
+            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
+          }
+        },
+        {
+          "Id": "c1upthas",
+          "Name": "download_url",
+          "Type": "text",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "min": null,
+            "max": null,
+            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "76t87z4iku0886q",
+      "Created": "2022/12/25 10:03:33",
+      "Updated": "2023/01/13 16:55:37",
+      "Name": "application",
+      "System": false,
+      "ListRule": "",
+      "ViewRule": "",
+      "CreateRule": null,
+      "UpdateRule": null,
+      "DeleteRule": null,
+      "Schema": [
+        {
+          "Id": "gaodbfln",
+          "Name": "version",
+          "Type": "text",
+          "System": false,
+          "Required": true,
+          "Unique": true,
+          "Options": {
+            "min": null,
+            "max": null,
+            "pattern": ""
+          }
+        },
+        {
+          "Id": "zrrbclvi",
+          "Name": "hashes",
+          "Type": "text",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "min": null,
+            "max": null,
+            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
+          }
+        },
+        {
+          "Id": "kwvvdz4b",
+          "Name": "download_url",
+          "Type": "text",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "min": null,
+            "max": null,
+            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
+          }
+        },
+        {
+          "Id": "pugxnk1r",
+          "Name": "appUpdator",
+          "Type": "relation",
+          "System": false,
+          "Required": false,
+          "Unique": true,
+          "Options": {
+            "maxSelect": 1,
+            "collectionId": "ow8gm5ihysg7ljx",
+            "cascadeDelete": false
+          }
+        },
+        {
+          "Id": "bmowby1z",
+          "Name": "compatibleExecutors",
+          "Type": "relation",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "maxSelect": null,
+            "collectionId": "tle5m1crcgn0h3m",
+            "cascadeDelete": false
+          }
+        }
+      ]
+    }
+  ]
+}
