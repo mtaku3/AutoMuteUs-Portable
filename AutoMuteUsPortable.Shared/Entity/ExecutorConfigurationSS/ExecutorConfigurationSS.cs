@@ -6,6 +6,6 @@ namespace AutoMuteUsPortable.Shared.Entity.ExecutorConfigurationSSNS;
 public class ExecutorConfigurationSS : ExecutorConfigurationBase
 {
     public string _installedDirectory = "";
-    [JsonIgnore] public override string binaryDirectory => Path.Combine(_installedDirectory, type.ToString());
+    [JsonIgnore] public override string binaryDirectory => Path.Combine(_installedDirectory, $@"{type.ToString()}\");
     public Dictionary<string, string> environmentVariables { get; set; }
 }
