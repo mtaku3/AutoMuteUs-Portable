@@ -406,7 +406,7 @@ public static class ZipFileProgressExtensions
     ///     Relative path information is interpreted as relative to the current working directory.
     /// </param>
     public static void ExtractToDirectory(this ZipArchive source, string destinationDirectoryName,
-        IProgress<float>? progress = null)
+        IProgress<double>? progress = null)
     {
         source.ExtractToDirectory(destinationDirectoryName, false, progress);
     }
@@ -453,7 +453,7 @@ public static class ZipFileProgressExtensions
     /// </param>
     /// <param name="overwriteFiles">True to indicate overwrite.</param>
     public static void ExtractToDirectory(this ZipArchive source, string destinationDirectoryName,
-        bool overwriteFiles, IProgress<float>? progress = null)
+        bool overwriteFiles, IProgress<double>? progress = null)
     {
         if (source == null)
             throw new ArgumentNullException(nameof(source));
@@ -465,7 +465,7 @@ public static class ZipFileProgressExtensions
         foreach (var entry in source.Entries)
         {
             entry.ExtractRelativeToDirectory(destinationDirectoryName, overwriteFiles);
-            progress?.Report((float)++count / source.Entries.Count * 100f);
+            progress?.Report((double)++count / source.Entries.Count);
         }
     }
 }
