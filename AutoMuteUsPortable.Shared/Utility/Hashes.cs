@@ -19,15 +19,15 @@ public static partial class Utils
         return hashes;
     }
 
-    public static List<FileInfo> CompareHashes(string root, Dictionary<string, string> hashes)
+    public static List<string> CompareHashes(string root, Dictionary<string, string> hashes)
     {
-        var ret = new List<FileInfo>();
+        var ret = new List<string>();
         _CompareHashes(root, root, hashes, ret);
         return ret;
     }
 
     private static void _CompareHashes(string root, string target, Dictionary<string, string> hashes,
-        List<FileInfo> ret)
+        List<string> ret)
     {
         var files = Directory.GetFiles(target);
         var directories = Directory.GetDirectories(target);
@@ -45,21 +45,24 @@ public static partial class Utils
             else
             {
                 var fileInfo = new FileInfo(path);
-                var relPath = Path.GetRelativePath(root, path);
+                var relPath = Path.GetRelativePath(root, path).Replace(@"\", "/");
 
                 if (!hashes.ContainsKey(relPath)) continue;
+                hashes.Remove(relPath);
 
                 var originalHash = hashes[relPath];
 
                 using (var sha256 = SHA256.Create())
+                using (var stream = fileInfo.Open(FileMode.Open))
                 {
-                    using (var stream = fileInfo.Open(FileMode.Open))
-                    {
-                        var hash = sha256.ComputeHash(stream).ToString()?.ToLower();
+                    var hash = sha256.ComputeHash(stream).ToString()?.ToLower();
 
-                        if (originalHash != hash) ret.Append(fileInfo);
-                    }
+                    if (originalHash != hash) ret.Append(relPath);
                 }
             }
+
+        if (root == target)
+            foreach (var key in hashes.Keys)
+                ret.Append(key);
     }
 }
