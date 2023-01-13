@@ -5,7 +5,7 @@
 public static class HttpClientProgressExtensions
 {
     public static async Task DownloadDataAsync(this HttpClient client, string requestUrl, Stream destination,
-        IProgress<float>? progress = null, CancellationToken cancellationToken = default)
+        IProgress<double>? progress = null, CancellationToken cancellationToken = default)
     {
         using var response =
             await client.GetAsync(requestUrl, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
@@ -23,9 +23,9 @@ public static class HttpClientProgressExtensions
             progress.Report(GetProgressPercentage(totalBytes, contentLength.Value)));
         await download.CopyToAsync(destination, 81920, progressWrapper, cancellationToken);
 
-        float GetProgressPercentage(float totalBytes, float currentBytes)
+        double GetProgressPercentage(float totalBytes, float currentBytes)
         {
-            return totalBytes / currentBytes * 100f;
+            return (double)totalBytes / currentBytes;
         }
     }
 
