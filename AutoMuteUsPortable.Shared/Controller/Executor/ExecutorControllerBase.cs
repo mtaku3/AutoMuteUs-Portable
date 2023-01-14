@@ -10,17 +10,15 @@ public class ExecutorControllerBase
 
     public ExecutorControllerBase(dynamic executorConfiguration)
     {
-        throw new NotImplementedException();
     }
 
     public ExecutorControllerBase(dynamic computedSimpleSettings,
         dynamic executorConfigurationBase)
     {
-        throw new NotImplementedException();
     }
 
     public bool IsRunning { get; protected set; }
-    public event EventHandler Stopped;
+    public event EventHandler? Stopped;
 
     public virtual void OnStop()
     {
