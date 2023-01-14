@@ -550,9 +550,9 @@ namespace AutoMuteUs_Portable
         {
             var list = new Dictionary<string, string>()
             {
-                { "automuteus", "https://raw.githubusercontent.com/mtaku3/AutoMuteUs-Portable/main/automuteus.list" },
-                { "galactus", "https://raw.githubusercontent.com/mtaku3/AutoMuteUs-Portable/main/galactus.list" },
-                { "wingman", "https://raw.githubusercontent.com/mtaku3/AutoMuteUs-Portable/main/wingman.list" }
+                { "automuteus", "https://raw.githubusercontent.com/mtaku3/AutoMuteUs-Portable/old/automuteus.list" },
+                { "galactus", "https://raw.githubusercontent.com/mtaku3/AutoMuteUs-Portable/old/galactus.list" },
+                { "wingman", "https://raw.githubusercontent.com/mtaku3/AutoMuteUs-Portable/old/wingman.list" }
             };
 
             VersionList = new Dictionary<string, Dictionary<string, string>>();
