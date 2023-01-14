@@ -8,12 +8,12 @@ public class ExecutorControllerBase
     public static Dictionary<string, Parameter> InstallParameters = new();
     public static Dictionary<string, Parameter> UpdateParameters = new();
 
-    public ExecutorControllerBase(dynamic executorConfiguration)
+    public ExecutorControllerBase(object executorConfiguration)
     {
     }
 
-    public ExecutorControllerBase(dynamic computedSimpleSettings,
-        dynamic executorConfigurationBase)
+    public ExecutorControllerBase(object computedSimpleSettings,
+        object executorConfigurationBase)
     {
     }
 
@@ -50,13 +50,13 @@ public class ExecutorControllerBase
         throw new NotImplementedException();
     }
 
-    public virtual Task InstallBySimpleSettings(dynamic simpleSettings, dynamic executorConfigurationBase,
+    public virtual Task InstallBySimpleSettings(object simpleSettings, object executorConfigurationBase,
         ISubject<ProgressInfo>? progress = null)
     {
         throw new NotImplementedException();
     }
 
-    public virtual Task UpdateBySimpleSettings(dynamic simpleSettings, dynamic executorConfigurationBase,
+    public virtual Task UpdateBySimpleSettings(object simpleSettings, object executorConfigurationBase,
         ISubject<ProgressInfo>? progress = null)
     {
         throw new NotImplementedException();
