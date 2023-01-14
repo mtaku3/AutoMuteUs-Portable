@@ -8,7 +8,7 @@
 
 ## Important Notice
 
-AutoMuteUs Portable is now planning to have a major update from v3 to v4. This update contains a huge architecture change so that AutoMuteUs Portable below v3.1.0 will not work since the upcoming release of v4.
+AutoMuteUs Portable is now planning to have a major update from v3 to v4. This update contains a huge architecture change so that AutoMuteUs Portable below v3.1.1 will not work since the upcoming release of v4.
 
 ## What is this?
 
