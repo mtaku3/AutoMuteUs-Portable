@@ -20,7 +20,7 @@ public class ExecutorControllerBase
     public bool IsRunning { get; protected set; }
     public event EventHandler? Stopped;
 
-    public virtual void OnStop()
+    protected virtual void OnStop()
     {
         Stopped?.Invoke(this, EventArgs.Empty);
     }
