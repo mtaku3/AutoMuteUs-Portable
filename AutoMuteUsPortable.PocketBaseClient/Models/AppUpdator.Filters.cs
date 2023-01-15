@@ -19,9 +19,6 @@ public partial class AppUpdator
         /// <summary> Gets a Filter to Query data over the 'version' field in PocketBase </summary>
         public FieldFilterText Version => new("version");
 
-        /// <summary> Gets a Filter to Query data over the 'hashes' field in PocketBase </summary>
-        public FieldFilterText Hashes => new("hashes");
-
         /// <summary> Gets a Filter to Query data over the 'download_url' field in PocketBase </summary>
         public FieldFilterItem<DownloadUrl> DownloadUrl => new("download_url");
     }

@@ -19,9 +19,6 @@ public partial class Application
         /// <summary>Makes a SortCommand to Order by the 'version' field</summary>
         public SortCommand Version => new("version");
 
-        /// <summary>Makes a SortCommand to Order by the 'hashes' field</summary>
-        public SortCommand Hashes => new("hashes");
-
         /// <summary>Makes a SortCommand to Order by the 'appUpdator' field</summary>
         public SortCommand AppUpdator => new("appUpdator");
 

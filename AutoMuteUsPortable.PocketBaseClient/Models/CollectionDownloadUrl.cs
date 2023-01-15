@@ -35,13 +35,12 @@ public class CollectionDownloadUrl : CollectionBase<DownloadUrl>
     public CollectionQuery<CollectionDownloadUrl, DownloadUrl.Sorts, DownloadUrl> Filter(
         Func<DownloadUrl.Filters, FilterCommand> filter)
     {
-        return new CollectionQuery<CollectionDownloadUrl, DownloadUrl.Sorts, DownloadUrl>(this,
-            filter(new DownloadUrl.Filters()));
+        return new(this, filter(new DownloadUrl.Filters()));
     }
 
     /// <summary> Query all data at PocketBase, over collection 'downloadUrl' </summary>
     public CollectionQuery<CollectionDownloadUrl, DownloadUrl.Sorts, DownloadUrl> All()
     {
-        return new CollectionQuery<CollectionDownloadUrl, DownloadUrl.Sorts, DownloadUrl>(this, null);
+        return new(this, null);
     }
 }

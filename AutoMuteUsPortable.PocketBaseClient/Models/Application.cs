@@ -32,7 +32,6 @@ public partial class Application : ItemBase
         if (itemBase is Application item)
         {
             Version = item.Version;
-            Hashes = item.Hashes;
             AppUpdator = item.AppUpdator;
             CompatibleExecutors = item.CompatibleExecutors;
             DownloadUrl = item.DownloadUrl;
@@ -71,22 +70,6 @@ public partial class Application : ItemBase
     {
         get => Get(() => _Version);
         set => Set(value, ref _Version);
-    }
-
-    private string? _Hashes;
-
-    /// <summary> Maps to 'hashes' field in PocketBase </summary>
-    [JsonPropertyName("hashes")]
-    [PocketBaseField("zrrbclvi", "hashes", false, false, false, "text")]
-    [Display(Name = "Hashes")]
-    [RegularExpression(
-        @"^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$",
-        ErrorMessage =
-            @"Pattern '^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$' not match")]
-    public string? Hashes
-    {
-        get => Get(() => _Hashes);
-        set => Set(value, ref _Hashes);
     }
 
     private AppUpdator? _AppUpdator;

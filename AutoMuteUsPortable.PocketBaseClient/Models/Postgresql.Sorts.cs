@@ -19,9 +19,6 @@ public partial class Postgresql
         /// <summary>Makes a SortCommand to Order by the 'version' field</summary>
         public SortCommand Version => new("version");
 
-        /// <summary>Makes a SortCommand to Order by the 'hashes' field</summary>
-        public SortCommand Hashes => new("hashes");
-
         /// <summary>Makes a SortCommand to Order by the 'compatibleExecutors' field</summary>
         public SortCommand CompatibleExecutors => new("compatibleExecutors");
 

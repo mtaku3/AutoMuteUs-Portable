@@ -19,9 +19,6 @@ public partial class Automuteus
         /// <summary> Gets a Filter to Query data over the 'version' field in PocketBase </summary>
         public FieldFilterText Version => new("version");
 
-        /// <summary> Gets a Filter to Query data over the 'hashes' field in PocketBase </summary>
-        public FieldFilterText Hashes => new("hashes");
-
         /// <summary> Gets a Filter to Query data over the 'compatibleExecutors' field in PocketBase </summary>
         public FieldFilterItemList<CompatibleExecutorsList, Executor> CompatibleExecutors => new("compatibleExecutors");
 

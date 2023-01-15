@@ -19,9 +19,6 @@ public partial class Application
         /// <summary> Gets a Filter to Query data over the 'version' field in PocketBase </summary>
         public FieldFilterText Version => new("version");
 
-        /// <summary> Gets a Filter to Query data over the 'hashes' field in PocketBase </summary>
-        public FieldFilterText Hashes => new("hashes");
-
         /// <summary> Gets a Filter to Query data over the 'appUpdator' field in PocketBase </summary>
         public FieldFilterItem<AppUpdator> AppUpdator => new("appUpdator");
 

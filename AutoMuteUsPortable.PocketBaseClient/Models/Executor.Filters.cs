@@ -19,9 +19,6 @@ public partial class Executor
         /// <summary> Gets a Filter to Query data over the 'version' field in PocketBase </summary>
         public FieldFilterText Version => new("version");
 
-        /// <summary> Gets a Filter to Query data over the 'hashes' field in PocketBase </summary>
-        public FieldFilterText Hashes => new("hashes");
-
         /// <summary> Gets a Filter to Query data over the 'type' field in PocketBase </summary>
         public FieldFilterEnum<TypeEnum> Type => new("type");
 
