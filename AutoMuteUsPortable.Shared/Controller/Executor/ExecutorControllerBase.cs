@@ -48,7 +48,8 @@ public class ExecutorControllerBase
     }
 
     public virtual Task Update(
-        Dictionary<ExecutorType, ExecutorControllerBase> executors, ISubject<ProgressInfo>? progress = null)
+        Dictionary<ExecutorType, ExecutorControllerBase> executors, object oldExecutorConfiguration,
+        ISubject<ProgressInfo>? progress = null)
     {
         throw new NotImplementedException();
     }
