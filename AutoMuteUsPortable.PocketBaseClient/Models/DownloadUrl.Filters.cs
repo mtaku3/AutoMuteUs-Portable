@@ -16,8 +16,8 @@ public partial class DownloadUrl
 {
     public class Filters : ItemBaseFilters
     {
-        /// <summary> Gets a Filter to Query data over the 'win_86' field in PocketBase </summary>
-        public FieldFilterText Win86 => new("win_86");
+        /// <summary> Gets a Filter to Query data over the 'win_x86' field in PocketBase </summary>
+        public FieldFilterText WinX86 => new("win_x86");
 
         /// <summary> Gets a Filter to Query data over the 'win_x64' field in PocketBase </summary>
         public FieldFilterText WinX64 => new("win_x64");

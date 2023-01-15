@@ -477,7 +477,7 @@
     {
       "Id": "w6u17m2jdh3pu7w",
       "Created": "2023/01/15 21:42:23",
-      "Updated": "2023/01/15 21:42:23",
+      "Updated": "2023/01/15 22:01:27",
       "Name": "downloadUrl",
       "System": false,
       "ListRule": "",
@@ -488,7 +488,7 @@
       "Schema": [
         {
           "Id": "dh3xuogj",
-          "Name": "win_86",
+          "Name": "win_x86",
           "Type": "text",
           "System": false,
           "Required": false,

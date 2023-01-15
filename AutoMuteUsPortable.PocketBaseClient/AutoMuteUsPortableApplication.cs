@@ -21,11 +21,11 @@ public class PocketBaseClientApplication : global::PocketBaseClient.PocketBaseCl
 
     #region Constructors
 
-    public AutoMuteUsPortableApplication() : this("https://automuteus-portable.pockethost.io")
+    public PocketBaseClientApplication() : this("https://automuteus-portable.pockethost.io")
     {
     }
 
-    public AutoMuteUsPortableApplication(string url, string appName = "AutoMuteUs Portable") : base(url, appName)
+    public PocketBaseClientApplication(string url, string appName = "AutoMuteUs Portable") : base(url, appName)
     {
     }
 

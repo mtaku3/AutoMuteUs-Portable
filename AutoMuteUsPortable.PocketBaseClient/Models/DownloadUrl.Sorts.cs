@@ -16,8 +16,8 @@ public partial class DownloadUrl
 {
     public class Sorts : ItemBaseSorts
     {
-        /// <summary>Makes a SortCommand to Order by the 'win_86' field</summary>
-        public SortCommand Win86 => new("win_86");
+        /// <summary>Makes a SortCommand to Order by the 'win_x86' field</summary>
+        public SortCommand WinX86 => new("win_x86");
 
         /// <summary>Makes a SortCommand to Order by the 'win_x64' field</summary>
         public SortCommand WinX64 => new("win_x64");

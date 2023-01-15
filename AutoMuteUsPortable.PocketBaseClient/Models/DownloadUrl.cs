@@ -25,7 +25,7 @@ public partial class DownloadUrl : ItemBase
 
         if (itemBase is DownloadUrl item)
         {
-            Win86 = item.Win86;
+            WinX86 = item.WinX86;
             WinX64 = item.WinX64;
             WinArm = item.WinArm;
             WinArm64 = item.WinArm64;
@@ -53,20 +53,20 @@ public partial class DownloadUrl : ItemBase
 
     #region Field Properties
 
-    private string? _Win86;
+    private string? _WinX86;
 
-    /// <summary> Maps to 'win_86' field in PocketBase </summary>
-    [JsonPropertyName("win_86")]
-    [PocketBaseField("dh3xuogj", "win_86", false, false, false, "text")]
-    [Display(Name = "Win_86")]
+    /// <summary> Maps to 'win_x86' field in PocketBase </summary>
+    [JsonPropertyName("win_x86")]
+    [PocketBaseField("dh3xuogj", "win_x86", false, false, false, "text")]
+    [Display(Name = "Win_x86")]
     [RegularExpression(
         @"^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$",
         ErrorMessage =
             @"Pattern '^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$' not match")]
-    public string? Win86
+    public string? WinX86
     {
-        get => Get(() => _Win86);
-        set => Set(value, ref _Win86);
+        get => Get(() => _WinX86);
+        set => Set(value, ref _WinX86);
     }
 
     private string? _WinX64;
