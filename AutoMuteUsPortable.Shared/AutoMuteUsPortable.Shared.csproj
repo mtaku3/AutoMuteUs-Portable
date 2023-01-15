@@ -7,6 +7,17 @@
     </PropertyGroup>
 
     <PropertyGroup>
+        <Description>This project is part of AutoMuteUs Portable and contains entities, infrastructures and controllers which will be shared between core logic and other projects. (i.e. ExecutorController for each servers)</Description>
+        <Copyright>mtaku3</Copyright>
+        <NeutralLanguage>en-US</NeutralLanguage>
+        <Authors>mtaku3</Authors>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageProjectUrl>https://github.com/mtaku3/AutoMuteUs-Portable</PackageProjectUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    </PropertyGroup>
+
+    <PropertyGroup>
         <MinVerIgnoreHeight>true</MinVerIgnoreHeight>
     </PropertyGroup>
 

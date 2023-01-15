@@ -6,17 +6,32 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <Description>This project is part of AutoMuteUs Portable and contains entities, infrastructures and controllers for core logic of the application.</Description>
+        <Copyright>mtaku3</Copyright>
+        <NeutralLanguage>en-US</NeutralLanguage>
+        <Authors>mtaku3</Authors>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageProjectUrl>https://github.com/mtaku3/AutoMuteUs-Portable</PackageProjectUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <MinVerIgnoreHeight>true</MinVerIgnoreHeight>
+    </PropertyGroup>
+
     <ItemGroup>
-        <PackageReference Include="FluentValidation" Version="11.4.0" />
+        <PackageReference Include="FluentValidation" Version="11.4.0"/>
         <PackageReference Include="MinVer" Version="4.3.0-beta.1">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Serilog" Version="2.12.0" />
+        <PackageReference Include="Serilog" Version="2.12.0"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\AutoMuteUsPortable.Shared\AutoMuteUsPortable.Shared.csproj" />
+        <ProjectReference Include="..\AutoMuteUsPortable.Shared\AutoMuteUsPortable.Shared.csproj"/>
     </ItemGroup>
 
 </Project>

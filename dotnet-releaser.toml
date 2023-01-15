@@ -1,0 +1,19 @@
+profile = "custom"
+
+[msbuild]
+project = "AutoMuteUsPortable.sln"
+
+[msbuild.properties]
+PublishTrimmed = false
+IncludeNativeLibrariesForSelfExtract = true
+
+[[pack]]
+rid = ["win-x64", "win-x86", "win-arm", "win-arm64"]
+kinds = ["zip"]
+
+[nuget]
+publish = false
+
+[github]
+user = "mtaku3"
+repo = "AutoMuteUs-Portable"
