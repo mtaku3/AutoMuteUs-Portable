@@ -7,8 +7,6 @@ namespace AutoMuteUsPortable.Shared.Controller.Executor;
 
 public class ExecutorControllerBase
 {
-    public readonly ExecutorConfiguration ExecutorConfiguration;
-
     public ExecutorControllerBase(object executorConfiguration)
     {
     }
@@ -17,6 +15,8 @@ public class ExecutorControllerBase
         object executorConfigurationBase)
     {
     }
+
+    public ExecutorConfiguration ExecutorConfiguration { get; protected set; }
 
     public bool IsRunning { get; protected set; }
     public event EventHandler? Stopped;
