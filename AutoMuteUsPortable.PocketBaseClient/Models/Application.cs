@@ -21,7 +21,8 @@ public partial class Application : ItemBase
 {
     /// <inheritdoc />
     protected override IEnumerable<ItemBase?> RelatedItems
-        => base.RelatedItems.Union(new List<ItemBase?> { AppUpdator }).Union(CompatibleExecutors);
+        => base.RelatedItems.Union(new List<ItemBase?> { AppUpdator }).Union(CompatibleExecutors)
+            .Union(new List<ItemBase?> { DownloadUrl });
 
     /// <inheritdoc />
     public override void UpdateWith(ItemBase itemBase)
@@ -32,9 +33,9 @@ public partial class Application : ItemBase
         {
             Version = item.Version;
             Hashes = item.Hashes;
-            DownloadUrl = item.DownloadUrl;
             AppUpdator = item.AppUpdator;
             CompatibleExecutors = item.CompatibleExecutors;
+            DownloadUrl = item.DownloadUrl;
         }
     }
 
@@ -88,22 +89,6 @@ public partial class Application : ItemBase
         set => Set(value, ref _Hashes);
     }
 
-    private string? _DownloadUrl;
-
-    /// <summary> Maps to 'download_url' field in PocketBase </summary>
-    [JsonPropertyName("download_url")]
-    [PocketBaseField("kwvvdz4b", "download_url", false, false, false, "text")]
-    [Display(Name = "Download_url")]
-    [RegularExpression(
-        @"^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$",
-        ErrorMessage =
-            @"Pattern '^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$' not match")]
-    public string? DownloadUrl
-    {
-        get => Get(() => _DownloadUrl);
-        set => Set(value, ref _DownloadUrl);
-    }
-
     private AppUpdator? _AppUpdator;
 
     /// <summary> Maps to 'appUpdator' field in PocketBase </summary>
@@ -129,6 +114,19 @@ public partial class Application : ItemBase
     {
         get => Get(() => _CompatibleExecutors ??= new CompatibleExecutorsList(this));
         private set => Set(value, ref _CompatibleExecutors);
+    }
+
+    private DownloadUrl? _DownloadUrl;
+
+    /// <summary> Maps to 'download_url' field in PocketBase </summary>
+    [JsonPropertyName("download_url")]
+    [PocketBaseField("gtc97rof", "download_url", false, false, false, "relation")]
+    [Display(Name = "Download_url")]
+    [JsonConverter(typeof(RelationConverter<DownloadUrl>))]
+    public DownloadUrl? DownloadUrl
+    {
+        get => Get(() => _DownloadUrl);
+        set => Set(value, ref _DownloadUrl);
     }
 
     #endregion Field Properties

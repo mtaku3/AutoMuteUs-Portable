@@ -20,6 +20,10 @@ namespace AutoMuteUsPortable.PocketBaseClient.Models;
 public partial class Executor : ItemBase
 {
     /// <inheritdoc />
+    protected override IEnumerable<ItemBase?> RelatedItems
+        => base.RelatedItems.Union(new List<ItemBase?> { DownloadUrl });
+
+    /// <inheritdoc />
     public override void UpdateWith(ItemBase itemBase)
     {
         base.UpdateWith(itemBase);
@@ -97,17 +101,14 @@ public partial class Executor : ItemBase
         set => Set(value, ref _Type);
     }
 
-    private string? _DownloadUrl;
+    private DownloadUrl? _DownloadUrl;
 
     /// <summary> Maps to 'download_url' field in PocketBase </summary>
     [JsonPropertyName("download_url")]
-    [PocketBaseField("poisfsns", "download_url", false, false, false, "text")]
+    [PocketBaseField("b5txfun2", "download_url", false, false, false, "relation")]
     [Display(Name = "Download_url")]
-    [RegularExpression(
-        @"^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$",
-        ErrorMessage =
-            @"Pattern '^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$' not match")]
-    public string? DownloadUrl
+    [JsonConverter(typeof(RelationConverter<DownloadUrl>))]
+    public DownloadUrl? DownloadUrl
     {
         get => Get(() => _DownloadUrl);
         set => Set(value, ref _DownloadUrl);

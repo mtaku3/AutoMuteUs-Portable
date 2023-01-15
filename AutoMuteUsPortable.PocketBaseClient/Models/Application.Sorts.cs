@@ -22,13 +22,13 @@ public partial class Application
         /// <summary>Makes a SortCommand to Order by the 'hashes' field</summary>
         public SortCommand Hashes => new("hashes");
 
-        /// <summary>Makes a SortCommand to Order by the 'download_url' field</summary>
-        public SortCommand DownloadUrl => new("download_url");
-
         /// <summary>Makes a SortCommand to Order by the 'appUpdator' field</summary>
         public SortCommand AppUpdator => new("appUpdator");
 
         /// <summary>Makes a SortCommand to Order by the 'compatibleExecutors' field</summary>
         public SortCommand CompatibleExecutors => new("compatibleExecutors");
+
+        /// <summary>Makes a SortCommand to Order by the 'download_url' field</summary>
+        public SortCommand DownloadUrl => new("download_url");
     }
 }

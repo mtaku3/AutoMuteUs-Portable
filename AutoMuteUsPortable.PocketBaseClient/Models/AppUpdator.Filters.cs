@@ -23,6 +23,6 @@ public partial class AppUpdator
         public FieldFilterText Hashes => new("hashes");
 
         /// <summary> Gets a Filter to Query data over the 'download_url' field in PocketBase </summary>
-        public FieldFilterText DownloadUrl => new("download_url");
+        public FieldFilterItem<DownloadUrl> DownloadUrl => new("download_url");
     }
 }

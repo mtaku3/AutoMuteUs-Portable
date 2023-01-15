@@ -27,6 +27,7 @@ public class AutoMuteUsPortableDataService : DataServiceBase
         RedisCollection = new CollectionRedis(this);
         AppUpdatorCollection = new CollectionAppUpdator(this);
         ApplicationCollection = new CollectionApplication(this);
+        DownloadUrlCollection = new CollectionDownloadUrl(this);
 
         RegisterCollections();
     }
@@ -56,6 +57,9 @@ public class AutoMuteUsPortableDataService : DataServiceBase
     /// <summary> Collection 'application' in PocketBase </summary>
     public CollectionApplication ApplicationCollection { get; }
 
+    /// <summary> Collection 'downloadUrl' in PocketBase </summary>
+    public CollectionDownloadUrl DownloadUrlCollection { get; }
+
     /// <inheritdoc />
     protected override void RegisterCollections()
     {
@@ -66,6 +70,7 @@ public class AutoMuteUsPortableDataService : DataServiceBase
         RegisterCollection(typeof(Redis), RedisCollection);
         RegisterCollection(typeof(AppUpdator), AppUpdatorCollection);
         RegisterCollection(typeof(Application), ApplicationCollection);
+        RegisterCollection(typeof(DownloadUrl), DownloadUrlCollection);
     }
 
     #endregion Collections

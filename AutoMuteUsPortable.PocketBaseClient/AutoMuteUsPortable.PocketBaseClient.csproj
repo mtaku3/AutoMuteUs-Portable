@@ -6,26 +6,7 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-    <PropertyGroup>
-        <Description>This project is part of AutoMuteUs Portable and contains PocketBase client(database ORM).</Description>
-        <Copyright>mtaku3</Copyright>
-        <NeutralLanguage>en-US</NeutralLanguage>
-        <Authors>mtaku3</Authors>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageProjectUrl>https://github.com/mtaku3/AutoMuteUs-Portable</PackageProjectUrl>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    </PropertyGroup>
-
-    <PropertyGroup>
-        <MinVerIgnoreHeight>true</MinVerIgnoreHeight>
-    </PropertyGroup>
-
     <ItemGroup>
-        <PackageReference Include="MinVer" Version="4.3.0-beta.1">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
         <PackageReference Include="PocketBaseClient" Version="*"/>
     </ItemGroup>
 

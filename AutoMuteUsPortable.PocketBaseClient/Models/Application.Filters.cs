@@ -22,13 +22,13 @@ public partial class Application
         /// <summary> Gets a Filter to Query data over the 'hashes' field in PocketBase </summary>
         public FieldFilterText Hashes => new("hashes");
 
-        /// <summary> Gets a Filter to Query data over the 'download_url' field in PocketBase </summary>
-        public FieldFilterText DownloadUrl => new("download_url");
-
         /// <summary> Gets a Filter to Query data over the 'appUpdator' field in PocketBase </summary>
         public FieldFilterItem<AppUpdator> AppUpdator => new("appUpdator");
 
         /// <summary> Gets a Filter to Query data over the 'compatibleExecutors' field in PocketBase </summary>
         public FieldFilterItemList<CompatibleExecutorsList, Executor> CompatibleExecutors => new("compatibleExecutors");
+
+        /// <summary> Gets a Filter to Query data over the 'download_url' field in PocketBase </summary>
+        public FieldFilterItem<DownloadUrl> DownloadUrl => new("download_url");
     }
 }

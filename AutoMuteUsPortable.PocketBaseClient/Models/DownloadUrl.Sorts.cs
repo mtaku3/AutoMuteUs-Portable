@@ -12,20 +12,20 @@ using PocketBaseClient.Orm.Filters;
 
 namespace AutoMuteUsPortable.PocketBaseClient.Models;
 
-public partial class Automuteus
+public partial class DownloadUrl
 {
     public class Sorts : ItemBaseSorts
     {
-        /// <summary>Makes a SortCommand to Order by the 'version' field</summary>
-        public SortCommand Version => new("version");
+        /// <summary>Makes a SortCommand to Order by the 'win_86' field</summary>
+        public SortCommand Win86 => new("win_86");
 
-        /// <summary>Makes a SortCommand to Order by the 'hashes' field</summary>
-        public SortCommand Hashes => new("hashes");
+        /// <summary>Makes a SortCommand to Order by the 'win_x64' field</summary>
+        public SortCommand WinX64 => new("win_x64");
 
-        /// <summary>Makes a SortCommand to Order by the 'compatibleExecutors' field</summary>
-        public SortCommand CompatibleExecutors => new("compatibleExecutors");
+        /// <summary>Makes a SortCommand to Order by the 'win_arm' field</summary>
+        public SortCommand WinArm => new("win_arm");
 
-        /// <summary>Makes a SortCommand to Order by the 'download_url' field</summary>
-        public SortCommand DownloadUrl => new("download_url");
+        /// <summary>Makes a SortCommand to Order by the 'win_arm64' field</summary>
+        public SortCommand WinArm64 => new("win_arm64");
     }
 }

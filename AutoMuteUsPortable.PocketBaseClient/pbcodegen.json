@@ -11,7 +11,7 @@
     {
       "Id": "tle5m1crcgn0h3m",
       "Created": "2022/12/25 9:40:25",
-      "Updated": "2023/01/13 16:55:37",
+      "Updated": "2023/01/15 21:43:24",
       "Name": "executor",
       "System": false,
       "ListRule": "",
@@ -64,16 +64,16 @@
           }
         },
         {
-          "Id": "poisfsns",
+          "Id": "b5txfun2",
           "Name": "download_url",
-          "Type": "text",
+          "Type": "relation",
           "System": false,
           "Required": false,
           "Unique": false,
           "Options": {
-            "min": null,
-            "max": null,
-            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
+            "maxSelect": 1,
+            "collectionId": "w6u17m2jdh3pu7w",
+            "cascadeDelete": false
           }
         }
       ]
@@ -81,7 +81,7 @@
     {
       "Id": "2idyhkswler3xuj",
       "Created": "2022/12/25 9:50:57",
-      "Updated": "2023/01/13 16:55:37",
+      "Updated": "2023/01/15 21:43:50",
       "Name": "automuteus",
       "System": false,
       "ListRule": "",
@@ -117,19 +117,6 @@
           }
         },
         {
-          "Id": "0suhpprp",
-          "Name": "download_url",
-          "Type": "text",
-          "System": false,
-          "Required": false,
-          "Unique": false,
-          "Options": {
-            "min": null,
-            "max": null,
-            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
-          }
-        },
-        {
           "Id": "ovmgcceo",
           "Name": "compatibleExecutors",
           "Type": "relation",
@@ -141,13 +128,26 @@
             "collectionId": "tle5m1crcgn0h3m",
             "cascadeDelete": false
           }
+        },
+        {
+          "Id": "rwqhsok3",
+          "Name": "download_url",
+          "Type": "relation",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "maxSelect": 1,
+            "collectionId": "w6u17m2jdh3pu7w",
+            "cascadeDelete": false
+          }
         }
       ]
     },
     {
       "Id": "ki4t07iokc8f3eg",
       "Created": "2022/12/25 9:59:35",
-      "Updated": "2023/01/13 16:55:37",
+      "Updated": "2023/01/15 21:44:11",
       "Name": "galactus",
       "System": false,
       "ListRule": "",
@@ -183,19 +183,6 @@
           }
         },
         {
-          "Id": "vu4ylqa9",
-          "Name": "download_url",
-          "Type": "text",
-          "System": false,
-          "Required": false,
-          "Unique": false,
-          "Options": {
-            "min": null,
-            "max": null,
-            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
-          }
-        },
-        {
           "Id": "owy480ko",
           "Name": "compatibleExecutors",
           "Type": "relation",
@@ -207,13 +194,26 @@
             "collectionId": "tle5m1crcgn0h3m",
             "cascadeDelete": false
           }
+        },
+        {
+          "Id": "jnieamng",
+          "Name": "download_url",
+          "Type": "relation",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "maxSelect": 1,
+            "collectionId": "w6u17m2jdh3pu7w",
+            "cascadeDelete": false
+          }
         }
       ]
     },
     {
       "Id": "a7yc5nczru892st",
       "Created": "2022/12/25 9:59:35",
-      "Updated": "2023/01/13 16:55:37",
+      "Updated": "2023/01/15 21:44:34",
       "Name": "postgresql",
       "System": false,
       "ListRule": "",
@@ -249,19 +249,6 @@
           }
         },
         {
-          "Id": "3gquzcrh",
-          "Name": "download_url",
-          "Type": "text",
-          "System": false,
-          "Required": false,
-          "Unique": false,
-          "Options": {
-            "min": null,
-            "max": null,
-            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
-          }
-        },
-        {
           "Id": "4d6o86dl",
           "Name": "compatibleExecutors",
           "Type": "relation",
@@ -273,13 +260,26 @@
             "collectionId": "tle5m1crcgn0h3m",
             "cascadeDelete": false
           }
+        },
+        {
+          "Id": "xdf2vsvj",
+          "Name": "download_url",
+          "Type": "relation",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "maxSelect": 1,
+            "collectionId": "w6u17m2jdh3pu7w",
+            "cascadeDelete": false
+          }
         }
       ]
     },
     {
       "Id": "jmpts7of6rutxjn",
       "Created": "2022/12/25 9:59:35",
-      "Updated": "2023/01/13 16:55:37",
+      "Updated": "2023/01/15 21:44:50",
       "Name": "redis",
       "System": false,
       "ListRule": "",
@@ -315,19 +315,6 @@
           }
         },
         {
-          "Id": "y3xvrb55",
-          "Name": "download_url",
-          "Type": "text",
-          "System": false,
-          "Required": false,
-          "Unique": false,
-          "Options": {
-            "min": null,
-            "max": null,
-            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
-          }
-        },
-        {
           "Id": "19esueem",
           "Name": "compatibleExecutors",
           "Type": "relation",
@@ -339,13 +326,26 @@
             "collectionId": "tle5m1crcgn0h3m",
             "cascadeDelete": false
           }
+        },
+        {
+          "Id": "opvny5f2",
+          "Name": "download_url",
+          "Type": "relation",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "maxSelect": 1,
+            "collectionId": "w6u17m2jdh3pu7w",
+            "cascadeDelete": false
+          }
         }
       ]
     },
     {
       "Id": "ow8gm5ihysg7ljx",
       "Created": "2022/12/25 10:01:00",
-      "Updated": "2023/01/13 16:55:37",
+      "Updated": "2023/01/15 21:45:09",
       "Name": "appUpdator",
       "System": false,
       "ListRule": "",
@@ -381,16 +381,16 @@
           }
         },
         {
-          "Id": "c1upthas",
+          "Id": "f2fcbhx6",
           "Name": "download_url",
-          "Type": "text",
+          "Type": "relation",
           "System": false,
           "Required": false,
           "Unique": false,
           "Options": {
-            "min": null,
-            "max": null,
-            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
+            "maxSelect": 1,
+            "collectionId": "w6u17m2jdh3pu7w",
+            "cascadeDelete": false
           }
         }
       ]
@@ -398,7 +398,7 @@
     {
       "Id": "76t87z4iku0886q",
       "Created": "2022/12/25 10:03:33",
-      "Updated": "2023/01/13 16:55:37",
+      "Updated": "2023/01/15 21:45:24",
       "Name": "application",
       "System": false,
       "ListRule": "",
@@ -434,19 +434,6 @@
           }
         },
         {
-          "Id": "kwvvdz4b",
-          "Name": "download_url",
-          "Type": "text",
-          "System": false,
-          "Required": false,
-          "Unique": false,
-          "Options": {
-            "min": null,
-            "max": null,
-            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
-          }
-        },
-        {
           "Id": "pugxnk1r",
           "Name": "appUpdator",
           "Type": "relation",
@@ -470,6 +457,85 @@
             "maxSelect": null,
             "collectionId": "tle5m1crcgn0h3m",
             "cascadeDelete": false
+          }
+        },
+        {
+          "Id": "gtc97rof",
+          "Name": "download_url",
+          "Type": "relation",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "maxSelect": 1,
+            "collectionId": "w6u17m2jdh3pu7w",
+            "cascadeDelete": false
+          }
+        }
+      ]
+    },
+    {
+      "Id": "w6u17m2jdh3pu7w",
+      "Created": "2023/01/15 21:42:23",
+      "Updated": "2023/01/15 21:42:23",
+      "Name": "downloadUrl",
+      "System": false,
+      "ListRule": "",
+      "ViewRule": "",
+      "CreateRule": null,
+      "UpdateRule": null,
+      "DeleteRule": null,
+      "Schema": [
+        {
+          "Id": "dh3xuogj",
+          "Name": "win_86",
+          "Type": "text",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "min": null,
+            "max": null,
+            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
+          }
+        },
+        {
+          "Id": "cl201qm7",
+          "Name": "win_x64",
+          "Type": "text",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "min": null,
+            "max": null,
+            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
+          }
+        },
+        {
+          "Id": "hkf0q4kd",
+          "Name": "win_arm",
+          "Type": "text",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "min": null,
+            "max": null,
+            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
+          }
+        },
+        {
+          "Id": "2oicknyy",
+          "Name": "win_arm64",
+          "Type": "text",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "min": null,
+            "max": null,
+            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
           }
         }
       ]
