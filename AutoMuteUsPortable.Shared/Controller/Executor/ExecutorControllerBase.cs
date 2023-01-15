@@ -7,8 +7,6 @@ namespace AutoMuteUsPortable.Shared.Controller.Executor;
 
 public class ExecutorControllerBase
 {
-    public static Dictionary<string, Parameter> InstallParameters;
-    public static Dictionary<string, Parameter> UpdateParameters;
     public readonly ExecutorConfiguration ExecutorConfiguration;
 
     public ExecutorControllerBase(object executorConfiguration)
@@ -43,28 +41,14 @@ public class ExecutorControllerBase
         throw new NotImplementedException();
     }
 
-    public virtual Task Install(Dictionary<string, string> parameters,
+    public virtual Task Install(
         Dictionary<ExecutorType, ExecutorControllerBase> executors, ISubject<ProgressInfo>? progress = null)
     {
         throw new NotImplementedException();
     }
 
-    public virtual Task Update(Dictionary<string, string> parameters,
+    public virtual Task Update(
         Dictionary<ExecutorType, ExecutorControllerBase> executors, ISubject<ProgressInfo>? progress = null)
-    {
-        throw new NotImplementedException();
-    }
-
-    public virtual Task InstallBySimpleSettings(object simpleSettings, object executorConfigurationBase,
-        Dictionary<ExecutorType, ExecutorControllerBase> executors,
-        ISubject<ProgressInfo>? progress = null)
-    {
-        throw new NotImplementedException();
-    }
-
-    public virtual Task UpdateBySimpleSettings(object simpleSettings, object executorConfigurationBase,
-        Dictionary<ExecutorType, ExecutorControllerBase> executors,
-        ISubject<ProgressInfo>? progress = null)
     {
         throw new NotImplementedException();
     }
