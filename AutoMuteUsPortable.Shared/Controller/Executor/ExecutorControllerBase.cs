@@ -1,13 +1,15 @@
 ﻿using System.Reactive.Subjects;
 using AutoMuteUsPortable.Shared.Entity.ExecutorConfigurationBaseNS;
+using AutoMuteUsPortable.Shared.Entity.ExecutorConfigurationNS;
 using AutoMuteUsPortable.Shared.Entity.ProgressInfo;
 
 namespace AutoMuteUsPortable.Shared.Controller.Executor;
 
 public class ExecutorControllerBase
 {
-    public static Dictionary<string, Parameter> InstallParameters = new();
-    public static Dictionary<string, Parameter> UpdateParameters = new();
+    public static Dictionary<string, Parameter> InstallParameters;
+    public static Dictionary<string, Parameter> UpdateParameters;
+    public readonly ExecutorConfiguration executorConfiguration;
 
     public ExecutorControllerBase(object executorConfiguration)
     {
