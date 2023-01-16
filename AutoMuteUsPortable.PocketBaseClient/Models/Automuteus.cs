@@ -21,7 +21,8 @@ public partial class Automuteus : ItemBase
 {
     /// <inheritdoc />
     protected override IEnumerable<ItemBase?> RelatedItems
-        => base.RelatedItems.Union(CompatibleExecutors).Union(new List<ItemBase?> { DownloadUrl });
+        => base.RelatedItems.Union(CompatibleExecutors).Union(new List<ItemBase?> { DownloadUrl })
+            .Union(new List<ItemBase?> { Checksum });
 
     /// <inheritdoc />
     public override void UpdateWith(ItemBase itemBase)
@@ -33,6 +34,7 @@ public partial class Automuteus : ItemBase
             Version = item.Version;
             CompatibleExecutors = item.CompatibleExecutors;
             DownloadUrl = item.DownloadUrl;
+            Checksum = item.Checksum;
         }
     }
 
@@ -95,6 +97,19 @@ public partial class Automuteus : ItemBase
     {
         get => Get(() => _DownloadUrl);
         set => Set(value, ref _DownloadUrl);
+    }
+
+    private Checksum? _Checksum;
+
+    /// <summary> Maps to 'checksum' field in PocketBase </summary>
+    [JsonPropertyName("checksum")]
+    [PocketBaseField("uqytjq7q", "checksum", false, false, false, "relation")]
+    [Display(Name = "Checksum")]
+    [JsonConverter(typeof(RelationConverter<Checksum>))]
+    public Checksum? Checksum
+    {
+        get => Get(() => _Checksum);
+        set => Set(value, ref _Checksum);
     }
 
     #endregion Field Properties

@@ -24,5 +24,8 @@ public partial class Redis
 
         /// <summary>Makes a SortCommand to Order by the 'download_url' field</summary>
         public SortCommand DownloadUrl => new("download_url");
+
+        /// <summary>Makes a SortCommand to Order by the 'checksum' field</summary>
+        public SortCommand Checksum => new("checksum");
     }
 }

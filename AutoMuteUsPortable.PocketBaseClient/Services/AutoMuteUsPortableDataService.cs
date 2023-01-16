@@ -17,7 +17,7 @@ public class AutoMuteUsPortableDataService : DataServiceBase
 {
     #region Constructor
 
-    public AutoMuteUsPortableDataService(global::PocketBaseClient.PocketBaseClientApplication app) : base(app)
+    public AutoMuteUsPortableDataService(PocketBaseClientApplication app) : base(app)
     {
         // Collections
         ExecutorCollection = new CollectionExecutor(this);
@@ -28,6 +28,7 @@ public class AutoMuteUsPortableDataService : DataServiceBase
         AppUpdatorCollection = new CollectionAppUpdator(this);
         ApplicationCollection = new CollectionApplication(this);
         DownloadUrlCollection = new CollectionDownloadUrl(this);
+        ChecksumCollection = new CollectionChecksum(this);
 
         RegisterCollections();
     }
@@ -60,6 +61,9 @@ public class AutoMuteUsPortableDataService : DataServiceBase
     /// <summary> Collection 'downloadUrl' in PocketBase </summary>
     public CollectionDownloadUrl DownloadUrlCollection { get; }
 
+    /// <summary> Collection 'checksum' in PocketBase </summary>
+    public CollectionChecksum ChecksumCollection { get; }
+
     /// <inheritdoc />
     protected override void RegisterCollections()
     {
@@ -71,6 +75,7 @@ public class AutoMuteUsPortableDataService : DataServiceBase
         RegisterCollection(typeof(AppUpdator), AppUpdatorCollection);
         RegisterCollection(typeof(Application), ApplicationCollection);
         RegisterCollection(typeof(DownloadUrl), DownloadUrlCollection);
+        RegisterCollection(typeof(Checksum), ChecksumCollection);
     }
 
     #endregion Collections

@@ -21,7 +21,7 @@ public partial class AppUpdator : ItemBase
 {
     /// <inheritdoc />
     protected override IEnumerable<ItemBase?> RelatedItems
-        => base.RelatedItems.Union(new List<ItemBase?> { DownloadUrl });
+        => base.RelatedItems.Union(new List<ItemBase?> { DownloadUrl }).Union(new List<ItemBase?> { Checksum });
 
     /// <inheritdoc />
     public override void UpdateWith(ItemBase itemBase)
@@ -32,6 +32,7 @@ public partial class AppUpdator : ItemBase
         {
             Version = item.Version;
             DownloadUrl = item.DownloadUrl;
+            Checksum = item.Checksum;
         }
     }
 
@@ -80,6 +81,19 @@ public partial class AppUpdator : ItemBase
     {
         get => Get(() => _DownloadUrl);
         set => Set(value, ref _DownloadUrl);
+    }
+
+    private Checksum? _Checksum;
+
+    /// <summary> Maps to 'checksum' field in PocketBase </summary>
+    [JsonPropertyName("checksum")]
+    [PocketBaseField("3r6kfxra", "checksum", false, false, false, "relation")]
+    [Display(Name = "Checksum")]
+    [JsonConverter(typeof(RelationConverter<Checksum>))]
+    public Checksum? Checksum
+    {
+        get => Get(() => _Checksum);
+        set => Set(value, ref _Checksum);
     }
 
     #endregion Field Properties

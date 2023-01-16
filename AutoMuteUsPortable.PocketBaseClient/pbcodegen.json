@@ -11,7 +11,7 @@
     {
       "Id": "tle5m1crcgn0h3m",
       "Created": "2022/12/25 9:40:25",
-      "Updated": "2023/01/15 22:20:41",
+      "Updated": "2023/01/17 0:11:43",
       "Name": "executor",
       "System": false,
       "ListRule": "",
@@ -62,13 +62,26 @@
             "collectionId": "w6u17m2jdh3pu7w",
             "cascadeDelete": false
           }
+        },
+        {
+          "Id": "cwztsj09",
+          "Name": "checksum",
+          "Type": "relation",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "maxSelect": 1,
+            "collectionId": "tegy62vbkxgbnp3",
+            "cascadeDelete": false
+          }
         }
       ]
     },
     {
       "Id": "2idyhkswler3xuj",
       "Created": "2022/12/25 9:50:57",
-      "Updated": "2023/01/15 22:20:48",
+      "Updated": "2023/01/17 0:11:58",
       "Name": "automuteus",
       "System": false,
       "ListRule": "",
@@ -115,13 +128,26 @@
             "collectionId": "w6u17m2jdh3pu7w",
             "cascadeDelete": false
           }
+        },
+        {
+          "Id": "uqytjq7q",
+          "Name": "checksum",
+          "Type": "relation",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "maxSelect": 1,
+            "collectionId": "tegy62vbkxgbnp3",
+            "cascadeDelete": false
+          }
         }
       ]
     },
     {
       "Id": "ki4t07iokc8f3eg",
       "Created": "2022/12/25 9:59:35",
-      "Updated": "2023/01/15 22:20:54",
+      "Updated": "2023/01/17 0:12:08",
       "Name": "galactus",
       "System": false,
       "ListRule": "",
@@ -168,13 +194,26 @@
             "collectionId": "w6u17m2jdh3pu7w",
             "cascadeDelete": false
           }
+        },
+        {
+          "Id": "ci0voncf",
+          "Name": "checksum",
+          "Type": "relation",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "maxSelect": 1,
+            "collectionId": "tegy62vbkxgbnp3",
+            "cascadeDelete": false
+          }
         }
       ]
     },
     {
       "Id": "a7yc5nczru892st",
       "Created": "2022/12/25 9:59:35",
-      "Updated": "2023/01/15 22:21:01",
+      "Updated": "2023/01/17 0:12:18",
       "Name": "postgresql",
       "System": false,
       "ListRule": "",
@@ -221,13 +260,26 @@
             "collectionId": "w6u17m2jdh3pu7w",
             "cascadeDelete": false
           }
+        },
+        {
+          "Id": "nzgegcia",
+          "Name": "checksum",
+          "Type": "relation",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "maxSelect": 1,
+            "collectionId": "tegy62vbkxgbnp3",
+            "cascadeDelete": false
+          }
         }
       ]
     },
     {
       "Id": "jmpts7of6rutxjn",
       "Created": "2022/12/25 9:59:35",
-      "Updated": "2023/01/15 22:21:06",
+      "Updated": "2023/01/17 0:12:26",
       "Name": "redis",
       "System": false,
       "ListRule": "",
@@ -274,13 +326,26 @@
             "collectionId": "w6u17m2jdh3pu7w",
             "cascadeDelete": false
           }
+        },
+        {
+          "Id": "e9ylo7vv",
+          "Name": "checksum",
+          "Type": "relation",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "maxSelect": 1,
+            "collectionId": "tegy62vbkxgbnp3",
+            "cascadeDelete": false
+          }
         }
       ]
     },
     {
       "Id": "ow8gm5ihysg7ljx",
       "Created": "2022/12/25 10:01:00",
-      "Updated": "2023/01/15 22:21:13",
+      "Updated": "2023/01/17 0:12:36",
       "Name": "appUpdator",
       "System": false,
       "ListRule": "",
@@ -312,6 +377,19 @@
           "Options": {
             "maxSelect": 1,
             "collectionId": "w6u17m2jdh3pu7w",
+            "cascadeDelete": false
+          }
+        },
+        {
+          "Id": "3r6kfxra",
+          "Name": "checksum",
+          "Type": "relation",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "maxSelect": 1,
+            "collectionId": "tegy62vbkxgbnp3",
             "cascadeDelete": false
           }
         }
@@ -436,6 +514,72 @@
         },
         {
           "Id": "2oicknyy",
+          "Name": "win_arm64",
+          "Type": "text",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "min": null,
+            "max": null,
+            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "tegy62vbkxgbnp3",
+      "Created": "2023/01/16 23:39:00",
+      "Updated": "2023/01/16 23:39:00",
+      "Name": "checksum",
+      "System": false,
+      "ListRule": null,
+      "ViewRule": null,
+      "CreateRule": null,
+      "UpdateRule": null,
+      "DeleteRule": null,
+      "Schema": [
+        {
+          "Id": "xfeziqlb",
+          "Name": "win_x86",
+          "Type": "text",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "min": null,
+            "max": null,
+            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
+          }
+        },
+        {
+          "Id": "pwf9bwxs",
+          "Name": "win_x64",
+          "Type": "text",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "min": null,
+            "max": null,
+            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
+          }
+        },
+        {
+          "Id": "qtynwwos",
+          "Name": "win_arm",
+          "Type": "text",
+          "System": false,
+          "Required": false,
+          "Unique": false,
+          "Options": {
+            "min": null,
+            "max": null,
+            "pattern": "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\\\\u002B~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\\u002B.~#?\u0026\\/=]*)$"
+          }
+        },
+        {
+          "Id": "go9gtjqi",
           "Name": "win_arm64",
           "Type": "text",
           "System": false,

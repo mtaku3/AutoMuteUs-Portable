@@ -12,20 +12,20 @@ using PocketBaseClient.Orm.Filters;
 
 namespace AutoMuteUsPortable.PocketBaseClient.Models;
 
-public partial class Executor
+public partial class Checksum
 {
     public class Filters : ItemBaseFilters
     {
-        /// <summary> Gets a Filter to Query data over the 'version' field in PocketBase </summary>
-        public FieldFilterText Version => new("version");
+        /// <summary> Gets a Filter to Query data over the 'win_x86' field in PocketBase </summary>
+        public FieldFilterText WinX86 => new("win_x86");
 
-        /// <summary> Gets a Filter to Query data over the 'type' field in PocketBase </summary>
-        public FieldFilterEnum<TypeEnum> Type => new("type");
+        /// <summary> Gets a Filter to Query data over the 'win_x64' field in PocketBase </summary>
+        public FieldFilterText WinX64 => new("win_x64");
 
-        /// <summary> Gets a Filter to Query data over the 'download_url' field in PocketBase </summary>
-        public FieldFilterItem<DownloadUrl> DownloadUrl => new("download_url");
+        /// <summary> Gets a Filter to Query data over the 'win_arm' field in PocketBase </summary>
+        public FieldFilterText WinArm => new("win_arm");
 
-        /// <summary> Gets a Filter to Query data over the 'checksum' field in PocketBase </summary>
-        public FieldFilterItem<Checksum> Checksum => new("checksum");
+        /// <summary> Gets a Filter to Query data over the 'win_arm64' field in PocketBase </summary>
+        public FieldFilterText WinArm64 => new("win_arm64");
     }
 }

@@ -12,17 +12,20 @@ using PocketBaseClient.Orm.Filters;
 
 namespace AutoMuteUsPortable.PocketBaseClient.Models;
 
-public partial class AppUpdator
+public partial class Checksum
 {
-    public class Filters : ItemBaseFilters
+    public class Sorts : ItemBaseSorts
     {
-        /// <summary> Gets a Filter to Query data over the 'version' field in PocketBase </summary>
-        public FieldFilterText Version => new("version");
+        /// <summary>Makes a SortCommand to Order by the 'win_x86' field</summary>
+        public SortCommand WinX86 => new("win_x86");
 
-        /// <summary> Gets a Filter to Query data over the 'download_url' field in PocketBase </summary>
-        public FieldFilterItem<DownloadUrl> DownloadUrl => new("download_url");
+        /// <summary>Makes a SortCommand to Order by the 'win_x64' field</summary>
+        public SortCommand WinX64 => new("win_x64");
 
-        /// <summary> Gets a Filter to Query data over the 'checksum' field in PocketBase </summary>
-        public FieldFilterItem<Checksum> Checksum => new("checksum");
+        /// <summary>Makes a SortCommand to Order by the 'win_arm' field</summary>
+        public SortCommand WinArm => new("win_arm");
+
+        /// <summary>Makes a SortCommand to Order by the 'win_arm64' field</summary>
+        public SortCommand WinArm64 => new("win_arm64");
     }
 }

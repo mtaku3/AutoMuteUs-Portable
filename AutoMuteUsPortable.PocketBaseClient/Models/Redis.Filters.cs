@@ -24,5 +24,8 @@ public partial class Redis
 
         /// <summary> Gets a Filter to Query data over the 'download_url' field in PocketBase </summary>
         public FieldFilterItem<DownloadUrl> DownloadUrl => new("download_url");
+
+        /// <summary> Gets a Filter to Query data over the 'checksum' field in PocketBase </summary>
+        public FieldFilterItem<Checksum> Checksum => new("checksum");
     }
 }
