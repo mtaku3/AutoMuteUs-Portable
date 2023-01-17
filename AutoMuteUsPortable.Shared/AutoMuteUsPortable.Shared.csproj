@@ -44,4 +44,8 @@
         </EmbeddedResource>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\AutoMuteUsPortable.PocketBaseClient\AutoMuteUsPortable.PocketBaseClient.csproj" />
+    </ItemGroup>
+
 </Project>
