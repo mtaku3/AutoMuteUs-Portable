@@ -1,0 +1,41 @@
+using Standart.Hash.xxHash;
+
+namespace AutoMuteUsPortable.Shared.Utility;
+
+public static partial class Utils
+{
+    public static Dictionary<string, ulong> ParseChecksumText(string txt)
+    {
+        var lines = txt.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+        var res = new Dictionary<string, ulong>();
+        foreach (var line in lines)
+            if (18 < line.Length)
+            {
+                var checksum = line.Substring(0, 16);
+                var fileName = line.Substring(17);
+                res[fileName] = Convert.ToUInt64(checksum, 16);
+            }
+
+        return res;
+    }
+
+    public static List<string> CompareChecksum(string root, Dictionary<string, ulong> checksum)
+    {
+        var ret = new List<string>();
+
+        foreach (var item in checksum)
+        {
+            if (!File.Exists(item.Key))
+            {
+                ret.Add(item.Key);
+                continue;
+            }
+
+            var bytes = File.ReadAllBytes(item.Key);
+            var computedChecksum = xxHash64.ComputeHash(bytes);
+            if (computedChecksum != item.Value) ret.Add(item.Key);
+        }
+
+        return ret;
+    }
+}
