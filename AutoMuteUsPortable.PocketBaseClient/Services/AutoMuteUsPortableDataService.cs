@@ -17,7 +17,7 @@ public class AutoMuteUsPortableDataService : DataServiceBase
 {
     #region Constructor
 
-    public AutoMuteUsPortableDataService(PocketBaseClientApplication app) : base(app)
+    public AutoMuteUsPortableDataService(global::PocketBaseClient.PocketBaseClientApplication app) : base(app)
     {
         // Collections
         ExecutorCollection = new CollectionExecutor(this);

@@ -90,7 +90,7 @@ public partial class Executor : ItemBase
     /// <summary> Maps to 'download_url' field in PocketBase </summary>
     [JsonPropertyName("download_url")]
     [PocketBaseField("b5txfun2", "download_url", false, false, false, "relation")]
-    [Display(Name = "Download_url")]
+    [Display(Name = "Download url")]
     [JsonConverter(typeof(RelationConverter<DownloadUrl>))]
     public DownloadUrl? DownloadUrl
     {

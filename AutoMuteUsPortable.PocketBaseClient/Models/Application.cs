@@ -104,7 +104,7 @@ public partial class Application : ItemBase
     /// <summary> Maps to 'download_url' field in PocketBase </summary>
     [JsonPropertyName("download_url")]
     [PocketBaseField("gtc97rof", "download_url", false, false, false, "relation")]
-    [Display(Name = "Download_url")]
+    [Display(Name = "Download url")]
     [JsonConverter(typeof(RelationConverter<DownloadUrl>))]
     public DownloadUrl? DownloadUrl
     {

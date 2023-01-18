@@ -58,7 +58,7 @@ public partial class Checksum : ItemBase
     /// <summary> Maps to 'win_x86' field in PocketBase </summary>
     [JsonPropertyName("win_x86")]
     [PocketBaseField("xfeziqlb", "win_x86", false, false, false, "text")]
-    [Display(Name = "Win_x86")]
+    [Display(Name = "Win x86")]
     [RegularExpression(
         @"^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$",
         ErrorMessage =
@@ -74,7 +74,7 @@ public partial class Checksum : ItemBase
     /// <summary> Maps to 'win_x64' field in PocketBase </summary>
     [JsonPropertyName("win_x64")]
     [PocketBaseField("pwf9bwxs", "win_x64", false, false, false, "text")]
-    [Display(Name = "Win_x64")]
+    [Display(Name = "Win x64")]
     [RegularExpression(
         @"^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$",
         ErrorMessage =
@@ -90,7 +90,7 @@ public partial class Checksum : ItemBase
     /// <summary> Maps to 'win_arm' field in PocketBase </summary>
     [JsonPropertyName("win_arm")]
     [PocketBaseField("qtynwwos", "win_arm", false, false, false, "text")]
-    [Display(Name = "Win_arm")]
+    [Display(Name = "Win arm")]
     [RegularExpression(
         @"^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$",
         ErrorMessage =
@@ -106,7 +106,7 @@ public partial class Checksum : ItemBase
     /// <summary> Maps to 'win_arm64' field in PocketBase </summary>
     [JsonPropertyName("win_arm64")]
     [PocketBaseField("go9gtjqi", "win_arm64", false, false, false, "text")]
-    [Display(Name = "Win_arm64")]
+    [Display(Name = "Win arm64")]
     [RegularExpression(
         @"^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$",
         ErrorMessage =
