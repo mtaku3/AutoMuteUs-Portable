@@ -17,16 +17,18 @@ public static partial class Utils
             isValid = false;
         }
 
-        isValid = Regex.IsMatch(path, @"^[a-zA-Z]\:\\([^<>:""/\\|?*\.]+\\)*$");
+        isValid = Regex.IsMatch(path, @"^[a-zA-Z]\:(/|\\)([^<>:""/\\|?*]+(/|\\))*([^<>:""/\\|?*]+)?$");
 
-        if (allowRelativePath) isValid |= Regex.IsMatch(path, @"^(\.\\|(\.\.\\)+)([^<>:""/\\|?*\.]+\\)*$");
+        if (allowRelativePath)
+            isValid |= Regex.IsMatch(path, @"^(\.(/|\\)|(\.\.(/|\\))+)([^<>:""/\\|?*]+(/|\\))*([^<>:""/\\|?*]+)?$");
 
         return isValid;
     }
 
-    public static bool ValidateFilePath(string path, string extension = "", bool allowRelativePath = false)
+    public static bool ValidateFilePath(string path, string? extension, bool allowRelativePath = false)
     {
         var isValid = true;
+        extension = extension != null ? $@"\.{extension}" : "";
 
         try
         {
@@ -38,17 +40,12 @@ public static partial class Utils
         }
 
         isValid = Regex.IsMatch(path,
-            @"^[a-zA-Z]\:\\([^<>:""/\\|?*\.]+\\)*([^<>:""/\\|?*\.]+" + extension + ")$");
+            $@"^[a-zA-Z]\:(/|\\)([^<>:""/\\|?*]+(/|\\))*([^<>:""/\\|?*]+){extension}$");
 
         if (allowRelativePath)
             isValid |= Regex.IsMatch(path,
-                @"^(\.\\|(\.\.\\)+)([^<>:""/\\|?*\.]+\\)*([^<>:""/\\|?*\.]+" + extension + ")$");
+                $@"^(\.(/|\\)|(\.\.(/|\\))+)([^<>:""/\\|?*]+(/|\\))*([^<>:""/\\|?*]+{extension})$");
 
         return isValid;
-    }
-
-    public static bool ValidateSHA256(string str)
-    {
-        return Regex.IsMatch(str, @"^[A-Fa-f0-9]{64}$");
     }
 }
