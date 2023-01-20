@@ -8,8 +8,16 @@ namespace AutoMuteUsPortable.Core.Infrastructure.Config;
 
 public class ConfigRepository : IConfigRepository
 {
+    private readonly string _executablePath;
     private List<Entity.ConfigNS.Config> _configs = new();
     private string _filePath = "";
+
+    public ConfigRepository(string executablePath)
+    {
+        _executablePath = executablePath;
+    }
+
+    public Entity.ConfigNS.Config ActiveConfig => FindUnique(_executablePath)!;
 
     public void Load(string filePath)
     {

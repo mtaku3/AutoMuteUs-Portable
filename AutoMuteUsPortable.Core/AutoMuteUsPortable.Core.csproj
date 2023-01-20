@@ -22,6 +22,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="McMaster.NETCore.Plugins" Version="2.0.0-beta.130" />
         <PackageReference Include="MinVer" Version="4.3.0-beta.1">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -29,6 +30,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\AutoMuteUsPortable.PocketBaseClient\AutoMuteUsPortable.PocketBaseClient.csproj" />
         <ProjectReference Include="..\AutoMuteUsPortable.Shared\AutoMuteUsPortable.Shared.csproj" />
     </ItemGroup>
 

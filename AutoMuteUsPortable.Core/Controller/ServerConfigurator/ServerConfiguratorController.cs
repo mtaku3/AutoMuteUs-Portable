@@ -1,20 +1,32 @@
 ﻿using System.Net.NetworkInformation;
 using System.Reflection;
-using System.Runtime.Loader;
+using System.Text;
 using AutoMuteUsPortable.Core.Entity.ComputedSimpleSettingsNS;
 using AutoMuteUsPortable.Core.Entity.ConfigNS;
+using AutoMuteUsPortable.PocketBaseClient;
 using AutoMuteUsPortable.Shared.Controller.Executor;
 using AutoMuteUsPortable.Shared.Entity.ExecutorConfigurationBaseNS;
+using McMaster.NETCore.Plugins;
+using Standart.Hash.xxHash;
+using Utils = AutoMuteUsPortable.Shared.Utility.Utils;
 
 namespace AutoMuteUsPortable.Core.Controller.ServerConfigurator;
 
 public class ServerConfiguratorController
 {
-    public readonly Config Config;
-    public Dictionary<ExecutorType, AssemblyLoadContext> assemblyLoadContexts { get; } = new();
+    private readonly Config _config;
+    private readonly PocketBaseClientApplication _pocketBaseClientApplication;
+
+    public ServerConfiguratorController(Config config, PocketBaseClientApplication pocketBaseClientApplication)
+    {
+        _config = config;
+        _pocketBaseClientApplication = pocketBaseClientApplication;
+    }
+
+    public Dictionary<ExecutorType, PluginLoader> pluginLoaders { get; } = new();
     public Dictionary<ExecutorType, ExecutorControllerBase> executors { get; } = new();
 
-    private bool IsUsingSimpleSettings => Config.serverConfiguration.simpleSettings != null;
+    private bool IsUsingSimpleSettings => _config.serverConfiguration.simpleSettings != null;
 
     public async Task Run()
     {
@@ -72,9 +84,9 @@ public class ServerConfiguratorController
 
         var settings = new ComputedSimpleSettings
         {
-            discordToken = Config.serverConfiguration.simpleSettings!.discordToken,
-            executorConfigurations = Config.serverConfiguration.simpleSettings.executorConfigurations,
-            postgresql = Config.serverConfiguration.simpleSettings.postgresql,
+            discordToken = _config.serverConfiguration.simpleSettings!.discordToken,
+            executorConfigurations = _config.serverConfiguration.simpleSettings.executorConfigurations,
+            postgresql = _config.serverConfiguration.simpleSettings.postgresql,
             port = new Port
             {
                 galactus = determinedPorts["galactus"],
@@ -90,10 +102,37 @@ public class ServerConfiguratorController
 
         foreach (var executorConfiguration in settings.executorConfigurations)
         {
-            var assemblyPath = Path.Combine(Config.installedDirectory, @"Executors\");
-            var alc = new AssemblyLoadContext(executorConfiguration.type.ToString(), true);
-            var assembly = alc.LoadFromAssemblyPath(assemblyPath);
-            assemblyLoadContexts.Add(executorConfiguration.type, alc);
+            #region Compare checksum
+
+            var executor =
+                _pocketBaseClientApplication.Data.ExecutorCollection.FirstOrDefault(x =>
+                    x.Type.ToString()?.ToLower() == executorConfiguration.type.ToString() &&
+                    x.Version == executorConfiguration.version);
+            if (executor == null)
+                throw new InvalidOperationException(
+                    $"{executorConfiguration.type} Executor {executorConfiguration.version} is not found in the database");
+
+            var checksumUrl = Utils.GetChecksum(executor.Checksum);
+            if (string.IsNullOrEmpty(checksumUrl)) throw new InvalidDataException("Checksum cannot be null or empty");
+
+            using (var client = new HttpClient())
+            {
+                var res = await client.GetStringAsync(checksumUrl);
+                var invalidFiles = Utils.CompareChecksum(executorConfiguration.binaryDirectory,
+                    Utils.ParseChecksumText(res));
+                if (0 < invalidFiles.Count)
+                    await DownloadExecutor(_config.installedDirectory, executorConfiguration.type.ToString(),
+                        executorConfiguration.version);
+            }
+
+            #endregion
+
+            var assemblyPath = Path.Combine(_config.installedDirectory,
+                $@"Executors\{EncodeExecutorDirectory(executorConfiguration.type.ToString(), executorConfiguration.version)}\AutoMuteUsPortable.Executor.dll");
+            var pluginLoader = PluginLoader.CreateFromAssemblyFile(
+                assemblyPath, true, new[] { typeof(ExecutorControllerBase) });
+            var assembly = pluginLoader.LoadDefaultAssembly();
+            pluginLoaders.Add(executorConfiguration.type, pluginLoader);
 
             var constructorArgs = new object[]
             {
@@ -125,12 +164,39 @@ public class ServerConfiguratorController
     {
         #region Load assembly, create instance of ExecutorController and run
 
-        foreach (var executorConfiguration in Config.serverConfiguration.advancedSettings!)
+        foreach (var executorConfiguration in _config.serverConfiguration.advancedSettings!)
         {
-            var assemblyPath = Path.Combine(Config.installedDirectory, @"Executors\");
-            var alc = new AssemblyLoadContext(executorConfiguration.type.ToString(), true);
-            var assembly = alc.LoadFromAssemblyPath(assemblyPath);
-            assemblyLoadContexts.Add(executorConfiguration.type, alc);
+            #region Compare checksum
+
+            var executor =
+                _pocketBaseClientApplication.Data.ExecutorCollection.FirstOrDefault(x =>
+                    x.Type.ToString()?.ToLower() == executorConfiguration.type.ToString() &&
+                    x.Version == executorConfiguration.version);
+            if (executor == null)
+                throw new InvalidOperationException(
+                    $"{executorConfiguration.type} Executor {executorConfiguration.version} is not found in the database");
+
+            var checksumUrl = Utils.GetChecksum(executor.Checksum);
+            if (string.IsNullOrEmpty(checksumUrl)) throw new InvalidDataException("Checksum cannot be null or empty");
+
+            using (var client = new HttpClient())
+            {
+                var res = await client.GetStringAsync(checksumUrl);
+                var invalidFiles = Utils.CompareChecksum(executorConfiguration.binaryDirectory,
+                    Utils.ParseChecksumText(res));
+                if (0 < invalidFiles.Count)
+                    await DownloadExecutor(_config.installedDirectory, executorConfiguration.type.ToString(),
+                        executorConfiguration.version);
+            }
+
+            #endregion
+
+            var assemblyPath = Path.Combine(_config.installedDirectory,
+                $@"Executors\{EncodeExecutorDirectory(executorConfiguration.type.ToString(), executorConfiguration.version)}\AutoMuteUsPortable.Executor.dll");
+            var pluginLoader = PluginLoader.CreateFromAssemblyFile(
+                assemblyPath, true, new[] { typeof(ExecutorControllerBase) });
+            var assembly = pluginLoader.LoadDefaultAssembly();
+            pluginLoaders.Add(executorConfiguration.type, pluginLoader);
 
             var constructorArgs = new object[]
             {
@@ -170,7 +236,11 @@ public class ServerConfiguratorController
         #region Unload assemblies
 
         executors.Clear();
-        foreach (var alc in assemblyLoadContexts.Values) alc.Unload();
+        foreach (var (type, pluginLoader) in pluginLoaders)
+        {
+            pluginLoaders.Remove(type);
+            pluginLoader.Dispose();
+        }
 
         #endregion
     }
@@ -179,7 +249,7 @@ public class ServerConfiguratorController
     {
         #region Stop servers
 
-        foreach (var executorConfiguration in Config.serverConfiguration.advancedSettings!)
+        foreach (var executorConfiguration in _config.serverConfiguration.advancedSettings!)
             await executors[executorConfiguration.type].Stop();
 
         #endregion
@@ -187,7 +257,11 @@ public class ServerConfiguratorController
         #region Unload assemblies
 
         executors.Clear();
-        foreach (var alc in assemblyLoadContexts.Values) alc.Unload();
+        foreach (var (type, pluginLoader) in pluginLoaders)
+        {
+            pluginLoaders.Remove(type);
+            pluginLoader.Dispose();
+        }
 
         #endregion
     }
@@ -202,6 +276,41 @@ public class ServerConfiguratorController
     {
         if (IsUsingSimpleSettings) await InstallBySimpleSettings();
         else await InstallByAdvancedSettings();
+    }
+
+    private async Task DownloadExecutor(string installedDirectory, string type, string version)
+    {
+        #region Retrieve data from PocketBase
+
+        var executor =
+            _pocketBaseClientApplication.Data.ExecutorCollection.FirstOrDefault(x =>
+                x.Type.ToString()?.ToLower() == type && x.Version == version);
+        if (executor == null)
+            throw new InvalidOperationException($"{type} Executor {version} is not found in the database");
+        var downloadUrl = Utils.GetDownloadUrl(executor.DownloadUrl);
+        if (string.IsNullOrEmpty(downloadUrl))
+            throw new InvalidDataException("DownloadUrl cannot be null or empty");
+
+        #endregion
+
+        #region Download and extract
+
+        var executorDirectory =
+            Path.Combine(installedDirectory, $@"Executors\{EncodeExecutorDirectory(type, version)}");
+        if (!Directory.Exists(executorDirectory)) Directory.CreateDirectory(executorDirectory);
+        var binaryPath = Path.Combine(executorDirectory,
+            Path.GetFileName(downloadUrl));
+
+        await Utils.DownloadAsync(downloadUrl, binaryPath);
+        Utils.ExtractZip(binaryPath);
+
+        #endregion
+    }
+
+    private string EncodeExecutorDirectory(string type, string version)
+    {
+        var bytes = Encoding.UTF8.GetBytes($"{type} {version}");
+        return xxHash3.ComputeHash(bytes, bytes.Length).ToString("x16");
     }
 
     private async Task InstallBySimpleSettings()
@@ -254,9 +363,9 @@ public class ServerConfiguratorController
 
         var settings = new ComputedSimpleSettings
         {
-            discordToken = Config.serverConfiguration.simpleSettings!.discordToken,
-            executorConfigurations = Config.serverConfiguration.simpleSettings.executorConfigurations,
-            postgresql = Config.serverConfiguration.simpleSettings.postgresql,
+            discordToken = _config.serverConfiguration.simpleSettings!.discordToken,
+            executorConfigurations = _config.serverConfiguration.simpleSettings.executorConfigurations,
+            postgresql = _config.serverConfiguration.simpleSettings.postgresql,
             port = new Port
             {
                 galactus = determinedPorts["galactus"],
@@ -272,10 +381,15 @@ public class ServerConfiguratorController
 
         foreach (var executorConfiguration in settings.executorConfigurations)
         {
-            var assemblyPath = Path.Combine(Config.installedDirectory, @"Executors\");
-            var alc = new AssemblyLoadContext(executorConfiguration.type.ToString(), true);
-            var assembly = alc.LoadFromAssemblyPath(assemblyPath);
-            assemblyLoadContexts.Add(executorConfiguration.type, alc);
+            await DownloadExecutor(_config.installedDirectory, executorConfiguration.type.ToString(),
+                executorConfiguration.version);
+
+            var assemblyPath = Path.Combine(_config.installedDirectory,
+                $@"Executors\{EncodeExecutorDirectory(executorConfiguration.type.ToString(), executorConfiguration.version)}\AutoMuteUsPortable.Executor.dll");
+            var pluginLoader = PluginLoader.CreateFromAssemblyFile(
+                assemblyPath, true, new[] { typeof(ExecutorControllerBase) });
+            var assembly = pluginLoader.LoadDefaultAssembly();
+            pluginLoaders.Add(executorConfiguration.type, pluginLoader);
 
             var constructorArgs = new object[]
             {
@@ -305,7 +419,11 @@ public class ServerConfiguratorController
         #region Unload assemblies
 
         executors.Clear();
-        foreach (var alc in assemblyLoadContexts.Values) alc.Unload();
+        foreach (var (type, pluginLoader) in pluginLoaders)
+        {
+            pluginLoaders.Remove(type);
+            pluginLoader.Dispose();
+        }
 
         #endregion
     }
@@ -314,12 +432,17 @@ public class ServerConfiguratorController
     {
         #region Load assembly, create instance of ExecutorController and install
 
-        foreach (var executorConfiguration in Config.serverConfiguration.advancedSettings!)
+        foreach (var executorConfiguration in _config.serverConfiguration.advancedSettings!)
         {
-            var assemblyPath = Path.Combine(Config.installedDirectory, @"Executors\");
-            var alc = new AssemblyLoadContext(executorConfiguration.type.ToString(), true);
-            var assembly = alc.LoadFromAssemblyPath(assemblyPath);
-            assemblyLoadContexts.Add(executorConfiguration.type, alc);
+            await DownloadExecutor(_config.installedDirectory, executorConfiguration.type.ToString(),
+                executorConfiguration.version);
+
+            var assemblyPath = Path.Combine(_config.installedDirectory,
+                $@"Executors\{EncodeExecutorDirectory(executorConfiguration.type.ToString(), executorConfiguration.version)}\AutoMuteUsPortable.Executor.dll");
+            var pluginLoader = PluginLoader.CreateFromAssemblyFile(
+                assemblyPath, true, new[] { typeof(ExecutorControllerBase) });
+            var assembly = pluginLoader.LoadDefaultAssembly();
+            pluginLoaders.Add(executorConfiguration.type, pluginLoader);
 
             var constructorArgs = new object[]
             {
@@ -341,7 +464,11 @@ public class ServerConfiguratorController
         #region Unload assemblies
 
         executors.Clear();
-        foreach (var alc in assemblyLoadContexts.Values) alc.Unload();
+        foreach (var (type, pluginLoader) in pluginLoaders)
+        {
+            pluginLoaders.Remove(type);
+            pluginLoader.Dispose();
+        }
 
         #endregion
     }
