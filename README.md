@@ -18,7 +18,7 @@ Note that this is not AmongUsCapture. this is its server side ✊
 
 ## Update Information
 
-I'll be posting updates on [Twitter(@DYZdK2oir7Pm)](https://twitter.com/DYZdK2oir7Pm) as they become available. Please follow me.
+I'll be posting updates on [Twitter(@automuteusptbl)](https://twitter.com/automuteusptbl) as they become available. Please follow me.
 
 Also, please feel free to contact me if you have any questions or problems.
 

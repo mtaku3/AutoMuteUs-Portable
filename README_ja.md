@@ -18,7 +18,7 @@ note に詳細の記事を作成しました！[こちら](https://note.com/mtak
 
 ## アップデート情報
 
-[Twitter(@DYZdK2oir7Pm)](https://twitter.com/DYZdK2oir7Pm)にて随時アップデート情報を配信しています。是非フォローお願いいたします。
+[Twitter(@automuteusptbl)](https://twitter.com/automuteusptbl)にて随時アップデート情報を配信しています。是非フォローお願いいたします。
 
 また、質問や不具合についてもお気軽にお問い合わせください。
 
