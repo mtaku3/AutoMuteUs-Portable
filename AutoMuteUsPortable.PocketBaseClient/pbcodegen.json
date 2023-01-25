@@ -464,7 +464,7 @@
     {
       "Id": "w6u17m2jdh3pu7w",
       "Created": "2023/01/15 21:42:23",
-      "Updated": "2023/01/15 22:01:27",
+      "Updated": "2023/01/19 23:39:58",
       "Name": "downloadUrl",
       "System": false,
       "ListRule": "",
@@ -530,11 +530,11 @@
     {
       "Id": "tegy62vbkxgbnp3",
       "Created": "2023/01/16 23:39:00",
-      "Updated": "2023/01/16 23:39:00",
+      "Updated": "2023/01/19 23:39:51",
       "Name": "checksum",
       "System": false,
-      "ListRule": null,
-      "ViewRule": null,
+      "ListRule": "",
+      "ViewRule": "",
       "CreateRule": null,
       "UpdateRule": null,
       "DeleteRule": null,

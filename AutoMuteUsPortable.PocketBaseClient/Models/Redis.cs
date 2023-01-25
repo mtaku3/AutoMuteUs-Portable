@@ -118,7 +118,7 @@ public partial class Redis : ItemBase
 
     public static Redis? GetById(string id, bool reload = false)
     {
-        return GetByIdAsync(id, reload).Result;
+        return Task.Run(async () => await GetByIdAsync(id, reload)).GetAwaiter().GetResult();
     }
 
     public static async Task<Redis?> GetByIdAsync(string id, bool reload = false)

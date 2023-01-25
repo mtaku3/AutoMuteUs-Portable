@@ -123,7 +123,7 @@ public partial class DownloadUrl : ItemBase
 
     public static DownloadUrl? GetById(string id, bool reload = false)
     {
-        return GetByIdAsync(id, reload).Result;
+        return Task.Run(async () => await GetByIdAsync(id, reload)).GetAwaiter().GetResult();
     }
 
     public static async Task<DownloadUrl?> GetByIdAsync(string id, bool reload = false)

@@ -117,7 +117,7 @@ public partial class Executor : ItemBase
 
     public static Executor? GetById(string id, bool reload = false)
     {
-        return GetByIdAsync(id, reload).Result;
+        return Task.Run(async () => await GetByIdAsync(id, reload)).GetAwaiter().GetResult();
     }
 
     public static async Task<Executor?> GetByIdAsync(string id, bool reload = false)

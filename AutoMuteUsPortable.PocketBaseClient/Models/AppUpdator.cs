@@ -102,7 +102,7 @@ public partial class AppUpdator : ItemBase
 
     public static AppUpdator? GetById(string id, bool reload = false)
     {
-        return GetByIdAsync(id, reload).Result;
+        return Task.Run(async () => await GetByIdAsync(id, reload)).GetAwaiter().GetResult();
     }
 
     public static async Task<AppUpdator?> GetByIdAsync(string id, bool reload = false)

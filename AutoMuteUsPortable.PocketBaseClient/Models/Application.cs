@@ -118,7 +118,7 @@ public partial class Application : ItemBase
 
     public static Application? GetById(string id, bool reload = false)
     {
-        return GetByIdAsync(id, reload).Result;
+        return Task.Run(async () => await GetByIdAsync(id, reload)).GetAwaiter().GetResult();
     }
 
     public static async Task<Application?> GetByIdAsync(string id, bool reload = false)

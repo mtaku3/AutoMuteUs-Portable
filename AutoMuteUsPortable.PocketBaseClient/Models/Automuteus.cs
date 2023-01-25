@@ -118,7 +118,7 @@ public partial class Automuteus : ItemBase
 
     public static Automuteus? GetById(string id, bool reload = false)
     {
-        return GetByIdAsync(id, reload).Result;
+        return Task.Run(async () => await GetByIdAsync(id, reload)).GetAwaiter().GetResult();
     }
 
     public static async Task<Automuteus?> GetByIdAsync(string id, bool reload = false)
