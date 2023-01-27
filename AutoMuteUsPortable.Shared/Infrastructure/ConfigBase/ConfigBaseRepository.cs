@@ -8,8 +8,8 @@ namespace AutoMuteUsPortable.Shared.Infrastructure.ConfigBase;
 
 public class ConfigBaseRepository : IConfigBaseRepository
 {
-    private List<Entity.ConfigBaseNS.ConfigBase> _configBases = new();
     private string _filePath = "";
+    public List<Entity.ConfigBaseNS.ConfigBase> ConfigBases { get; private set; } = new();
 
     public void LoadOrCreateDefault(string filePath)
     {
@@ -22,22 +22,22 @@ public class ConfigBaseRepository : IConfigBaseRepository
         validator.ValidateAndThrow(configBases);
 
         _filePath = filePath;
-        _configBases = configBases;
+        ConfigBases = configBases;
     }
 
     public Entity.ConfigBaseNS.ConfigBase? FindUnique(string executableFilePath)
     {
-        return _configBases.FirstOrDefault(x => x.executableFilePath == executableFilePath);
+        return ConfigBases.FirstOrDefault(x => x.executableFilePath == executableFilePath);
     }
 
     public void Update(string executableFilePath, Entity.ConfigBaseNS.ConfigBase config)
     {
         int idx;
 
-        if ((idx = _configBases.FindIndex(x => x.executableFilePath == executableFilePath)) == -1)
+        if ((idx = ConfigBases.FindIndex(x => x.executableFilePath == executableFilePath)) == -1)
             throw new KeyNotFoundException($"ConfigBase with executableFilePath {executableFilePath} is not found");
 
-        var configBases = new List<Entity.ConfigBaseNS.ConfigBase>(_configBases);
+        var configBases = new List<Entity.ConfigBaseNS.ConfigBase>(ConfigBases);
         configBases[idx] = config;
 
         var validator = new ListValidator<Entity.ConfigBaseNS.ConfigBase>(new ConfigBaseValidator());
@@ -46,17 +46,17 @@ public class ConfigBaseRepository : IConfigBaseRepository
         var text = JsonSerializer.Serialize(configBases, Utils.CustomJsonSerializerOptions);
         File.WriteAllText(_filePath, text);
 
-        _configBases = configBases;
+        ConfigBases = configBases;
     }
 
     public void Delete(string executableFilePath)
     {
         int idx;
 
-        if ((idx = _configBases.FindIndex(x => x.executableFilePath == executableFilePath)) == -1)
+        if ((idx = ConfigBases.FindIndex(x => x.executableFilePath == executableFilePath)) == -1)
             throw new KeyNotFoundException($"ConfigBase with executableFilePath {executableFilePath} is not found");
 
-        var configBases = new List<Entity.ConfigBaseNS.ConfigBase>(_configBases);
+        var configBases = new List<Entity.ConfigBaseNS.ConfigBase>(ConfigBases);
         configBases.RemoveAt(idx);
 
         var validator = new ListValidator<Entity.ConfigBaseNS.ConfigBase>(new ConfigBaseValidator());
@@ -65,6 +65,6 @@ public class ConfigBaseRepository : IConfigBaseRepository
         var text = JsonSerializer.Serialize(configBases, Utils.CustomJsonSerializerOptions);
         File.WriteAllText(_filePath, text);
 
-        _configBases = configBases;
+        ConfigBases = configBases;
     }
 }
