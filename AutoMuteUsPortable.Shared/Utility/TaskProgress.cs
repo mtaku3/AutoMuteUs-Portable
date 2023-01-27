@@ -10,6 +10,8 @@ public class TaskProgress
     private object? _progress;
     private int _taskIdx = -1;
 
+    public string Name = "";
+
     public TaskProgress(ISubject<ProgressInfo> progress)
     {
         _progress = progress;
@@ -55,8 +57,6 @@ public class TaskProgress
             if (IsCompleted) DisposeProgress();
         }
     }
-
-    public string Name { get; init; } = "";
 
     public bool IsRoot => Parent == null;
     public bool IsLeafNode => Tasks.Count == 0;
