@@ -64,6 +64,18 @@ public class TaskProgress
     public bool IsActive => IsRoot || Parent!.Task == this;
     public TaskProgress? Task => taskIdx == -1 || Tasks.Count <= taskIdx ? null : Tasks[taskIdx];
 
+    public TaskProgress? ActiveLeafTask
+    {
+        get
+        {
+            if (!IsActive) return null;
+            if (IsCompleted) return null;
+            if (!IsRoot && IsLeafNode) return this;
+
+            return Task?.ActiveLeafTask;
+        }
+    }
+
     private void InitializeTasks(Dictionary<string, object?> tasks)
     {
         foreach (var (key, value) in tasks)
