@@ -306,6 +306,7 @@ public class TaskProgress
 
     private void DisposeProgress()
     {
+        if (IsRoot) return;
         if (_progress is Subject<ProgressInfo> progress1) progress1.Dispose();
         else if (_progress is Progress<double> progress2) progress2.ProgressChanged -= HandleProgressChanged;
     }
