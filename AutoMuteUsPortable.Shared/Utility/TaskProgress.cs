@@ -143,6 +143,12 @@ public class TaskProgress
             });
     }
 
+    public void NextTask(int step)
+    {
+        if (!IsRoot) throw new InvalidOperationException("This method can only be called from root task");
+        for (var i = 0; i < step; i++) NextTaskRoot();
+    }
+
     public void NextTask()
     {
         if (IsCompleted) throw new InvalidOperationException("This task is already completed");
