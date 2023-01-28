@@ -1,4 +1,5 @@
 ﻿using System.Net.NetworkInformation;
+using System.Reactive.Subjects;
 using System.Reflection;
 using System.Text;
 using AutoMuteUsPortable.Core.Entity.ComputedSimpleSettingsNS;
@@ -6,6 +7,9 @@ using AutoMuteUsPortable.Core.Entity.ConfigNS;
 using AutoMuteUsPortable.PocketBaseClient;
 using AutoMuteUsPortable.Shared.Controller.Executor;
 using AutoMuteUsPortable.Shared.Entity.ExecutorConfigurationBaseNS;
+using AutoMuteUsPortable.Shared.Entity.ExecutorConfigurationNS;
+using AutoMuteUsPortable.Shared.Entity.ProgressInfo;
+using AutoMuteUsPortable.Shared.Utility;
 using McMaster.NETCore.Plugins;
 using Standart.Hash.xxHash;
 using Utils = AutoMuteUsPortable.Shared.Utility.Utils;
@@ -28,16 +32,42 @@ public class ServerConfiguratorController
 
     private bool IsUsingSimpleSettings => _config.serverConfiguration.simpleSettings != null;
 
-    public async Task Run()
+    public async Task Run(ISubject<ProgressInfo>? progress = null)
     {
-        if (IsUsingSimpleSettings) await RunBySimpleSettings();
-        else await RunByAdvancedSettings();
+        if (IsUsingSimpleSettings) await RunBySimpleSettings(progress);
+        else await RunByAdvancedSettings(progress);
     }
 
-    private async Task RunBySimpleSettings()
+    private async Task RunBySimpleSettings(ISubject<ProgressInfo>? progress = null)
     {
+        #region Setup progress
+
+        var taskProgress = progress != null
+            ? new TaskProgress(progress, new Dictionary<string, object?>
+            {
+                { "Finding listenable ports for executors", null },
+                {
+                    "Load assembly and create instance of ExecutorController",
+                    _config.serverConfiguration.simpleSettings!.executorConfigurations.ToDictionary(
+                        x => $"Loading {x.type} Executor", x => new List<string>
+                        {
+                            $"Checking file integrity of {x.type} Executor",
+                            $"Recovering missing files of {x.type} Executor"
+                        })
+                },
+                {
+                    "Run each executors",
+                    _config.serverConfiguration.simpleSettings!.executorConfigurations
+                        .Select(x => $"Running {x.type}").ToList()
+                }
+            })
+            : null;
+
+        #endregion
+
         #region Find listenable port for executors
 
+        var portProgress = taskProgress?.GetSubjectProgress();
         var ipGlobalProperties = IPGlobalProperties.GetIPGlobalProperties();
         var tcpConnInfoList = ipGlobalProperties.GetActiveTcpListeners().Select(x => x.Port).Distinct().ToList();
         if (tcpConnInfoList == null) throw new InvalidOperationException("Failed to retrieve active tcp listeners");
@@ -69,6 +99,11 @@ public class ServerConfiguratorController
             }
 
             determinedPorts.Add(currentName, currentPort);
+            portProgress?.OnNext(new ProgressInfo
+            {
+                name = "使用可能なポートを検索しています",
+                progress = (double)determinedPorts.Count / defaultPort.Count
+            });
             if (portQueue.Count == 0) break;
 
             var (nextName, nextPort) = portQueue.Dequeue();
@@ -77,6 +112,8 @@ public class ServerConfiguratorController
 
             (currentName, currentPort) = (nextName, nextPort);
         }
+
+        taskProgress?.NextTask();
 
         #endregion
 
@@ -104,6 +141,12 @@ public class ServerConfiguratorController
         {
             #region Compare checksum
 
+            var checksumProgress = taskProgress?.GetSubjectProgress();
+            checksumProgress?.OnNext(new ProgressInfo
+            {
+                name = string.Format("{0}のファイルの整合性を確認しています", executorConfiguration.type),
+                IsIndeterminate = true
+            });
             var executor =
                 _pocketBaseClientApplication.Data.ExecutorCollection.FirstOrDefault(x =>
                     x.Type.ToString()?.ToLower() == executorConfiguration.type.ToString() &&
@@ -120,10 +163,16 @@ public class ServerConfiguratorController
                 var res = await client.GetStringAsync(checksumUrl);
                 var invalidFiles = Utils.CompareChecksum(executorConfiguration.binaryDirectory,
                     Utils.ParseChecksumText(res));
+                taskProgress?.NextTask();
                 if (0 < invalidFiles.Count)
+                {
+                    var downloadProgress = taskProgress?.GetSubjectProgress();
                     await DownloadExecutor(_config.installedDirectory, executorConfiguration.type.ToString(),
-                        executorConfiguration.version);
+                        executorConfiguration.version, downloadProgress);
+                }
             }
+
+            taskProgress?.NextTask();
 
             #endregion
 
@@ -152,22 +201,54 @@ public class ServerConfiguratorController
 
         #region Run each executors
 
-        await executors[ExecutorType.redis].Run();
+        var runProgress = taskProgress?.GetSubjectProgress();
+        await executors[ExecutorType.redis].Run(runProgress);
+        taskProgress?.NextTask();
+
+        runProgress = taskProgress?.GetSubjectProgress();
         await executors[ExecutorType.postgresql].Run();
+        taskProgress?.NextTask();
+
+        runProgress = taskProgress?.GetSubjectProgress();
         await executors[ExecutorType.galactus].Run();
+        taskProgress?.NextTask();
+
+        runProgress = taskProgress?.GetSubjectProgress();
         await executors[ExecutorType.automuteus].Run();
+        taskProgress?.NextTask();
 
         #endregion
     }
 
-    private async Task RunByAdvancedSettings()
+    private async Task RunByAdvancedSettings(ISubject<ProgressInfo>? progress = null)
     {
+        #region Setup progress
+
+        var taskProgress = progress != null
+            ? new TaskProgress(progress,
+                _config.serverConfiguration.advancedSettings!.ToDictionary<ExecutorConfiguration, string, object?>(x =>
+                    $"Loading {x.type} Executor", x => new List<string>
+                {
+                    $"Checking file integrity of {x.type} Executor",
+                    $"Recovering missing files of {x.type} Executor",
+                    $"Running {x.type}"
+                }))
+            : null;
+
+        #endregion
+
         #region Load assembly, create instance of ExecutorController and run
 
         foreach (var executorConfiguration in _config.serverConfiguration.advancedSettings!)
         {
             #region Compare checksum
 
+            var checksumProgress = taskProgress?.GetSubjectProgress();
+            checksumProgress?.OnNext(new ProgressInfo
+            {
+                name = string.Format("{0}のファイルの整合性を確認しています", executorConfiguration.type),
+                IsIndeterminate = true
+            });
             var executor =
                 _pocketBaseClientApplication.Data.ExecutorCollection.FirstOrDefault(x =>
                     x.Type.ToString()?.ToLower() == executorConfiguration.type.ToString() &&
@@ -184,10 +265,16 @@ public class ServerConfiguratorController
                 var res = await client.GetStringAsync(checksumUrl);
                 var invalidFiles = Utils.CompareChecksum(executorConfiguration.binaryDirectory,
                     Utils.ParseChecksumText(res));
+                taskProgress?.NextTask();
                 if (0 < invalidFiles.Count)
+                {
+                    var downloadProgress = taskProgress?.GetSubjectProgress();
                     await DownloadExecutor(_config.installedDirectory, executorConfiguration.type.ToString(),
-                        executorConfiguration.version);
+                        executorConfiguration.version, downloadProgress);
+                }
             }
+
+            taskProgress?.NextTask();
 
             #endregion
 
@@ -210,26 +297,52 @@ public class ServerConfiguratorController
                     $"Failed to create new instance of {executorConfiguration.type.ToString()} ExecutorController");
             executors.Add(executorConfiguration.type, executorController);
 
-            await executorController.Run();
+            var runProgress = taskProgress?.GetSubjectProgress();
+            await executorController.Run(runProgress);
+            taskProgress?.NextTask();
         }
 
         #endregion
     }
 
-    public async Task Stop()
+    public async Task Stop(ISubject<ProgressInfo>? progress = null)
     {
-        if (IsUsingSimpleSettings) await StopBySimpleSettings();
-        else await StopByAdvancedSettings();
+        if (IsUsingSimpleSettings) await StopBySimpleSettings(progress);
+        else await StopByAdvancedSettings(progress);
     }
 
-    private async Task StopBySimpleSettings()
+    private async Task StopBySimpleSettings(ISubject<ProgressInfo>? progress = null)
     {
+        #region Setup progress
+
+        var taskProgress = progress != null
+            ? new TaskProgress(progress, new List<string>
+            {
+                "Stopping automuteus",
+                "Stopping postgresql",
+                "Stopping redis"
+            })
+            : null;
+
+        #endregion
+
         #region Stop servers
 
-        await executors[ExecutorType.automuteus].Stop();
-        await executors[ExecutorType.galactus].Stop();
-        await executors[ExecutorType.postgresql].Stop();
-        await executors[ExecutorType.redis].Stop();
+        var stopProgress = taskProgress?.GetSubjectProgress();
+        await executors[ExecutorType.automuteus].Stop(stopProgress);
+        taskProgress?.NextTask();
+
+        stopProgress = taskProgress?.GetSubjectProgress();
+        await executors[ExecutorType.galactus].Stop(stopProgress);
+        taskProgress?.NextTask();
+
+        stopProgress = taskProgress?.GetSubjectProgress();
+        await executors[ExecutorType.postgresql].Stop(stopProgress);
+        taskProgress?.NextTask();
+
+        stopProgress = taskProgress?.GetSubjectProgress();
+        await executors[ExecutorType.redis].Stop(stopProgress);
+        taskProgress?.NextTask();
 
         #endregion
 
@@ -245,12 +358,25 @@ public class ServerConfiguratorController
         #endregion
     }
 
-    private async Task StopByAdvancedSettings()
+    private async Task StopByAdvancedSettings(ISubject<ProgressInfo>? progress = null)
     {
+        #region Setup progress
+
+        var taskProgress = progress != null
+            ? new TaskProgress(progress,
+                _config.serverConfiguration.advancedSettings!.Select(x => $"Stopping {x.type}").ToList())
+            : null;
+
+        #endregion
+
         #region Stop servers
 
         foreach (var executorConfiguration in _config.serverConfiguration.advancedSettings!)
-            await executors[executorConfiguration.type].Stop();
+        {
+            var stopProgress = taskProgress?.GetSubjectProgress();
+            await executors[executorConfiguration.type].Stop(stopProgress);
+            taskProgress?.NextTask();
+        }
 
         #endregion
 
@@ -266,20 +392,50 @@ public class ServerConfiguratorController
         #endregion
     }
 
-    public async Task Restart()
+    public async Task Restart(ISubject<ProgressInfo>? progress = null)
     {
-        await Stop();
-        await Run();
+        #region Setup progress
+
+        var taskProgress = progress != null
+            ? new TaskProgress(progress, new List<string>
+            {
+                "Stopping",
+                "Restarting"
+            })
+            : null;
+
+        #endregion
+
+        var stopProgress = taskProgress?.GetSubjectProgress();
+        await Stop(stopProgress);
+        taskProgress?.NextTask();
+
+        var runProgress = taskProgress?.GetSubjectProgress();
+        await Run(runProgress);
+        taskProgress?.NextTask();
     }
 
-    public async Task Install()
+    public async Task Install(ISubject<ProgressInfo>? progress = null)
     {
-        if (IsUsingSimpleSettings) await InstallBySimpleSettings();
-        else await InstallByAdvancedSettings();
+        if (IsUsingSimpleSettings) await InstallBySimpleSettings(progress);
+        else await InstallByAdvancedSettings(progress);
     }
 
-    private async Task DownloadExecutor(string installedDirectory, string type, string version)
+    private async Task DownloadExecutor(string installedDirectory, string type, string version,
+        ISubject<ProgressInfo>? progress = null)
     {
+        #region Setup progress
+
+        var taskProgress = progress != null
+            ? new TaskProgress(progress, new List<string>
+            {
+                $"Downloading {type} Executor",
+                $"Extracting {type} Executor"
+            })
+            : null;
+
+        #endregion
+
         #region Retrieve data from PocketBase
 
         var executor =
@@ -301,8 +457,17 @@ public class ServerConfiguratorController
         var binaryPath = Path.Combine(executorDirectory,
             Path.GetFileName(downloadUrl));
 
-        await Utils.DownloadAsync(downloadUrl, binaryPath);
-        Utils.ExtractZip(binaryPath);
+        var downloadProgress = taskProgress?.GetProgress();
+        if (taskProgress?.ActiveLeafTask != null)
+            taskProgress.ActiveLeafTask.Name = string.Format("{0}の実行に必要なファイルをダウンロードしています", executor.Type);
+        await Utils.DownloadAsync(downloadUrl, binaryPath, downloadProgress);
+        taskProgress?.NextTask();
+
+        var extractProgress = taskProgress?.GetProgress();
+        if (taskProgress?.ActiveLeafTask != null)
+            taskProgress.ActiveLeafTask.Name = string.Format("{0}の実行に必要なファイルを解凍しています", executor.Type);
+        Utils.ExtractZip(binaryPath, extractProgress);
+        taskProgress?.NextTask();
 
         #endregion
     }
@@ -313,10 +478,32 @@ public class ServerConfiguratorController
         return xxHash3.ComputeHash(bytes, bytes.Length).ToString("x16");
     }
 
-    private async Task InstallBySimpleSettings()
+    private async Task InstallBySimpleSettings(ISubject<ProgressInfo>? progress = null)
     {
+        #region Setup progress
+
+        var taskProgress = progress != null
+            ? new TaskProgress(progress, new Dictionary<string, object?>
+            {
+                { "Finding listenable ports for executors", null },
+                {
+                    "Load assembly and create instance of ExecutorController",
+                    _config.serverConfiguration.simpleSettings!.executorConfigurations
+                        .Select(x => $"Downloading {x.type} Executor").ToList()
+                },
+                {
+                    "Install executors",
+                    _config.serverConfiguration.simpleSettings!.executorConfigurations
+                        .Select(x => "Installing {x.type}").ToList()
+                }
+            })
+            : null;
+
+        #endregion
+
         #region Find listenable port for executors
 
+        var portProgress = taskProgress?.GetSubjectProgress();
         var ipGlobalProperties = IPGlobalProperties.GetIPGlobalProperties();
         var tcpConnInfoList = ipGlobalProperties.GetActiveTcpListeners().Select(x => x.Port).Distinct().ToList();
         if (tcpConnInfoList == null) throw new InvalidOperationException("Failed to retrieve active tcp listeners");
@@ -348,6 +535,11 @@ public class ServerConfiguratorController
             }
 
             determinedPorts.Add(currentName, currentPort);
+            portProgress?.OnNext(new ProgressInfo
+            {
+                name = "使用可能なポートを検索しています",
+                progress = (double)determinedPorts.Count / defaultPort.Count
+            });
             if (portQueue.Count == 0) break;
 
             var (nextName, nextPort) = portQueue.Dequeue();
@@ -356,6 +548,8 @@ public class ServerConfiguratorController
 
             (currentName, currentPort) = (nextName, nextPort);
         }
+
+        taskProgress?.NextTask();
 
         #endregion
 
@@ -381,8 +575,14 @@ public class ServerConfiguratorController
 
         foreach (var executorConfiguration in settings.executorConfigurations)
         {
+            #region Download and extract
+
+            var downloadProgress = taskProgress?.GetSubjectProgress();
             await DownloadExecutor(_config.installedDirectory, executorConfiguration.type.ToString(),
-                executorConfiguration.version);
+                executorConfiguration.version, downloadProgress);
+            taskProgress?.NextTask();
+
+            #endregion
 
             var assemblyPath = Path.Combine(_config.installedDirectory,
                 $@"Executors\{EncodeExecutorDirectory(executorConfiguration.type.ToString(), executorConfiguration.version)}\AutoMuteUsPortable.Executor.dll");
@@ -409,10 +609,21 @@ public class ServerConfiguratorController
 
         #region Install each executors
 
-        await executors[ExecutorType.redis].Install(executors);
-        await executors[ExecutorType.postgresql].Install(executors);
-        await executors[ExecutorType.galactus].Install(executors);
-        await executors[ExecutorType.automuteus].Install(executors);
+        var installProgress = taskProgress?.GetSubjectProgress();
+        await executors[ExecutorType.redis].Install(executors, installProgress);
+        taskProgress?.NextTask();
+
+        installProgress = taskProgress?.GetSubjectProgress();
+        await executors[ExecutorType.postgresql].Install(executors, installProgress);
+        taskProgress?.NextTask();
+
+        installProgress = taskProgress?.GetSubjectProgress();
+        await executors[ExecutorType.galactus].Install(executors, installProgress);
+        taskProgress?.NextTask();
+
+        installProgress = taskProgress?.GetSubjectProgress();
+        await executors[ExecutorType.automuteus].Install(executors, installProgress);
+        taskProgress?.NextTask();
 
         #endregion
 
@@ -428,14 +639,33 @@ public class ServerConfiguratorController
         #endregion
     }
 
-    private async Task InstallByAdvancedSettings()
+    private async Task InstallByAdvancedSettings(ISubject<ProgressInfo>? progress = null)
     {
+        #region Setup progress
+
+        var taskProgress = progress != null
+            ? new TaskProgress(progress,
+                _config.serverConfiguration.advancedSettings!.ToDictionary<ExecutorConfiguration, string, object?>(
+                    x => $"Installing {x.type}", x => new List<string>
+                    {
+                        $"Downloading {x.type} Executor",
+                        $"Installing {x.type}"
+                    }))
+            : null;
+
+        #endregion
+
         #region Load assembly, create instance of ExecutorController and install
 
         foreach (var executorConfiguration in _config.serverConfiguration.advancedSettings!)
         {
+            taskProgress?.Task!.AddTask("Downloading");
+            taskProgress?.Task!.AddTask("Installing");
+
+            var downloadProgress = taskProgress?.GetSubjectProgress();
             await DownloadExecutor(_config.installedDirectory, executorConfiguration.type.ToString(),
-                executorConfiguration.version);
+                executorConfiguration.version, downloadProgress);
+            taskProgress?.NextTask();
 
             var assemblyPath = Path.Combine(_config.installedDirectory,
                 $@"Executors\{EncodeExecutorDirectory(executorConfiguration.type.ToString(), executorConfiguration.version)}\AutoMuteUsPortable.Executor.dll");
@@ -456,7 +686,9 @@ public class ServerConfiguratorController
                     $"Failed to create new instance of {executorConfiguration.type.ToString()} ExecutorController");
             executors.Add(executorConfiguration.type, executorController);
 
-            await executorController.Install(executors);
+            var installProgress = taskProgress?.GetSubjectProgress();
+            await executorController.Install(executors, installProgress);
+            taskProgress?.NextTask();
         }
 
         #endregion
