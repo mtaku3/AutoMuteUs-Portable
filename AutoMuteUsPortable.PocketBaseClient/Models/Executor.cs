@@ -26,6 +26,9 @@ public partial class Executor : ItemBase
     /// <inheritdoc />
     public override void UpdateWith(ItemBase itemBase)
     {
+        // Do not Update with this instance
+        if (ReferenceEquals(this, itemBase)) return;
+
         base.UpdateWith(itemBase);
 
         if (itemBase is Executor item)
@@ -45,6 +48,16 @@ public partial class Executor : ItemBase
     }
 
     #endregion Collection
+
+    public static async Task<Executor?> GetByIdAsync(string id, bool reload = false)
+    {
+        return await GetCollection().GetByIdAsync(id, reload);
+    }
+
+    public static Executor? GetById(string id, bool reload = false)
+    {
+        return GetCollection().GetById(id, reload);
+    }
 
     #region Collection
 
@@ -113,17 +126,24 @@ public partial class Executor : ItemBase
 
     #endregion Field Properties
 
-    #region GetById
+    #region Constructors
 
-    public static Executor? GetById(string id, bool reload = false)
+    public Executor()
     {
-        return Task.Run(async () => await GetByIdAsync(id, reload)).GetAwaiter().GetResult();
     }
 
-    public static async Task<Executor?> GetByIdAsync(string id, bool reload = false)
+    [JsonConstructor]
+    public Executor(string? id, DateTime? created, DateTime? updated, string? version, TypeEnum? type,
+        DownloadUrl? downloadUrl, Checksum? checksum)
+        : base(id, created, updated)
     {
-        return await DataServiceBase.GetCollection<Executor>()!.GetByIdAsync(id, reload);
+        Version = version;
+        Type = type;
+        DownloadUrl = downloadUrl;
+        Checksum = checksum;
+
+        AddInternal(this);
     }
 
-    #endregion GetById
+    #endregion
 }

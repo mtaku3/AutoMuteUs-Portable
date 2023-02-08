@@ -27,6 +27,9 @@ public partial class Application : ItemBase
     /// <inheritdoc />
     public override void UpdateWith(ItemBase itemBase)
     {
+        // Do not Update with this instance
+        if (ReferenceEquals(this, itemBase)) return;
+
         base.UpdateWith(itemBase);
 
         if (itemBase is Application item)
@@ -46,6 +49,16 @@ public partial class Application : ItemBase
     }
 
     #endregion Collection
+
+    public static async Task<Application?> GetByIdAsync(string id, bool reload = false)
+    {
+        return await GetCollection().GetByIdAsync(id, reload);
+    }
+
+    public static Application? GetById(string id, bool reload = false)
+    {
+        return GetCollection().GetById(id, reload);
+    }
 
     #region Collection
 
@@ -114,17 +127,24 @@ public partial class Application : ItemBase
 
     #endregion Field Properties
 
-    #region GetById
+    #region Constructors
 
-    public static Application? GetById(string id, bool reload = false)
+    public Application()
     {
-        return Task.Run(async () => await GetByIdAsync(id, reload)).GetAwaiter().GetResult();
     }
 
-    public static async Task<Application?> GetByIdAsync(string id, bool reload = false)
+    [JsonConstructor]
+    public Application(string? id, DateTime? created, DateTime? updated, string? version, AppUpdator? appUpdator,
+        CompatibleExecutorsList compatibleExecutors, DownloadUrl? downloadUrl)
+        : base(id, created, updated)
     {
-        return await DataServiceBase.GetCollection<Application>()!.GetByIdAsync(id, reload);
+        Version = version;
+        AppUpdator = appUpdator;
+        CompatibleExecutors = compatibleExecutors;
+        DownloadUrl = downloadUrl;
+
+        AddInternal(this);
     }
 
-    #endregion GetById
+    #endregion
 }

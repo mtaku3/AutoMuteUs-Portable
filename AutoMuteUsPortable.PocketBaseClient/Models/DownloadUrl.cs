@@ -21,6 +21,9 @@ public partial class DownloadUrl : ItemBase
     /// <inheritdoc />
     public override void UpdateWith(ItemBase itemBase)
     {
+        // Do not Update with this instance
+        if (ReferenceEquals(this, itemBase)) return;
+
         base.UpdateWith(itemBase);
 
         if (itemBase is DownloadUrl item)
@@ -40,6 +43,16 @@ public partial class DownloadUrl : ItemBase
     }
 
     #endregion Collection
+
+    public static async Task<DownloadUrl?> GetByIdAsync(string id, bool reload = false)
+    {
+        return await GetCollection().GetByIdAsync(id, reload);
+    }
+
+    public static DownloadUrl? GetById(string id, bool reload = false)
+    {
+        return GetCollection().GetById(id, reload);
+    }
 
     #region Collection
 
@@ -119,17 +132,24 @@ public partial class DownloadUrl : ItemBase
 
     #endregion Field Properties
 
-    #region GetById
+    #region Constructors
 
-    public static DownloadUrl? GetById(string id, bool reload = false)
+    public DownloadUrl()
     {
-        return Task.Run(async () => await GetByIdAsync(id, reload)).GetAwaiter().GetResult();
     }
 
-    public static async Task<DownloadUrl?> GetByIdAsync(string id, bool reload = false)
+    [JsonConstructor]
+    public DownloadUrl(string? id, DateTime? created, DateTime? updated, string? winX86, string? winX64, string? winArm,
+        string? winArm64)
+        : base(id, created, updated)
     {
-        return await DataServiceBase.GetCollection<DownloadUrl>()!.GetByIdAsync(id, reload);
+        WinX86 = winX86;
+        WinX64 = winX64;
+        WinArm = winArm;
+        WinArm64 = winArm64;
+
+        AddInternal(this);
     }
 
-    #endregion GetById
+    #endregion
 }
