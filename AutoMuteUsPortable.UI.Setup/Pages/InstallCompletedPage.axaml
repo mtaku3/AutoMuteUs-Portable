@@ -1,0 +1,18 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ic="using:FluentAvalonia.FluentIcons"
+             xmlns:ctrls="using:AutoMuteUsPortable.UI.Setup.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="AutoMuteUsPortable.UI.Setup.Pages.InstallCompletedPage">
+    
+    <ctrls:SetupPageContainer>
+        <ctrls:SetupPageContainer.Body>
+            <ctrls:SetupPageHeader Symbol="CloudSync24Filled">AutoMuteUsの設定が完了しました</ctrls:SetupPageHeader>
+        </ctrls:SetupPageContainer.Body>
+        <ctrls:SetupPageContainer.Footer>
+            <Button Classes="accent">起動する</Button>
+        </ctrls:SetupPageContainer.Footer>
+    </ctrls:SetupPageContainer>
+</UserControl>

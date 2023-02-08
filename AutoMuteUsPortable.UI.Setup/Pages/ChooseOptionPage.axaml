@@ -1,0 +1,81 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ctrls="using:AutoMuteUsPortable.UI.Setup.Controls"
+             xmlns:vm="using:AutoMuteUsPortable.UI.Setup.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="AutoMuteUsPortable.UI.Setup.Pages.ChooseOptionPage">
+    <UserControl.DataContext>
+        <vm:ChooseOptionPageViewModel />
+    </UserControl.DataContext>
+
+    <ctrls:SetupPageContainer>
+        <ctrls:SetupPageContainer.Body>
+            <ctrls:SetupPageHeader Symbol="Options24Filled">設定方法を選択してください</ctrls:SetupPageHeader>
+
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition />
+					<RowDefinition />
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition />
+				</Grid.ColumnDefinitions>
+
+				<RadioButton Grid.Row="0" Grid.Column="0" GroupName="Option" MinWidth="20"
+							 VerticalAlignment="Center" IsChecked="{Binding IsSimpleSettingsChecked}" />
+				<StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Spacing="8">
+					<StackPanel.Styles>
+						<Style Selector=":is(Control)">
+							<Setter Property="VerticalAlignment" Value="Center" />
+						</Style>
+					</StackPanel.Styles>
+
+					<TextBlock Theme="{StaticResource BodyStrongTextBlockStyle}">かんたん設定</TextBlock>
+					<Border Padding="12,4" CornerRadius="16" Background="{StaticResource AccentButtonBackground}">
+						<TextBlock Foreground="{StaticResource AccentButtonForeground}"
+								   VerticalAlignment="Center">
+							おすすめ
+						</TextBlock>
+					</Border>
+				</StackPanel>
+				<TextBlock Grid.Row="1" Grid.Column="1">
+					<x:String xml:space="preserve">
+AutoMuteUsのサーバー設定に詳しくない方向けの設定方法です。
+画面の指示に従って簡単に設定でき、AutoMuteUs Portableが常に最新のAutoMuteUsシステムを自動的に構成します。
+                </x:String>
+				</TextBlock>
+			</Grid>
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition />
+					<RowDefinition />
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition />
+				</Grid.ColumnDefinitions>
+
+				<RadioButton Grid.Row="0" Grid.Column="0" GroupName="Option" IsEnabled="False"
+							 MinWidth="20"
+							 VerticalAlignment="Center" />
+				<TextBlock Grid.Row="0" Grid.Column="1" Theme="{StaticResource BodyStrongTextBlockStyle}"
+						   VerticalAlignment="Center">
+					詳細設定
+				</TextBlock>
+				<TextBlock Grid.Row="1" Grid.Column="1">
+					<x:String xml:space="preserve">
+AutoMuteUsのサーバー設定に詳しい方向けの設定方法です。
+環境変数を自由に設定できます。
+※ かんたん設定で提供されている一部の機能は詳細設定では利用できなくなります
+                </x:String>
+				</TextBlock>
+			</Grid>
+        </ctrls:SetupPageContainer.Body>
+        <ctrls:SetupPageContainer.Footer>
+            <Button Classes="accent" Command="{Binding GoForwardCommand}">次へ</Button>
+        </ctrls:SetupPageContainer.Footer>
+    </ctrls:SetupPageContainer>
+</UserControl>

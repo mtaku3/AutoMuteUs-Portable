@@ -1,0 +1,67 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ctrls="using:AutoMuteUsPortable.UI.Setup.Controls"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:vm="using:AutoMuteUsPortable.UI.Setup.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="AutoMuteUsPortable.UI.Setup.Pages.CreateDiscordBotPage1">
+    <Design.DataContext>
+        <vm:CreateDiscordBotPage1ViewModel />
+    </Design.DataContext>
+
+    <ctrls:SetupPageContainer>
+        <ctrls:SetupPageContainer.Body>
+			<ctrls:SetupPageHeader Symbol="Options24Filled">Discord ボットを作成する 1/3</ctrls:SetupPageHeader>
+
+			<StackPanel Spacing="30">
+				<StackPanel.Styles>
+					<Style Selector="StackPanel.Instructions">
+						<Setter Property="Orientation" Value="Horizontal" />
+						<Setter Property="Spacing" Value="4" />
+						<Style Selector="^ > :is(Control)">
+							<Setter Property="VerticalAlignment" Value="Center" />
+						</Style>
+					</Style>
+				</StackPanel.Styles>
+
+				<StackPanel Classes="Instructions">
+					<TextBlock Theme="{StaticResource BodyStrongTextBlockStyle}">1.</TextBlock>
+					<ui:HyperlinkButton NavigateUri="https://discord.com/developers/applications">Discord 開発者ポータル</ui:HyperlinkButton>
+					<TextBlock>にアクセスする</TextBlock>
+				</StackPanel>
+				<StackPanel Classes="Instructions">
+					<TextBlock Theme="{StaticResource BodyStrongTextBlockStyle}">2.</TextBlock>
+					<TextBlock>画面右上の</TextBlock>
+					<ctrls:DiscordStyledButton>New Application</ctrls:DiscordStyledButton>
+					<TextBlock>をクリックする</TextBlock>
+				</StackPanel>
+				<StackPanel Classes="Instructions">
+					<TextBlock Theme="{StaticResource BodyStrongTextBlockStyle}">3.</TextBlock>
+					<TextBlock Theme="{StaticResource BodyStrongTextBlockStyle}">NAME</TextBlock>
+					<TextBlock>欄にアプリケーション名（例："AutoMuteUs Portable"）を入力する</TextBlock>
+				</StackPanel>
+				<StackPanel Classes="Instructions">
+					<TextBlock Theme="{StaticResource BodyStrongTextBlockStyle}">4.</TextBlock>
+					<TextBlock>規約に同意した上で</TextBlock>
+					<TextBlock Theme="{StaticResource BodyStrongTextBlockStyle}">By clicking Create, ...</TextBlock>
+					<TextBlock>にチェックを入れて</TextBlock>
+					<ctrls:DiscordStyledButton>Create</ctrls:DiscordStyledButton>
+					<TextBlock>をクリックする</TextBlock>
+				</StackPanel>
+				<StackPanel Classes="Instructions">
+					<TextBlock Theme="{StaticResource BodyStrongTextBlockStyle}">5.</TextBlock>
+					<TextBlock>画面左端の</TextBlock>
+					<TextBlock Theme="{StaticResource BodyStrongTextBlockStyle}">Bot</TextBlock>
+					<TextBlock>をクリックする</TextBlock>
+				</StackPanel>
+				<TextBlock Theme="{StaticResource SubtitleTextBlockStyle}">手順はまだ残っています！ブラウザは閉じずに 次へ から続きの手順に従ってください</TextBlock>
+			</StackPanel>
+        </ctrls:SetupPageContainer.Body>
+        <ctrls:SetupPageContainer.Footer>
+            <Button Command="{Binding GoBackCommand}">戻る</Button>
+            <Button Classes="accent" Command="{Binding GoForwardCommand}">次へ</Button>
+        </ctrls:SetupPageContainer.Footer>
+    </ctrls:SetupPageContainer>
+</UserControl>

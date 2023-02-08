@@ -1,0 +1,29 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:ctrls="using:AutoMuteUsPortable.UI.Setup.Controls"
+             xmlns:vm="using:AutoMuteUsPortable.UI.Setup.ViewModels"
+             x:Class="AutoMuteUsPortable.UI.Setup.Controls.FolderPicker">
+    <Design.PreviewWith>
+        <ctrls:FolderPicker />
+    </Design.PreviewWith>
+
+    <UserControl.DataContext>
+        <vm:FolderPickerViewModel />
+    </UserControl.DataContext>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <TextBox Grid.Column="0" CornerRadius="4,0,0,4" Text="{Binding Path}" IsEnabled="False" />
+        <Border Grid.Column="1" />
+        <Button Grid.Column="2" x:Name="OpenButton" VerticalAlignment="Stretch" CornerRadius="0,4,4,0"
+                Command="{ReflectionBinding OpenDialog}">
+            <ui:SymbolIcon Symbol="OpenFolder" />
+        </Button>
+    </Grid>
+</UserControl>

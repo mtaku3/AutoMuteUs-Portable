@@ -1,0 +1,17 @@
+﻿<Style xmlns="https://github.com/avaloniaui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+       xmlns:ctrls="using:AutoMuteUsPortable.UI.Setup.Controls">
+    <Design.PreviewWith>
+        <ctrls:DiscordStyledButton>This is a preview</ctrls:DiscordStyledButton>
+    </Design.PreviewWith>
+
+    <Style Selector="ctrls|DiscordStyledButton">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="#5865F2" Padding="12,8" CornerRadius="4">
+                    <TextBlock Foreground="#FFFFFF" FontSize="12" Text="{TemplateBinding Text}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</Style>

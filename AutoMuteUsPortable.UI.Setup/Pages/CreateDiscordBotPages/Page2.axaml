@@ -1,0 +1,78 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ctrls="using:AutoMuteUsPortable.UI.Setup.Controls"
+             xmlns:vm="using:AutoMuteUsPortable.UI.Setup.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="AutoMuteUsPortable.UI.Setup.Pages.CreateDiscordBotPage2">
+    <Design.DataContext>
+        <vm:CreateDiscordBotPage2ViewModel />
+    </Design.DataContext>
+
+    <ctrls:SetupPageContainer>
+        <ctrls:SetupPageContainer.Body>
+			<ctrls:SetupPageHeader Symbol="Options24Filled">Discord ボットを作成する 2/3</ctrls:SetupPageHeader>
+
+			<StackPanel Spacing="30">
+				<StackPanel.Styles>
+					<Style Selector="StackPanel.Instructions">
+						<Setter Property="Orientation" Value="Horizontal" />
+						<Setter Property="Spacing" Value="4" />
+						<Style Selector="^ > :is(Control)">
+							<Setter Property="VerticalAlignment" Value="Center" />
+						</Style>
+					</Style>
+				</StackPanel.Styles>
+
+				<StackPanel Classes="Instructions">
+					<TextBlock Theme="{StaticResource BodyStrongTextBlockStyle}">6.</TextBlock>
+					<TextBlock>画面右端の</TextBlock>
+					<ctrls:DiscordStyledButton>Add Bot</ctrls:DiscordStyledButton>
+					<TextBlock>をクリックする</TextBlock>
+				</StackPanel>
+				<StackPanel Classes="Instructions">
+					<TextBlock Theme="{StaticResource BodyStrongTextBlockStyle}">7.</TextBlock>
+					<ctrls:DiscordStyledButton>Yes, do it!</ctrls:DiscordStyledButton>
+					<TextBlock>をクリックする</TextBlock>
+				</StackPanel>
+				<StackPanel Classes="Instructions">
+					<TextBlock Theme="{StaticResource BodyStrongTextBlockStyle}">8.</TextBlock>
+					<ctrls:DiscordStyledButton>Reset Token</ctrls:DiscordStyledButton>
+					<TextBlock>をクリックする</TextBlock>
+				</StackPanel>
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition />
+						<RowDefinition />
+					</Grid.RowDefinitions>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition />
+					</Grid.ColumnDefinitions>
+					<Grid.Styles>
+						<Style Selector=":is(Control)">
+							<Setter Property="VerticalAlignment" Value="Center" />
+						</Style>
+					</Grid.Styles>
+
+					<TextBlock Grid.Row="0" Grid.Column="0" Theme="{StaticResource BodyStrongTextBlockStyle}"
+							   Margin="0,0,4,0">
+						9.
+					</TextBlock>
+
+					<StackPanel Grid.Row="0" Grid.Column="1" Classes="Instructions">
+						<ctrls:DiscordStyledButton>Yes, do it!</ctrls:DiscordStyledButton>
+						<TextBlock>をクリックする</TextBlock>
+					</StackPanel>
+					<TextBlock Grid.Row="1" Grid.Column="1" Margin="0,4,0,0">※ この手順では二段階認証が求められる場合があります</TextBlock>
+				</Grid>
+				<TextBlock Theme="{StaticResource SubtitleTextBlockStyle}">手順はまだ残っています！ブラウザは閉じずに 次へ から続きの手順に従ってください</TextBlock>
+			</StackPanel>
+		</ctrls:SetupPageContainer.Body>
+        <ctrls:SetupPageContainer.Footer>
+            <Button Command="{Binding GoBackCommand}">戻る</Button>
+            <Button Classes="accent" Command="{Binding GoForwardCommand}">次へ</Button>
+        </ctrls:SetupPageContainer.Footer>
+	</ctrls:SetupPageContainer>
+</UserControl>

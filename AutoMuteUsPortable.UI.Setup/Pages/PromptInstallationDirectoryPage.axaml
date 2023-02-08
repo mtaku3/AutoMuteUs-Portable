@@ -1,0 +1,29 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ctrls="using:AutoMuteUsPortable.UI.Setup.Controls"
+             xmlns:vm="using:AutoMuteUsPortable.UI.Setup.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="AutoMuteUsPortable.UI.Setup.Pages.PromptInstallationDirectoryPage">
+    <UserControl.DataContext>
+        <vm:PromptInstallationDirectoryPageViewModel />
+    </UserControl.DataContext>
+
+    <ctrls:SetupPageContainer>
+        <ctrls:SetupPageContainer.Body>
+            <ctrls:SetupPageHeader Symbol="Folder24Filled">インストール先を指定してください</ctrls:SetupPageHeader>
+
+            <ctrls:FolderPicker x:Name="FolderPicker" />
+            <TextBlock Theme="{StaticResource CaptionTextBlockStyle}"
+                       Foreground="{DynamicResource SystemFillColorCritical}"
+                       IsVisible="False">
+                フォルダ名に英数字, -, @, _以外の文字は含めません
+            </TextBlock>
+        </ctrls:SetupPageContainer.Body>
+        <ctrls:SetupPageContainer.Footer>
+            <Button Command="{Binding GoBackCommand}">戻る</Button>
+            <Button Classes="accent" IsEnabled="{Binding IsValid}" Command="{Binding GoForwardCommand}">次へ</Button>
+        </ctrls:SetupPageContainer.Footer>
+    </ctrls:SetupPageContainer>
+</UserControl>

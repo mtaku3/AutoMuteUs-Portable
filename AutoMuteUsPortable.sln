@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoMuteUsPortable.Core", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoMuteUsPortable.Shared", "AutoMuteUsPortable.Shared\AutoMuteUsPortable.Shared.csproj", "{2878BC44-4393-4A70-A2D2-89B35977E820}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoMuteUsPortable.PocketBaseClient", "AutoMuteUsPortable.PocketBaseClient\AutoMuteUsPortable.PocketBaseClient.csproj", "{1041FC4F-3FA3-4D7D-8C54-89E2CB05245E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoMuteUsPortable.UI.Setup", "AutoMuteUsPortable.UI.Setup\AutoMuteUsPortable.UI.Setup.csproj", "{8DBC7111-6F49-44B0-B788-EF452D530152}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoMuteUsPortable.PocketBaseClient", "AutoMuteUsPortable.PocketBaseClient\AutoMuteUsPortable.PocketBaseClient.csproj", "{FA6D4DC2-7F97-4E15-9D27-36CC25376099}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +37,14 @@ Global
 		{2878BC44-4393-4A70-A2D2-89B35977E820}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2878BC44-4393-4A70-A2D2-89B35977E820}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2878BC44-4393-4A70-A2D2-89B35977E820}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1041FC4F-3FA3-4D7D-8C54-89E2CB05245E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1041FC4F-3FA3-4D7D-8C54-89E2CB05245E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1041FC4F-3FA3-4D7D-8C54-89E2CB05245E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1041FC4F-3FA3-4D7D-8C54-89E2CB05245E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DBC7111-6F49-44B0-B788-EF452D530152}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DBC7111-6F49-44B0-B788-EF452D530152}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DBC7111-6F49-44B0-B788-EF452D530152}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DBC7111-6F49-44B0-B788-EF452D530152}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA6D4DC2-7F97-4E15-9D27-36CC25376099}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA6D4DC2-7F97-4E15-9D27-36CC25376099}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA6D4DC2-7F97-4E15-9D27-36CC25376099}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA6D4DC2-7F97-4E15-9D27-36CC25376099}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

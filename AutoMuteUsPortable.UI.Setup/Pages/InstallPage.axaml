@@ -1,0 +1,24 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ctrls="clr-namespace:AutoMuteUsPortable.UI.Setup.Controls"
+             xmlns:vm="clr-namespace:AutoMuteUsPortable.UI.Setup.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="AutoMuteUsPortable.UI.Setup.Pages.InstallPage">
+    <Design.DataContext>
+		<vm:InstallPageViewModel />
+    </Design.DataContext>
+
+    <ctrls:SetupPageContainer>
+        <ctrls:SetupPageContainer.Body>
+            <ctrls:SetupPageHeader Symbol="CloudArrowDown24Filled">AutoMuteUsを設定しています</ctrls:SetupPageHeader>
+
+            <TextBlock Text="{Binding ProgressInfo.name}" />
+            <ProgressBar x:Name="Progress" HorizontalAlignment="Stretch" IsIndeterminate="{Binding ProgressInfo.IsIndeterminate}" />
+		</ctrls:SetupPageContainer.Body>
+        <ctrls:SetupPageContainer.Footer>
+            <TextBlock Theme="{StaticResource SubtitleTextBlockStyle}">設定が終了したら通知を表示します。アプリケーションを閉じずにお待ちください。</TextBlock>
+        </ctrls:SetupPageContainer.Footer>
+	</ctrls:SetupPageContainer>
+</UserControl>

@@ -1,0 +1,62 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ctrls="using:AutoMuteUsPortable.UI.Setup.Controls">
+
+	<Design.PreviewWith>
+        <Border Padding="20">
+			<ctrls:SetupPageContainer>
+                <ctrls:SetupPageContainer.Body>
+                    <ctrls:SetupPageHeader Symbol="PreviewLink24Filled" Title="This is a preview of SetupPageContainer" />
+                    <TextBlock>Multiple elements can be added to this container.</TextBlock>
+                </ctrls:SetupPageContainer.Body>
+                <ctrls:SetupPageContainer.Footer>
+                    <Button>Back</Button>
+                    <Button Theme="{StaticResource AccentButtonStyle}">Next</Button>
+                </ctrls:SetupPageContainer.Footer>
+            </ctrls:SetupPageContainer>
+        </Border>
+    </Design.PreviewWith>
+
+    <Style Selector="ctrls|SetupPageContainer">
+      <Setter Property="Template">
+      <ControlTemplate>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="8*" />
+                    <ColumnDefinition Width="2*" />
+                </Grid.ColumnDefinitions>
+
+                <ItemsPresenter Grid.Column="1" Items="{TemplateBinding Body}">
+                    <ItemsPresenter.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical" Margin="0,20" Spacing="12" />
+                        </ItemsPanelTemplate>
+                    </ItemsPresenter.ItemsPanel>
+                </ItemsPresenter>
+            </Grid>
+            <ItemsPresenter Grid.Row="1" Items="{TemplateBinding Footer}">
+                <ItemsPresenter.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="8" >
+                            <StackPanel.Styles>
+                                <Style Selector="Button">
+                                    <Setter Property="Margin" Value="4" />
+                                    <Setter Property="Width" Value="120" />
+                                </Style>
+                            </StackPanel.Styles>
+                        </StackPanel>
+                    </ItemsPanelTemplate>
+                </ItemsPresenter.ItemsPanel>
+            </ItemsPresenter>
+        </Grid>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+</Styles>

@@ -1,0 +1,20 @@
+﻿<Style xmlns="https://github.com/avaloniaui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+       xmlns:ic="using:FluentAvalonia.FluentIcons"
+       xmlns:ctrls="using:AutoMuteUsPortable.UI.Setup.Controls">
+    <Design.PreviewWith>
+        <ctrls:SetupPageHeader Symbol="PreviewLink24Regular">This is a title</ctrls:SetupPageHeader>
+    </Design.PreviewWith>
+
+    <Style Selector="ctrls|SetupPageHeader">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <ic:FluentIcon Icon="{TemplateBinding Symbol}" Width="28" VerticalAlignment="Center" />
+                    <TextBlock Text="{TemplateBinding Title}" Theme="{StaticResource TitleTextBlockStyle}"
+                               VerticalAlignment="Center" />
+                </StackPanel>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</Style>
