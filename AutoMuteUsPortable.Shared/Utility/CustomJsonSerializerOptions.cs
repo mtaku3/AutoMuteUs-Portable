@@ -11,6 +11,7 @@ public static partial class Utils
         {
             new JsonStringEnumConverter()
         },
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        WriteIndented = true
     };
 }
