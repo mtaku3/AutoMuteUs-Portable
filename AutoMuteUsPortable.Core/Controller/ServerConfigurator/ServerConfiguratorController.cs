@@ -1,18 +1,16 @@
 ﻿using System.Net.NetworkInformation;
 using System.Reactive.Subjects;
 using System.Reflection;
-using System.Text;
 using AutoMuteUsPortable.Core.Entity.ComputedSimpleSettingsNS;
 using AutoMuteUsPortable.Core.Entity.ConfigNS;
 using AutoMuteUsPortable.PocketBaseClient;
 using AutoMuteUsPortable.Shared.Controller.Executor;
 using AutoMuteUsPortable.Shared.Entity.ExecutorConfigurationBaseNS;
 using AutoMuteUsPortable.Shared.Entity.ExecutorConfigurationNS;
+using AutoMuteUsPortable.Shared.Entity.ExecutorConfigurationSSNS;
 using AutoMuteUsPortable.Shared.Entity.ProgressInfo;
 using AutoMuteUsPortable.Shared.Utility;
 using McMaster.NETCore.Plugins;
-using Standart.Hash.xxHash;
-using Utils = AutoMuteUsPortable.Shared.Utility.Utils;
 
 namespace AutoMuteUsPortable.Core.Controller.ServerConfigurator;
 
@@ -48,12 +46,13 @@ public class ServerConfiguratorController
                 { "Finding listenable ports for executors", null },
                 {
                     "Load assembly and create instance of ExecutorController",
-                    _config.serverConfiguration.simpleSettings!.executorConfigurations.ToDictionary(
-                        x => $"Loading {x.type} Executor", x => new List<string>
-                        {
-                            $"Checking file integrity of {x.type} Executor",
-                            $"Recovering missing files of {x.type} Executor"
-                        })
+                    _config.serverConfiguration.simpleSettings!.executorConfigurations
+                        .ToDictionary<ExecutorConfigurationSS, string, object?>(
+                            x => $"Loading {x.type} Executor", x => new List<string>
+                            {
+                                $"Checking file integrity of {x.type} Executor",
+                                $"Recovering missing files of {x.type} Executor"
+                            })
                 },
                 {
                     "Run each executors",
@@ -161,14 +160,13 @@ public class ServerConfiguratorController
             using (var client = new HttpClient())
             {
                 var res = await client.GetStringAsync(checksumUrl);
-                var invalidFiles = Utils.CompareChecksum(executorConfiguration.binaryDirectory,
+                var invalidFiles = Utils.CompareChecksum(executorConfiguration.executorDirectory,
                     Utils.ParseChecksumText(res));
                 taskProgress?.NextTask();
                 if (0 < invalidFiles.Count)
                 {
                     var downloadProgress = taskProgress?.GetSubjectProgress();
-                    await DownloadExecutor(_config.installedDirectory, executorConfiguration.type.ToString(),
-                        executorConfiguration.version, downloadProgress);
+                    await DownloadExecutor(executorConfiguration, downloadProgress);
                 }
             }
 
@@ -176,8 +174,7 @@ public class ServerConfiguratorController
 
             #endregion
 
-            var assemblyPath = Path.Combine(_config.installedDirectory,
-                $@"Executors\{EncodeExecutorDirectory(executorConfiguration.type.ToString(), executorConfiguration.version)}\AutoMuteUsPortable.Executor.dll");
+            var assemblyPath = Path.Combine(executorConfiguration.executorDirectory, "AutoMuteUsPortable.Executor.dll");
             var pluginLoader = PluginLoader.CreateFromAssemblyFile(
                 assemblyPath, true, new[] { typeof(ExecutorControllerBase) });
             var assembly = pluginLoader.LoadDefaultAssembly();
@@ -263,14 +260,13 @@ public class ServerConfiguratorController
             using (var client = new HttpClient())
             {
                 var res = await client.GetStringAsync(checksumUrl);
-                var invalidFiles = Utils.CompareChecksum(executorConfiguration.binaryDirectory,
+                var invalidFiles = Utils.CompareChecksum(executorConfiguration.executorDirectory,
                     Utils.ParseChecksumText(res));
                 taskProgress?.NextTask();
                 if (0 < invalidFiles.Count)
                 {
                     var downloadProgress = taskProgress?.GetSubjectProgress();
-                    await DownloadExecutor(_config.installedDirectory, executorConfiguration.type.ToString(),
-                        executorConfiguration.version, downloadProgress);
+                    await DownloadExecutor(executorConfiguration, downloadProgress);
                 }
             }
 
@@ -278,8 +274,7 @@ public class ServerConfiguratorController
 
             #endregion
 
-            var assemblyPath = Path.Combine(_config.installedDirectory,
-                $@"Executors\{EncodeExecutorDirectory(executorConfiguration.type.ToString(), executorConfiguration.version)}\AutoMuteUsPortable.Executor.dll");
+            var assemblyPath = Path.Combine(executorConfiguration.executorDirectory, "AutoMuteUsPortable.Executor.dll");
             var pluginLoader = PluginLoader.CreateFromAssemblyFile(
                 assemblyPath, true, new[] { typeof(ExecutorControllerBase) });
             var assembly = pluginLoader.LoadDefaultAssembly();
@@ -421,7 +416,7 @@ public class ServerConfiguratorController
         else await InstallByAdvancedSettings(progress);
     }
 
-    private async Task DownloadExecutor(string installedDirectory, string type, string version,
+    private async Task DownloadExecutor(ExecutorConfigurationBase executorConfiguration,
         ISubject<ProgressInfo>? progress = null)
     {
         #region Setup progress
@@ -429,8 +424,8 @@ public class ServerConfiguratorController
         var taskProgress = progress != null
             ? new TaskProgress(progress, new List<string>
             {
-                $"Downloading {type} Executor",
-                $"Extracting {type} Executor"
+                $"Downloading {executorConfiguration.type} Executor",
+                $"Extracting {executorConfiguration.type} Executor"
             })
             : null;
 
@@ -440,9 +435,11 @@ public class ServerConfiguratorController
 
         var executor =
             _pocketBaseClientApplication.Data.ExecutorCollection.FirstOrDefault(x =>
-                x.Type.ToString()?.ToLower() == type && x.Version == version);
+                x.Type.ToString()?.ToLower() == executorConfiguration.type.ToString() &&
+                x.Version == executorConfiguration.version);
         if (executor == null)
-            throw new InvalidOperationException($"{type} Executor {version} is not found in the database");
+            throw new InvalidOperationException(
+                $"{executorConfiguration.type} Executor {executorConfiguration.version} is not found in the database");
         var downloadUrl = Utils.GetDownloadUrl(executor.DownloadUrl);
         if (string.IsNullOrEmpty(downloadUrl))
             throw new InvalidDataException("DownloadUrl cannot be null or empty");
@@ -451,11 +448,9 @@ public class ServerConfiguratorController
 
         #region Download and extract
 
-        var executorDirectory =
-            Path.Combine(installedDirectory, $@"Executors\{EncodeExecutorDirectory(type, version)}");
-        if (!Directory.Exists(executorDirectory)) Directory.CreateDirectory(executorDirectory);
-        var binaryPath = Path.Combine(executorDirectory,
-            Path.GetFileName(downloadUrl));
+        if (!Directory.Exists(executorConfiguration.executorDirectory))
+            Directory.CreateDirectory(executorConfiguration.executorDirectory);
+        var binaryPath = Path.Combine(executorConfiguration.executorDirectory, Path.GetFileName(downloadUrl));
 
         var downloadProgress = taskProgress?.GetProgress();
         if (taskProgress?.ActiveLeafTask != null)
@@ -470,12 +465,6 @@ public class ServerConfiguratorController
         taskProgress?.NextTask();
 
         #endregion
-    }
-
-    private string EncodeExecutorDirectory(string type, string version)
-    {
-        var bytes = Encoding.UTF8.GetBytes($"{type} {version}");
-        return xxHash3.ComputeHash(bytes, bytes.Length).ToString("x16");
     }
 
     private async Task InstallBySimpleSettings(ISubject<ProgressInfo>? progress = null)
@@ -578,14 +567,12 @@ public class ServerConfiguratorController
             #region Download and extract
 
             var downloadProgress = taskProgress?.GetSubjectProgress();
-            await DownloadExecutor(_config.installedDirectory, executorConfiguration.type.ToString(),
-                executorConfiguration.version, downloadProgress);
+            await DownloadExecutor(executorConfiguration, downloadProgress);
             taskProgress?.NextTask();
 
             #endregion
 
-            var assemblyPath = Path.Combine(_config.installedDirectory,
-                $@"Executors\{EncodeExecutorDirectory(executorConfiguration.type.ToString(), executorConfiguration.version)}\AutoMuteUsPortable.Executor.dll");
+            var assemblyPath = Path.Combine(executorConfiguration.executorDirectory, "AutoMuteUsPortable.Executor.dll");
             var pluginLoader = PluginLoader.CreateFromAssemblyFile(
                 assemblyPath, true, new[] { typeof(ExecutorControllerBase) });
             var assembly = pluginLoader.LoadDefaultAssembly();
@@ -663,12 +650,10 @@ public class ServerConfiguratorController
             taskProgress?.Task!.AddTask("Installing");
 
             var downloadProgress = taskProgress?.GetSubjectProgress();
-            await DownloadExecutor(_config.installedDirectory, executorConfiguration.type.ToString(),
-                executorConfiguration.version, downloadProgress);
+            await DownloadExecutor(executorConfiguration, downloadProgress);
             taskProgress?.NextTask();
 
-            var assemblyPath = Path.Combine(_config.installedDirectory,
-                $@"Executors\{EncodeExecutorDirectory(executorConfiguration.type.ToString(), executorConfiguration.version)}\AutoMuteUsPortable.Executor.dll");
+            var assemblyPath = Path.Combine(executorConfiguration.executorDirectory, "AutoMuteUsPortable.Executor.dll");
             var pluginLoader = PluginLoader.CreateFromAssemblyFile(
                 assemblyPath, true, new[] { typeof(ExecutorControllerBase) });
             var assembly = pluginLoader.LoadDefaultAssembly();

@@ -125,12 +125,16 @@ public class TaskProgress
                 task._progress = progress;
                 Tasks.Add(task);
             }
-            else
+            else if (value is null)
             {
                 Tasks.Add(new TaskProgress(this)
                 {
                     Name = key
                 });
+            }
+            else
+            {
+                throw new InvalidDataException("Invalid task type");
             }
     }
 

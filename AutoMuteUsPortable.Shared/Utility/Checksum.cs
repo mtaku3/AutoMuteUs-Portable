@@ -25,14 +25,15 @@ public static partial class Utils
 
         foreach (var item in checksum)
         {
-            if (!File.Exists(item.Key))
+            var filePath = Path.Combine(root, item.Key);
+            if (!File.Exists(filePath))
             {
                 ret.Add(item.Key);
                 continue;
             }
 
-            var bytes = File.ReadAllBytes(item.Key);
-            var computedChecksum = xxHash64.ComputeHash(bytes);
+            var bytes = File.ReadAllBytes(filePath);
+            var computedChecksum = xxHash3.ComputeHash(bytes, bytes.Length);
             if (computedChecksum != item.Value) ret.Add(item.Key);
         }
 

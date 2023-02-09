@@ -6,6 +6,7 @@ public class ExecutorConfigurationBase
     public ExecutorType type { get; set; }
     public string binaryVersion { get; set; }
     public virtual string binaryDirectory { get; set; }
+    public virtual string executorDirectory { get; set; }
 }
 
 public enum ExecutorType
