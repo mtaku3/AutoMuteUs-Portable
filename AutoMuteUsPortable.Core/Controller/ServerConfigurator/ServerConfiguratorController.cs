@@ -203,15 +203,15 @@ public class ServerConfiguratorController
         taskProgress?.NextTask();
 
         runProgress = taskProgress?.GetSubjectProgress();
-        await executors[ExecutorType.postgresql].Run();
+        await executors[ExecutorType.postgresql].Run(runProgress);
         taskProgress?.NextTask();
 
         runProgress = taskProgress?.GetSubjectProgress();
-        await executors[ExecutorType.galactus].Run();
+        await executors[ExecutorType.galactus].Run(runProgress);
         taskProgress?.NextTask();
 
         runProgress = taskProgress?.GetSubjectProgress();
-        await executors[ExecutorType.automuteus].Run();
+        await executors[ExecutorType.automuteus].Run(runProgress);
         taskProgress?.NextTask();
 
         #endregion
@@ -314,6 +314,7 @@ public class ServerConfiguratorController
             ? new TaskProgress(progress, new List<string>
             {
                 "Stopping automuteus",
+                "Stopping galactus",
                 "Stopping postgresql",
                 "Stopping redis"
             })
