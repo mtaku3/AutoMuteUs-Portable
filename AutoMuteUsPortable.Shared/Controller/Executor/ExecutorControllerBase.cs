@@ -9,11 +9,15 @@ public class ExecutorControllerBase
 {
     public ExecutorControllerBase(object executorConfiguration)
     {
+        OutputStream = new MemoryStream();
+        ErrorStream = new MemoryStream();
     }
 
     public ExecutorControllerBase(object computedSimpleSettings,
         object executorConfigurationBase)
     {
+        OutputStream = new MemoryStream();
+        ErrorStream = new MemoryStream();
     }
 
     public ExecutorConfiguration ExecutorConfiguration { get; protected set; }
@@ -25,6 +29,9 @@ public class ExecutorControllerBase
     {
         Stopped?.Invoke(this, EventArgs.Empty);
     }
+
+    public Stream OutputStream { get; protected set; }
+    public Stream ErrorStream { get; protected set; }
 
     public virtual Task Run(ISubject<ProgressInfo>? progress = null)
     {
