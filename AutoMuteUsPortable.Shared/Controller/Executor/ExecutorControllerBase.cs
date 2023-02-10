@@ -23,10 +23,18 @@ public class ExecutorControllerBase
     public ExecutorConfiguration ExecutorConfiguration { get; protected set; }
 
     public bool IsRunning { get; protected set; }
+    public event EventHandler? Started;
     public event EventHandler? Stopped;
+
+    protected virtual void OnStart()
+    {
+        IsRunning = true;
+        Started?.Invoke(this, EventArgs.Empty);
+    }
 
     protected virtual void OnStop()
     {
+        IsRunning = false;
         Stopped?.Invoke(this, EventArgs.Empty);
     }
 
