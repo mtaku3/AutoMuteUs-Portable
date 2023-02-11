@@ -21,10 +21,16 @@ public class PocketBaseClientApplication : global::PocketBaseClient.PocketBaseCl
 
     #region Constructors
 
+#if DEBUG
+    public PocketBaseClientApplication() : this(Environment.GetEnvironmentVariable("POCKETBASE_APPLICATION_URL") ??
+                                                "http://localhost:8090")
+    {
+    }
+#else
     public PocketBaseClientApplication() : this("https://automuteus-portable.pockethost.io")
     {
     }
-
+#endif
     public PocketBaseClientApplication(string url, string appName = "AutoMuteUs Portable") : base(url, appName)
     {
     }
