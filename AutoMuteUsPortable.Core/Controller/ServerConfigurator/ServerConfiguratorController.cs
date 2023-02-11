@@ -155,18 +155,29 @@ public class ServerConfiguratorController
                     $"{executorConfiguration.type} Executor {executorConfiguration.version} is not found in the database");
 
             var checksumUrl = Utils.GetChecksum(executor.Checksum);
-            if (string.IsNullOrEmpty(checksumUrl)) throw new InvalidDataException("Checksum cannot be null or empty");
 
-            using (var client = new HttpClient())
+            if (string.IsNullOrEmpty(checksumUrl))
             {
-                var res = await client.GetStringAsync(checksumUrl);
-                var invalidFiles = Utils.CompareChecksum(executorConfiguration.executorDirectory,
-                    Utils.ParseChecksumText(res));
-                taskProgress?.NextTask();
-                if (0 < invalidFiles.Count)
+#if DEBUG
+                // Continue without checksum file
+                // TODO: log out as DEBUG Level
+#else
+                throw new InvalidDataException("Checksum cannot be null or empty");
+#endif
+            }
+            else
+            {
+                using (var client = new HttpClient())
                 {
-                    var downloadProgress = taskProgress?.GetSubjectProgress();
-                    await DownloadExecutor(executorConfiguration, downloadProgress);
+                    var res = await client.GetStringAsync(checksumUrl);
+                    var invalidFiles = Utils.CompareChecksum(executorConfiguration.executorDirectory,
+                        Utils.ParseChecksumText(res));
+                    taskProgress?.NextTask();
+                    if (0 < invalidFiles.Count)
+                    {
+                        var downloadProgress = taskProgress?.GetSubjectProgress();
+                        await DownloadExecutor(executorConfiguration, downloadProgress);
+                    }
                 }
             }
 
@@ -255,18 +266,29 @@ public class ServerConfiguratorController
                     $"{executorConfiguration.type} Executor {executorConfiguration.version} is not found in the database");
 
             var checksumUrl = Utils.GetChecksum(executor.Checksum);
-            if (string.IsNullOrEmpty(checksumUrl)) throw new InvalidDataException("Checksum cannot be null or empty");
 
-            using (var client = new HttpClient())
+            if (string.IsNullOrEmpty(checksumUrl))
             {
-                var res = await client.GetStringAsync(checksumUrl);
-                var invalidFiles = Utils.CompareChecksum(executorConfiguration.executorDirectory,
-                    Utils.ParseChecksumText(res));
-                taskProgress?.NextTask();
-                if (0 < invalidFiles.Count)
+#if DEBUG
+                // Continue without checksum file
+                // TODO: log out as DEBUG Level
+#else
+                throw new InvalidDataException("Checksum cannot be null or empty");
+#endif
+            }
+            else
+            {
+                using (var client = new HttpClient())
                 {
-                    var downloadProgress = taskProgress?.GetSubjectProgress();
-                    await DownloadExecutor(executorConfiguration, downloadProgress);
+                    var res = await client.GetStringAsync(checksumUrl);
+                    var invalidFiles = Utils.CompareChecksum(executorConfiguration.executorDirectory,
+                        Utils.ParseChecksumText(res));
+                    taskProgress?.NextTask();
+                    if (0 < invalidFiles.Count)
+                    {
+                        var downloadProgress = taskProgress?.GetSubjectProgress();
+                        await DownloadExecutor(executorConfiguration, downloadProgress);
+                    }
                 }
             }
 
