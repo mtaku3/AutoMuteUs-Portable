@@ -8,6 +8,9 @@ using AutoMuteUsPortable.UI.Main;
 using Avalonia;
 using Avalonia.ReactiveUI;
 using Microsoft.Extensions.DependencyInjection;
+#if DEBUG
+using DotNetEnv;
+#endif
 
 namespace AutoMuteUsPortable;
 
@@ -23,6 +26,10 @@ internal class Program
     [STAThread]
     public static void Main(string[] args)
     {
+#if DEBUG
+        Env.TraversePath().Load();
+#endif
+
         #region Find config to launch with
 
         var configBaseRepository = new ConfigBaseRepository();

@@ -399,3 +399,6 @@ FodyWeavers.xsd
 
 # Build outputs from dotnet releaser
 artifacts-dotnet-releaser
+
+# Env file for debugging
+.env
