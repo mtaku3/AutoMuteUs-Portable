@@ -13,16 +13,25 @@ public class ConfigBaseRepository : IConfigBaseRepository
 
     public void LoadOrCreateDefault(string filePath)
     {
-        var text = File.ReadAllText(filePath);
-        var configBases = JsonSerializer.Deserialize<List<Entity.ConfigBaseNS.ConfigBase>>(text);
-        if (configBases == null)
-            throw new SerializationException("Failed to deserialize config file as List<ConfigBase>");
-
-        var validator = new ListValidator<Entity.ConfigBaseNS.ConfigBase>(new ConfigBaseValidator());
-        validator.ValidateAndThrow(configBases);
-
         _filePath = filePath;
-        ConfigBases = configBases;
+
+        if (File.Exists(filePath))
+        {
+            var text = File.ReadAllText(filePath);
+            var configBases = JsonSerializer.Deserialize<List<Entity.ConfigBaseNS.ConfigBase>>(text);
+            if (configBases == null)
+                throw new SerializationException("Failed to deserialize config file as List<ConfigBase>");
+
+            var validator = new ListValidator<Entity.ConfigBaseNS.ConfigBase>(new ConfigBaseValidator());
+            validator.ValidateAndThrow(configBases);
+
+            ConfigBases = configBases;
+        }
+        else
+        {
+            var text = JsonSerializer.Serialize(ConfigBases, Utils.CustomJsonSerializerOptions);
+            File.WriteAllText(filePath, text);
+        }
     }
 
     public Entity.ConfigBaseNS.ConfigBase? FindUnique(string executableFilePath)
