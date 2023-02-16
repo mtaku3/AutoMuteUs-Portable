@@ -9,15 +9,15 @@ public class ExecutorControllerBase
 {
     public ExecutorControllerBase(object executorConfiguration)
     {
-        StandardOutput = new Subject<string>();
-        StandardError = new Subject<string>();
+        StandardOutput = new ReplaySubject<string>();
+        StandardError = new ReplaySubject<string>();
     }
 
     public ExecutorControllerBase(object computedSimpleSettings,
         object executorConfigurationBase)
     {
-        StandardOutput = new Subject<string>();
-        StandardError = new Subject<string>();
+        StandardOutput = new ReplaySubject<string>();
+        StandardError = new ReplaySubject<string>();
     }
 
     public ExecutorConfiguration ExecutorConfiguration { get; protected set; }
@@ -38,8 +38,8 @@ public class ExecutorControllerBase
         Stopped?.Invoke(this, EventArgs.Empty);
     }
 
-    public Subject<string> StandardOutput { get; protected set; }
-    public Subject<string> StandardError { get; protected set; }
+    public ISubject<string> StandardOutput { get; protected set; }
+    public ISubject<string> StandardError { get; protected set; }
 
     public virtual Task Run(ISubject<ProgressInfo>? progress = null)
     {
