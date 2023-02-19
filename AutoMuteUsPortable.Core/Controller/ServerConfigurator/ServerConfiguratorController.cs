@@ -324,60 +324,6 @@ public class ServerConfiguratorController
 
     public async Task Stop(ISubject<ProgressInfo>? progress = null)
     {
-        if (IsUsingSimpleSettings) await StopBySimpleSettings(progress);
-        else await StopByAdvancedSettings(progress);
-    }
-
-    private async Task StopBySimpleSettings(ISubject<ProgressInfo>? progress = null)
-    {
-        #region Setup progress
-
-        var taskProgress = progress != null
-            ? new TaskProgress(progress, new List<string>
-            {
-                "Stopping automuteus",
-                "Stopping galactus",
-                "Stopping postgresql",
-                "Stopping redis"
-            })
-            : null;
-
-        #endregion
-
-        #region Stop servers
-
-        var stopProgress = taskProgress?.GetSubjectProgress();
-        await executors[ExecutorType.automuteus].Stop(stopProgress);
-        taskProgress?.NextTask();
-
-        stopProgress = taskProgress?.GetSubjectProgress();
-        await executors[ExecutorType.galactus].Stop(stopProgress);
-        taskProgress?.NextTask();
-
-        stopProgress = taskProgress?.GetSubjectProgress();
-        await executors[ExecutorType.postgresql].Stop(stopProgress);
-        taskProgress?.NextTask();
-
-        stopProgress = taskProgress?.GetSubjectProgress();
-        await executors[ExecutorType.redis].Stop(stopProgress);
-        taskProgress?.NextTask();
-
-        #endregion
-
-        #region Unload assemblies
-
-        executors.Clear();
-        foreach (var (type, pluginLoader) in pluginLoaders)
-        {
-            pluginLoaders.Remove(type);
-            pluginLoader.Dispose();
-        }
-
-        #endregion
-    }
-
-    private async Task StopByAdvancedSettings(ISubject<ProgressInfo>? progress = null)
-    {
         #region Setup progress
 
         var taskProgress = progress != null
