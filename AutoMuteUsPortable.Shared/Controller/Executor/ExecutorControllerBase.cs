@@ -41,30 +41,37 @@ public class ExecutorControllerBase
     public ISubject<string> StandardOutput { get; protected set; }
     public ISubject<string> StandardError { get; protected set; }
 
-    public virtual Task Run(ISubject<ProgressInfo>? progress = null)
+    public virtual Task Run(ISubject<ProgressInfo>? progress = null, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }
 
-    public virtual Task Stop(ISubject<ProgressInfo>? progress = null)
+    public virtual Task GracefullyStop(ISubject<ProgressInfo>? progress = null,
+        CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }
 
-    public virtual Task Restart(ISubject<ProgressInfo>? progress = null)
+    public virtual Task ForciblyStop(ISubject<ProgressInfo>? progress = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public virtual Task Restart(ISubject<ProgressInfo>? progress = null, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }
 
     public virtual Task Install(
-        Dictionary<ExecutorType, ExecutorControllerBase> executors, ISubject<ProgressInfo>? progress = null)
+        Dictionary<ExecutorType, ExecutorControllerBase> executors, ISubject<ProgressInfo>? progress = null,
+        CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }
 
     public virtual Task Update(
         Dictionary<ExecutorType, ExecutorControllerBase> executors, object oldExecutorConfiguration,
-        ISubject<ProgressInfo>? progress = null)
+        ISubject<ProgressInfo>? progress = null, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }
