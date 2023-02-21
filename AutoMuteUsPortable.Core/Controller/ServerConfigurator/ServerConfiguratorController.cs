@@ -1,4 +1,5 @@
 ﻿using System.Net.NetworkInformation;
+using System.Reactive.Disposables;
 using System.Reactive.Subjects;
 using System.Reflection;
 using AutoMuteUsPortable.Core.Entity.ComputedSimpleSettingsNS;
@@ -18,6 +19,7 @@ public class ServerConfiguratorController
 {
     private readonly Config _config;
     private readonly PocketBaseClientApplication _pocketBaseClientApplication;
+    private readonly CompositeDisposable _pluginLoaders = new();
 
     public ServerConfiguratorController(Config config, PocketBaseClientApplication pocketBaseClientApplication)
     {
@@ -25,7 +27,6 @@ public class ServerConfiguratorController
         _pocketBaseClientApplication = pocketBaseClientApplication;
     }
 
-    public Dictionary<ExecutorType, PluginLoader> pluginLoaders { get; } = new();
     public Dictionary<ExecutorType, ExecutorControllerBase> executors { get; } = new();
 
     private bool IsUsingSimpleSettings => _config.serverConfiguration.simpleSettings != null;
@@ -192,7 +193,7 @@ public class ServerConfiguratorController
             var pluginLoader = PluginLoader.CreateFromAssemblyFile(
                 assemblyPath, true, new[] { typeof(ExecutorControllerBase) });
             var assembly = pluginLoader.LoadDefaultAssembly();
-            pluginLoaders.Add(executorConfiguration.type, pluginLoader);
+            _pluginLoaders.Add(pluginLoader);
 
             var constructorArgs = new object[]
             {
@@ -304,7 +305,7 @@ public class ServerConfiguratorController
             var pluginLoader = PluginLoader.CreateFromAssemblyFile(
                 assemblyPath, true, new[] { typeof(ExecutorControllerBase) });
             var assembly = pluginLoader.LoadDefaultAssembly();
-            pluginLoaders.Add(executorConfiguration.type, pluginLoader);
+            _pluginLoaders.Add(pluginLoader);
 
             var constructorArgs = new object[]
             {
@@ -352,11 +353,7 @@ public class ServerConfiguratorController
         #region Unload assemblies
 
         executors.Clear();
-        foreach (var (type, pluginLoader) in pluginLoaders)
-        {
-            pluginLoaders.Remove(type);
-            pluginLoader.Dispose();
-        }
+        _pluginLoaders.Clear();
 
         #endregion
     }
@@ -386,11 +383,7 @@ public class ServerConfiguratorController
         #region Unload assemblies
 
         executors.Clear();
-        foreach (var (type, pluginLoader) in pluginLoaders)
-        {
-            pluginLoaders.Remove(type);
-            pluginLoader.Dispose();
-        }
+        _pluginLoaders.Clear();
 
         #endregion
     }
@@ -587,7 +580,7 @@ public class ServerConfiguratorController
             var pluginLoader = PluginLoader.CreateFromAssemblyFile(
                 assemblyPath, true, new[] { typeof(ExecutorControllerBase) });
             var assembly = pluginLoader.LoadDefaultAssembly();
-            pluginLoaders.Add(executorConfiguration.type, pluginLoader);
+            _pluginLoaders.Add(pluginLoader);
 
             var constructorArgs = new object[]
             {
@@ -628,11 +621,7 @@ public class ServerConfiguratorController
         #region Unload assemblies
 
         executors.Clear();
-        foreach (var (type, pluginLoader) in pluginLoaders)
-        {
-            pluginLoaders.Remove(type);
-            pluginLoader.Dispose();
-        }
+        _pluginLoaders.Clear();
 
         #endregion
     }
@@ -669,7 +658,7 @@ public class ServerConfiguratorController
             var pluginLoader = PluginLoader.CreateFromAssemblyFile(
                 assemblyPath, true, new[] { typeof(ExecutorControllerBase) });
             var assembly = pluginLoader.LoadDefaultAssembly();
-            pluginLoaders.Add(executorConfiguration.type, pluginLoader);
+            _pluginLoaders.Add(pluginLoader);
 
             var constructorArgs = new object[]
             {
@@ -693,11 +682,7 @@ public class ServerConfiguratorController
         #region Unload assemblies
 
         executors.Clear();
-        foreach (var (type, pluginLoader) in pluginLoaders)
-        {
-            pluginLoaders.Remove(type);
-            pluginLoader.Dispose();
-        }
+        _pluginLoaders.Clear();
 
         #endregion
     }
