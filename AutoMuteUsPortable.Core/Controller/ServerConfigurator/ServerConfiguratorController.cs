@@ -30,13 +30,14 @@ public class ServerConfiguratorController
 
     private bool IsUsingSimpleSettings => _config.serverConfiguration.simpleSettings != null;
 
-    public async Task Run(ISubject<ProgressInfo>? progress = null)
+    public async Task Run(ISubject<ProgressInfo>? progress = null, CancellationToken cancellationToken = default)
     {
-        if (IsUsingSimpleSettings) await RunBySimpleSettings(progress);
-        else await RunByAdvancedSettings(progress);
+        if (IsUsingSimpleSettings) await RunBySimpleSettings(progress, cancellationToken);
+        else await RunByAdvancedSettings(progress, cancellationToken);
     }
 
-    private async Task RunBySimpleSettings(ISubject<ProgressInfo>? progress = null)
+    private async Task RunBySimpleSettings(ISubject<ProgressInfo>? progress = null,
+        CancellationToken cancellationToken = default)
     {
         #region Setup progress
 
@@ -85,6 +86,8 @@ public class ServerConfiguratorController
         var (currentName, currentPort) = portQueue.Dequeue();
         while (true)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             if (++tcpIdx < tcpConnInfoList.Count)
             {
                 var endpoint = tcpConnInfoList[tcpIdx];
@@ -169,9 +172,9 @@ public class ServerConfiguratorController
             {
                 using (var client = new HttpClient())
                 {
-                    var res = await client.GetStringAsync(checksumUrl);
+                    var res = await client.GetStringAsync(checksumUrl, cancellationToken);
                     var invalidFiles = Utils.CompareChecksum(executorConfiguration.executorDirectory,
-                        Utils.ParseChecksumText(res));
+                        Utils.ParseChecksumText(res), cancellationToken);
                     taskProgress?.NextTask();
                     if (0 < invalidFiles.Count)
                     {
@@ -228,7 +231,8 @@ public class ServerConfiguratorController
         #endregion
     }
 
-    private async Task RunByAdvancedSettings(ISubject<ProgressInfo>? progress = null)
+    private async Task RunByAdvancedSettings(ISubject<ProgressInfo>? progress = null,
+        CancellationToken cancellationToken = default)
     {
         #region Setup progress
 
@@ -287,7 +291,7 @@ public class ServerConfiguratorController
                     if (0 < invalidFiles.Count)
                     {
                         var downloadProgress = taskProgress?.GetSubjectProgress();
-                        await DownloadExecutor(executorConfiguration, downloadProgress);
+                        await DownloadExecutor(executorConfiguration, downloadProgress, cancellationToken);
                     }
                 }
             }
@@ -315,14 +319,15 @@ public class ServerConfiguratorController
             executors.Add(executorConfiguration.type, executorController);
 
             var runProgress = taskProgress?.GetSubjectProgress();
-            await executorController.Run(runProgress);
+            await executorController.Run(runProgress, cancellationToken);
             taskProgress?.NextTask();
         }
 
         #endregion
     }
 
-    public async Task Stop(ISubject<ProgressInfo>? progress = null)
+    public async Task GracefullyStop(ISubject<ProgressInfo>? progress = null,
+        CancellationToken cancellationToken = default)
     {
         #region Setup progress
 
@@ -338,7 +343,7 @@ public class ServerConfiguratorController
         foreach (var executorConfiguration in _config.serverConfiguration.advancedSettings!)
         {
             var stopProgress = taskProgress?.GetSubjectProgress();
-            await executors[executorConfiguration.type].Stop(stopProgress);
+            await executors[executorConfiguration.type].GracefullyStop(stopProgress, cancellationToken);
             taskProgress?.NextTask();
         }
 
@@ -356,7 +361,41 @@ public class ServerConfiguratorController
         #endregion
     }
 
-    public async Task Restart(ISubject<ProgressInfo>? progress = null)
+    public async Task ForciblyStop(ISubject<ProgressInfo>? progress = null)
+    {
+        #region Setup progress
+
+        var taskProgress = progress != null
+            ? new TaskProgress(progress,
+                _config.serverConfiguration.advancedSettings!.Select(x => $"Stopping {x.type}").ToList())
+            : null;
+
+        #endregion
+
+        #region Stop servers
+
+        foreach (var executorConfiguration in _config.serverConfiguration.advancedSettings!)
+        {
+            var stopProgress = taskProgress?.GetSubjectProgress();
+            await executors[executorConfiguration.type].ForciblyStop(stopProgress);
+            taskProgress?.NextTask();
+        }
+
+        #endregion
+
+        #region Unload assemblies
+
+        executors.Clear();
+        foreach (var (type, pluginLoader) in pluginLoaders)
+        {
+            pluginLoaders.Remove(type);
+            pluginLoader.Dispose();
+        }
+
+        #endregion
+    }
+
+    public async Task Restart(ISubject<ProgressInfo>? progress = null, CancellationToken cancellationToken = default)
     {
         #region Setup progress
 
@@ -371,22 +410,22 @@ public class ServerConfiguratorController
         #endregion
 
         var stopProgress = taskProgress?.GetSubjectProgress();
-        await Stop(stopProgress);
+        await GracefullyStop(stopProgress, cancellationToken);
         taskProgress?.NextTask();
 
         var runProgress = taskProgress?.GetSubjectProgress();
-        await Run(runProgress);
+        await Run(runProgress, cancellationToken);
         taskProgress?.NextTask();
     }
 
-    public async Task Install(ISubject<ProgressInfo>? progress = null)
+    public async Task Install(ISubject<ProgressInfo>? progress = null, CancellationToken cancellationToken = default)
     {
-        if (IsUsingSimpleSettings) await InstallBySimpleSettings(progress);
-        else await InstallByAdvancedSettings(progress);
+        if (IsUsingSimpleSettings) await InstallBySimpleSettings(progress, cancellationToken);
+        else await InstallByAdvancedSettings(progress, cancellationToken);
     }
 
     private async Task DownloadExecutor(ExecutorConfigurationBase executorConfiguration,
-        ISubject<ProgressInfo>? progress = null)
+        ISubject<ProgressInfo>? progress = null, CancellationToken cancellationToken = default)
     {
         #region Setup progress
 
@@ -424,19 +463,20 @@ public class ServerConfiguratorController
         var downloadProgress = taskProgress?.GetProgress();
         if (taskProgress?.ActiveLeafTask != null)
             taskProgress.ActiveLeafTask.Name = string.Format("{0}の実行に必要なファイルをダウンロードしています", executor.Type);
-        await Utils.DownloadAsync(downloadUrl, binaryPath, downloadProgress);
+        await Utils.DownloadAsync(downloadUrl, binaryPath, downloadProgress, cancellationToken);
         taskProgress?.NextTask();
 
         var extractProgress = taskProgress?.GetProgress();
         if (taskProgress?.ActiveLeafTask != null)
             taskProgress.ActiveLeafTask.Name = string.Format("{0}の実行に必要なファイルを解凍しています", executor.Type);
-        Utils.ExtractZip(binaryPath, extractProgress);
+        Utils.ExtractZip(binaryPath, extractProgress, cancellationToken);
         taskProgress?.NextTask();
 
         #endregion
     }
 
-    private async Task InstallBySimpleSettings(ISubject<ProgressInfo>? progress = null)
+    private async Task InstallBySimpleSettings(ISubject<ProgressInfo>? progress = null,
+        CancellationToken cancellationToken = default)
     {
         #region Setup progress
 
@@ -480,6 +520,8 @@ public class ServerConfiguratorController
         var (currentName, currentPort) = portQueue.Dequeue();
         while (true)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             if (++tcpIdx < tcpConnInfoList.Count)
             {
                 var endpoint = tcpConnInfoList[tcpIdx];
@@ -536,7 +578,7 @@ public class ServerConfiguratorController
             #region Download and extract
 
             var downloadProgress = taskProgress?.GetSubjectProgress();
-            await DownloadExecutor(executorConfiguration, downloadProgress);
+            await DownloadExecutor(executorConfiguration, downloadProgress, cancellationToken);
             taskProgress?.NextTask();
 
             #endregion
@@ -566,19 +608,19 @@ public class ServerConfiguratorController
         #region Install each executors
 
         var installProgress = taskProgress?.GetSubjectProgress();
-        await executors[ExecutorType.redis].Install(executors, installProgress);
+        await executors[ExecutorType.redis].Install(executors, installProgress, cancellationToken);
         taskProgress?.NextTask();
 
         installProgress = taskProgress?.GetSubjectProgress();
-        await executors[ExecutorType.postgresql].Install(executors, installProgress);
+        await executors[ExecutorType.postgresql].Install(executors, installProgress, cancellationToken);
         taskProgress?.NextTask();
 
         installProgress = taskProgress?.GetSubjectProgress();
-        await executors[ExecutorType.galactus].Install(executors, installProgress);
+        await executors[ExecutorType.galactus].Install(executors, installProgress, cancellationToken);
         taskProgress?.NextTask();
 
         installProgress = taskProgress?.GetSubjectProgress();
-        await executors[ExecutorType.automuteus].Install(executors, installProgress);
+        await executors[ExecutorType.automuteus].Install(executors, installProgress, cancellationToken);
         taskProgress?.NextTask();
 
         #endregion
@@ -595,7 +637,8 @@ public class ServerConfiguratorController
         #endregion
     }
 
-    private async Task InstallByAdvancedSettings(ISubject<ProgressInfo>? progress = null)
+    private async Task InstallByAdvancedSettings(ISubject<ProgressInfo>? progress = null,
+        CancellationToken cancellationToken = default)
     {
         #region Setup progress
 
@@ -619,7 +662,7 @@ public class ServerConfiguratorController
             taskProgress?.Task!.AddTask("Installing");
 
             var downloadProgress = taskProgress?.GetSubjectProgress();
-            await DownloadExecutor(executorConfiguration, downloadProgress);
+            await DownloadExecutor(executorConfiguration, downloadProgress, cancellationToken);
             taskProgress?.NextTask();
 
             var assemblyPath = Path.Combine(executorConfiguration.executorDirectory, "AutoMuteUsPortable.Executor.dll");
@@ -641,7 +684,7 @@ public class ServerConfiguratorController
             executors.Add(executorConfiguration.type, executorController);
 
             var installProgress = taskProgress?.GetSubjectProgress();
-            await executorController.Install(executors, installProgress);
+            await executorController.Install(executors, installProgress, cancellationToken);
             taskProgress?.NextTask();
         }
 
