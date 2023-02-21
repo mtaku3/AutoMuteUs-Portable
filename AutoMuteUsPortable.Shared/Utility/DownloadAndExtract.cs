@@ -1,13 +1,13 @@
 ﻿using System.IO.Compression;
 using System.Runtime.InteropServices;
 using AutoMuteUsPortable.PocketBaseClient.Models;
-using AutoMuteUsPortable.Shared.Utility.Dotnet.ZipFileProgressExtensionsNS;
 
 namespace AutoMuteUsPortable.Shared.Utility;
 
 public static partial class Utils
 {
-    public static void ExtractZip(string path, IProgress<double>? progress = null)
+    public static void ExtractZip(string path, IProgress<double>? progress = null,
+        CancellationToken cancellationToken = default)
     {
         var directoryName = Path.GetDirectoryName(path);
         if (directoryName == null) throw new ArgumentException("Path is not a valid file path", nameof(path));
@@ -15,16 +15,17 @@ public static partial class Utils
         using (var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.None))
         using (var archive = new ZipArchive(fileStream, ZipArchiveMode.Read))
         {
-            archive.ExtractToDirectory(directoryName, true, progress);
+            archive.ExtractToDirectory(directoryName, false, progress, cancellationToken);
         }
     }
 
-    public static async Task DownloadAsync(string url, string path, IProgress<double>? progress = null)
+    public static async Task DownloadAsync(string url, string path, IProgress<double>? progress = null,
+        CancellationToken cancellationToken = default)
     {
         using (var client = new HttpClient())
         using (var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
         {
-            await client.DownloadDataAsync(url, fileStream, progress);
+            await client.DownloadDataAsync(url, fileStream, progress, cancellationToken);
         }
     }
 
