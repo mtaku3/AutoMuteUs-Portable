@@ -19,7 +19,8 @@ public static partial class Utils
         return res;
     }
 
-    public static List<string> CompareChecksum(string root, Dictionary<string, ulong> checksum)
+    public static List<string> CompareChecksum(string root, Dictionary<string, ulong> checksum,
+        CancellationToken cancellationToken = default)
     {
         var ret = new List<string>();
 
@@ -35,6 +36,8 @@ public static partial class Utils
             var bytes = File.ReadAllBytes(filePath);
             var computedChecksum = xxHash3.ComputeHash(bytes, bytes.Length);
             if (computedChecksum != item.Value) ret.Add(item.Key);
+
+            cancellationToken.ThrowIfCancellationRequested();
         }
 
         return ret;
