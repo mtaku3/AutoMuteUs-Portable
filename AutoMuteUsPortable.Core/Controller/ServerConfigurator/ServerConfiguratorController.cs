@@ -180,7 +180,7 @@ public class ServerConfiguratorController
                     if (0 < invalidFiles.Count)
                     {
                         var downloadProgress = taskProgress?.GetSubjectProgress();
-                        await DownloadExecutor(executorConfiguration, downloadProgress);
+                        await DownloadExecutor(executorConfiguration, downloadProgress, cancellationToken);
                     }
                 }
             }
@@ -214,19 +214,19 @@ public class ServerConfiguratorController
         #region Run each executors
 
         var runProgress = taskProgress?.GetSubjectProgress();
-        await executors[ExecutorType.redis].Run(runProgress);
+        await executors[ExecutorType.redis].Run(runProgress, cancellationToken);
         taskProgress?.NextTask();
 
         runProgress = taskProgress?.GetSubjectProgress();
-        await executors[ExecutorType.postgresql].Run(runProgress);
+        await executors[ExecutorType.postgresql].Run(runProgress, cancellationToken);
         taskProgress?.NextTask();
 
         runProgress = taskProgress?.GetSubjectProgress();
-        await executors[ExecutorType.galactus].Run(runProgress);
+        await executors[ExecutorType.galactus].Run(runProgress, cancellationToken);
         taskProgress?.NextTask();
 
         runProgress = taskProgress?.GetSubjectProgress();
-        await executors[ExecutorType.automuteus].Run(runProgress);
+        await executors[ExecutorType.automuteus].Run(runProgress, cancellationToken);
         taskProgress?.NextTask();
 
         #endregion
@@ -285,7 +285,7 @@ public class ServerConfiguratorController
             {
                 using (var client = new HttpClient())
                 {
-                    var res = await client.GetStringAsync(checksumUrl);
+                    var res = await client.GetStringAsync(checksumUrl, cancellationToken);
                     var invalidFiles = Utils.CompareChecksum(executorConfiguration.executorDirectory,
                         Utils.ParseChecksumText(res));
                     taskProgress?.NextTask();
