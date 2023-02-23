@@ -12,6 +12,7 @@ using AutoMuteUsPortable.Shared.Entity.ExecutorConfigurationSSNS;
 using AutoMuteUsPortable.Shared.Entity.ProgressInfo;
 using AutoMuteUsPortable.Shared.Utility;
 using McMaster.NETCore.Plugins;
+using Open.Collections;
 
 namespace AutoMuteUsPortable.Core.Controller.ServerConfigurator;
 
@@ -27,7 +28,7 @@ public class ServerConfiguratorController
         _pocketBaseClientApplication = pocketBaseClientApplication;
     }
 
-    public Dictionary<ExecutorType, ExecutorControllerBase> executors { get; } = new();
+    public OrderedDictionary<ExecutorType, ExecutorControllerBase> executors { get; } = new();
 
     private bool IsUsingSimpleSettings => _config.serverConfiguration.simpleSettings != null;
 
@@ -330,21 +331,59 @@ public class ServerConfiguratorController
     public async Task GracefullyStop(ISubject<ProgressInfo>? progress = null,
         CancellationToken cancellationToken = default)
     {
+        if (_config.serverConfiguration.IsSimpleSettingsUsed)
+            await GracefullyStopBySimpleSettings(progress, cancellationToken);
+        else await GracefullyStopByAdvancedSettings(progress, cancellationToken);
+    }
+
+    private async Task GracefullyStopBySimpleSettings(ISubject<ProgressInfo>? progress = null,
+        CancellationToken cancellationToken = default)
+    {
         #region Setup progress
 
         var taskProgress = progress != null
-            ? new TaskProgress(progress,
-                _config.serverConfiguration.advancedSettings!.Select(x => $"Stopping {x.type}").ToList())
+            ? new TaskProgress(progress, executors.Reverse().Select(x => $"Stopping {x.Key}").ToList())
             : null;
 
         #endregion
 
         #region Stop servers
 
-        foreach (var executorConfiguration in _config.serverConfiguration.advancedSettings!)
+        foreach (var (_, executor) in executors.Reverse())
         {
             var stopProgress = taskProgress?.GetSubjectProgress();
-            await executors[executorConfiguration.type].GracefullyStop(stopProgress, cancellationToken);
+            await executor.GracefullyStop(stopProgress, cancellationToken);
+            taskProgress?.NextTask();
+        }
+
+        #endregion
+
+        #region Unload assemblies
+
+        executors.Clear();
+        _pluginLoaders.Clear();
+
+        #endregion
+    }
+
+
+    private async Task GracefullyStopByAdvancedSettings(ISubject<ProgressInfo>? progress = null,
+        CancellationToken cancellationToken = default)
+    {
+        #region Setup progress
+
+        var taskProgress = progress != null
+            ? new TaskProgress(progress, executors.Reverse().Select(x => $"Stopping {x.Key}").ToList())
+            : null;
+
+        #endregion
+
+        #region Stop servers
+
+        foreach (var (_, executor) in executors.Reverse())
+        {
+            var stopProgress = taskProgress?.GetSubjectProgress();
+            await executor.GracefullyStop(stopProgress, cancellationToken);
             taskProgress?.NextTask();
         }
 
@@ -360,21 +399,55 @@ public class ServerConfiguratorController
 
     public async Task ForciblyStop(ISubject<ProgressInfo>? progress = null)
     {
+        if (_config.serverConfiguration.IsSimpleSettingsUsed) await ForciblyStopBySimpleSettings(progress);
+        else await ForciblyStopByAdvancedSettings(progress);
+    }
+
+    private async Task ForciblyStopBySimpleSettings(ISubject<ProgressInfo>? progress = null)
+    {
         #region Setup progress
 
         var taskProgress = progress != null
-            ? new TaskProgress(progress,
-                _config.serverConfiguration.advancedSettings!.Select(x => $"Stopping {x.type}").ToList())
+            ? new TaskProgress(progress, executors.Reverse().Select(x => $"Stopping {x.Key}").ToList())
             : null;
 
         #endregion
 
         #region Stop servers
 
-        foreach (var executorConfiguration in _config.serverConfiguration.advancedSettings!)
+        foreach (var (_, executor) in executors.Reverse())
         {
             var stopProgress = taskProgress?.GetSubjectProgress();
-            await executors[executorConfiguration.type].ForciblyStop(stopProgress);
+            await executor.ForciblyStop(stopProgress);
+            taskProgress?.NextTask();
+        }
+
+        #endregion
+
+        #region Unload assemblies
+
+        executors.Clear();
+        _pluginLoaders.Clear();
+
+        #endregion
+    }
+
+    private async Task ForciblyStopByAdvancedSettings(ISubject<ProgressInfo>? progress = null)
+    {
+        #region Setup progress
+
+        var taskProgress = progress != null
+            ? new TaskProgress(progress, executors.Reverse().Select(x => $"Stopping {x.Key}").ToList())
+            : null;
+
+        #endregion
+
+        #region Stop servers
+
+        foreach (var (_, executor) in executors.Reverse())
+        {
+            var stopProgress = taskProgress?.GetSubjectProgress();
+            await executor.ForciblyStop(stopProgress);
             taskProgress?.NextTask();
         }
 
@@ -601,19 +674,19 @@ public class ServerConfiguratorController
         #region Install each executors
 
         var installProgress = taskProgress?.GetSubjectProgress();
-        await executors[ExecutorType.redis].Install(executors, installProgress, cancellationToken);
+        await executors[ExecutorType.redis].Install(executors.ToDictionary(), installProgress, cancellationToken);
         taskProgress?.NextTask();
 
         installProgress = taskProgress?.GetSubjectProgress();
-        await executors[ExecutorType.postgresql].Install(executors, installProgress, cancellationToken);
+        await executors[ExecutorType.postgresql].Install(executors.ToDictionary(), installProgress, cancellationToken);
         taskProgress?.NextTask();
 
         installProgress = taskProgress?.GetSubjectProgress();
-        await executors[ExecutorType.galactus].Install(executors, installProgress, cancellationToken);
+        await executors[ExecutorType.galactus].Install(executors.ToDictionary(), installProgress, cancellationToken);
         taskProgress?.NextTask();
 
         installProgress = taskProgress?.GetSubjectProgress();
-        await executors[ExecutorType.automuteus].Install(executors, installProgress, cancellationToken);
+        await executors[ExecutorType.automuteus].Install(executors.ToDictionary(), installProgress, cancellationToken);
         taskProgress?.NextTask();
 
         #endregion
@@ -673,7 +746,7 @@ public class ServerConfiguratorController
             executors.Add(executorConfiguration.type, executorController);
 
             var installProgress = taskProgress?.GetSubjectProgress();
-            await executorController.Install(executors, installProgress, cancellationToken);
+            await executorController.Install(executors.ToDictionary(), installProgress, cancellationToken);
             taskProgress?.NextTask();
         }
 

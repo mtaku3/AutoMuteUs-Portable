@@ -11,6 +11,7 @@ public class Config : ConfigBase
 
 public class ServerConfiguration
 {
+    public bool IsSimpleSettingsUsed => simpleSettings != null;
     public SimpleSettings? simpleSettings { get; set; }
     public List<ExecutorConfiguration>? advancedSettings { get; set; }
 }
