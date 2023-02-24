@@ -32,6 +32,12 @@ public class ServerConfiguratorController
 
     private bool IsUsingSimpleSettings => _config.serverConfiguration.simpleSettings != null;
 
+    private static PluginLoader CreatePluginLoader(string assemblyPath)
+    {
+        return PluginLoader.CreateFromAssemblyFile(assemblyPath, true,
+            new[] { typeof(ExecutorControllerBase) });
+    }
+
     public async Task Run(ISubject<ProgressInfo>? progress = null, CancellationToken cancellationToken = default)
     {
         if (IsUsingSimpleSettings) await RunBySimpleSettings(progress, cancellationToken);
@@ -191,8 +197,7 @@ public class ServerConfiguratorController
             #endregion
 
             var assemblyPath = Path.Combine(executorConfiguration.executorDirectory, "AutoMuteUsPortable.Executor.dll");
-            var pluginLoader = PluginLoader.CreateFromAssemblyFile(
-                assemblyPath, true, new[] { typeof(ExecutorControllerBase) });
+            var pluginLoader = CreatePluginLoader(assemblyPath);
             var assembly = pluginLoader.LoadDefaultAssembly();
             _pluginLoaders.Add(pluginLoader);
 
@@ -303,8 +308,7 @@ public class ServerConfiguratorController
             #endregion
 
             var assemblyPath = Path.Combine(executorConfiguration.executorDirectory, "AutoMuteUsPortable.Executor.dll");
-            var pluginLoader = PluginLoader.CreateFromAssemblyFile(
-                assemblyPath, true, new[] { typeof(ExecutorControllerBase) });
+            var pluginLoader = CreatePluginLoader(assemblyPath);
             var assembly = pluginLoader.LoadDefaultAssembly();
             _pluginLoaders.Add(pluginLoader);
 
@@ -650,8 +654,7 @@ public class ServerConfiguratorController
             #endregion
 
             var assemblyPath = Path.Combine(executorConfiguration.executorDirectory, "AutoMuteUsPortable.Executor.dll");
-            var pluginLoader = PluginLoader.CreateFromAssemblyFile(
-                assemblyPath, true, new[] { typeof(ExecutorControllerBase) });
+            var pluginLoader = CreatePluginLoader(assemblyPath);
             var assembly = pluginLoader.LoadDefaultAssembly();
             _pluginLoaders.Add(pluginLoader);
 
@@ -728,8 +731,7 @@ public class ServerConfiguratorController
             taskProgress?.NextTask();
 
             var assemblyPath = Path.Combine(executorConfiguration.executorDirectory, "AutoMuteUsPortable.Executor.dll");
-            var pluginLoader = PluginLoader.CreateFromAssemblyFile(
-                assemblyPath, true, new[] { typeof(ExecutorControllerBase) });
+            var pluginLoader = CreatePluginLoader(assemblyPath);
             var assembly = pluginLoader.LoadDefaultAssembly();
             _pluginLoaders.Add(pluginLoader);
 
