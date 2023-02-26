@@ -38,15 +38,17 @@ public class ServerConfiguratorController
             new[] { typeof(ExecutorControllerBase) });
     }
 
-    public async Task Run(ISubject<ProgressInfo>? progress = null, CancellationToken cancellationToken = default)
+    public async Task Configure(ISubject<ProgressInfo>? progress = null, CancellationToken cancellationToken = default)
     {
-        if (IsUsingSimpleSettings) await RunBySimpleSettings(progress, cancellationToken);
-        else await RunByAdvancedSettings(progress, cancellationToken);
+        if (IsUsingSimpleSettings) await ConfigureBySimpleSettings(progress, cancellationToken);
+        else await ConfigureByAdvancedSettings(progress, cancellationToken);
     }
 
-    private async Task RunBySimpleSettings(ISubject<ProgressInfo>? progress = null,
+    private async Task ConfigureBySimpleSettings(ISubject<ProgressInfo>? progress = null,
         CancellationToken cancellationToken = default)
     {
+        if (0 < _pluginLoaders.Count) return;
+
         #region Setup progress
 
         var taskProgress = progress != null
@@ -62,11 +64,6 @@ public class ServerConfiguratorController
                                 $"Checking file integrity of {x.type} Executor",
                                 $"Recovering missing files of {x.type} Executor"
                             })
-                },
-                {
-                    "Run each executors",
-                    _config.serverConfiguration.simpleSettings!.executorConfigurations
-                        .Select(x => $"Running {x.type}").ToList()
                 }
             })
             : null;
@@ -216,31 +213,13 @@ public class ServerConfiguratorController
         }
 
         #endregion
-
-        #region Run each executors
-
-        var runProgress = taskProgress?.GetSubjectProgress();
-        await executors[ExecutorType.redis].Run(runProgress, cancellationToken);
-        taskProgress?.NextTask();
-
-        runProgress = taskProgress?.GetSubjectProgress();
-        await executors[ExecutorType.postgresql].Run(runProgress, cancellationToken);
-        taskProgress?.NextTask();
-
-        runProgress = taskProgress?.GetSubjectProgress();
-        await executors[ExecutorType.galactus].Run(runProgress, cancellationToken);
-        taskProgress?.NextTask();
-
-        runProgress = taskProgress?.GetSubjectProgress();
-        await executors[ExecutorType.automuteus].Run(runProgress, cancellationToken);
-        taskProgress?.NextTask();
-
-        #endregion
     }
 
-    private async Task RunByAdvancedSettings(ISubject<ProgressInfo>? progress = null,
+    private async Task ConfigureByAdvancedSettings(ISubject<ProgressInfo>? progress = null,
         CancellationToken cancellationToken = default)
     {
+        if (0 < _pluginLoaders.Count) return;
+
         #region Setup progress
 
         var taskProgress = progress != null
@@ -249,8 +228,7 @@ public class ServerConfiguratorController
                     $"Loading {x.type} Executor", x => new List<string>
                 {
                     $"Checking file integrity of {x.type} Executor",
-                    $"Recovering missing files of {x.type} Executor",
-                    $"Running {x.type}"
+                    $"Recovering missing files of {x.type} Executor"
                 }))
             : null;
 
@@ -323,9 +301,95 @@ public class ServerConfiguratorController
                 throw new InvalidOperationException(
                     $"Failed to create new instance of {executorConfiguration.type.ToString()} ExecutorController");
             executors.Add(executorConfiguration.type, executorController);
+        }
 
+        #endregion
+    }
+
+    public async Task Run(ISubject<ProgressInfo>? progress = null, CancellationToken cancellationToken = default)
+    {
+        if (IsUsingSimpleSettings) await RunBySimpleSettings(progress, cancellationToken);
+        else await RunByAdvancedSettings(progress, cancellationToken);
+    }
+
+    private async Task RunBySimpleSettings(ISubject<ProgressInfo>? progress = null,
+        CancellationToken cancellationToken = default)
+    {
+        #region Setup progress
+
+        var taskProgress = progress != null
+            ? new TaskProgress(progress, new Dictionary<string, object?>
+            {
+                { "Configure executors", null },
+                {
+                    "Run each executors",
+                    _config.serverConfiguration.simpleSettings!.executorConfigurations
+                        .Select(x => $"Run {x.type}").ToList()
+                }
+            })
+            : null;
+
+        #endregion
+
+        #region Configure executors
+
+        var configureProgress = taskProgress?.GetSubjectProgress();
+        await ConfigureBySimpleSettings(configureProgress, cancellationToken);
+        taskProgress?.NextTask();
+
+        #endregion
+
+        #region Run each executors
+
+        var runProgress = taskProgress?.GetSubjectProgress();
+        await executors[ExecutorType.redis].Run(runProgress, cancellationToken);
+        taskProgress?.NextTask();
+
+        runProgress = taskProgress?.GetSubjectProgress();
+        await executors[ExecutorType.postgresql].Run(runProgress, cancellationToken);
+        taskProgress?.NextTask();
+
+        runProgress = taskProgress?.GetSubjectProgress();
+        await executors[ExecutorType.galactus].Run(runProgress, cancellationToken);
+        taskProgress?.NextTask();
+
+        runProgress = taskProgress?.GetSubjectProgress();
+        await executors[ExecutorType.automuteus].Run(runProgress, cancellationToken);
+        taskProgress?.NextTask();
+
+        #endregion
+    }
+
+    private async Task RunByAdvancedSettings(ISubject<ProgressInfo>? progress = null,
+        CancellationToken cancellationToken = default)
+    {
+        #region Setup progress
+
+        var taskProgress = progress != null
+            ? new TaskProgress(progress, new Dictionary<string, object?>
+            {
+                ["Configure executors"] = null,
+                ["Run each executors"] =
+                    _config.serverConfiguration.advancedSettings!.Select(x => $"Run {x.type}").ToList()
+            })
+            : null;
+
+        #endregion
+
+        #region Configure executors
+
+        var configureProgress = taskProgress?.GetSubjectProgress();
+        await ConfigureByAdvancedSettings(configureProgress, cancellationToken);
+        taskProgress?.NextTask();
+
+        #endregion
+
+        #region Run each executors
+
+        foreach (var executorConfiguration in _config.serverConfiguration.advancedSettings!)
+        {
             var runProgress = taskProgress?.GetSubjectProgress();
-            await executorController.Run(runProgress, cancellationToken);
+            await executors[executorConfiguration.type].Run(runProgress, cancellationToken);
             taskProgress?.NextTask();
         }
 
