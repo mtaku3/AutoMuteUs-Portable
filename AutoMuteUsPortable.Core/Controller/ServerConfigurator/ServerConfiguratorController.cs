@@ -617,124 +617,19 @@ public class ServerConfiguratorController
         var taskProgress = progress != null
             ? new TaskProgress(progress, new Dictionary<string, object?>
             {
-                { "Finding listenable ports for executors", null },
-                {
-                    "Load assembly and create instance of ExecutorController",
-                    _config.serverConfiguration.simpleSettings!.executorConfigurations
-                        .Select(x => $"Downloading {x.type} Executor").ToList()
-                },
-                {
-                    "Install executors",
-                    _config.serverConfiguration.simpleSettings!.executorConfigurations
-                        .Select(x => "Installing {x.type}").ToList()
-                }
+                ["Configure executors"] = null,
+                ["Install executors"] = _config.serverConfiguration.simpleSettings!.executorConfigurations
+                    .Select(x => "Installing {x.type}").ToList()
             })
             : null;
 
         #endregion
 
-        #region Find listenable port for executors
+        #region Configure executors
 
-        var portProgress = taskProgress?.GetSubjectProgress();
-        var ipGlobalProperties = IPGlobalProperties.GetIPGlobalProperties();
-        var tcpConnInfoList = ipGlobalProperties.GetActiveTcpListeners().Select(x => x.Port).Distinct().ToList();
-        if (tcpConnInfoList == null) throw new InvalidOperationException("Failed to retrieve active tcp listeners");
-
-        var defaultPort = new Dictionary<string, int>
-        {
-            { "galactus", 5858 },
-            { "broker", 8123 },
-            { "postgresql", 5432 },
-            { "redis", 6379 }
-        };
-        var portQueue = new Queue<KeyValuePair<string, int>>();
-        foreach (var port in defaultPort.OrderBy(x => x.Value)) portQueue.Enqueue(port);
-        var determinedPorts = new Dictionary<string, int>();
-        var tcpIdx = 0;
-        var (currentName, currentPort) = portQueue.Dequeue();
-        while (true)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            if (++tcpIdx < tcpConnInfoList.Count)
-            {
-                var endpoint = tcpConnInfoList[tcpIdx];
-
-                if (endpoint < currentPort) continue;
-                if (endpoint == currentPort)
-                {
-                    currentPort++;
-                    continue;
-                }
-            }
-
-            determinedPorts.Add(currentName, currentPort);
-            portProgress?.OnNext(new ProgressInfo
-            {
-                name = "使用可能なポートを検索しています",
-                progress = (double)determinedPorts.Count / defaultPort.Count
-            });
-            if (portQueue.Count == 0) break;
-
-            var (nextName, nextPort) = portQueue.Dequeue();
-            if (nextPort <= currentPort)
-                nextPort = currentPort + 1;
-
-            (currentName, currentPort) = (nextName, nextPort);
-        }
-
+        var configureProgress = taskProgress?.GetSubjectProgress();
+        await ConfigureBySimpleSettings(configureProgress, cancellationToken);
         taskProgress?.NextTask();
-
-        #endregion
-
-        #region Create ComputedSimpleSettings
-
-        var settings = new ComputedSimpleSettings
-        {
-            discordToken = _config.serverConfiguration.simpleSettings!.discordToken,
-            executorConfigurations = _config.serverConfiguration.simpleSettings.executorConfigurations,
-            postgresql = _config.serverConfiguration.simpleSettings.postgresql,
-            port = new Port
-            {
-                galactus = determinedPorts["galactus"],
-                broker = determinedPorts["broker"],
-                postgresql = determinedPorts["postgresql"],
-                redis = determinedPorts["redis"]
-            }
-        };
-
-        #endregion
-
-        #region Load assembly and create instance of ExecutorController
-
-        foreach (var executorConfiguration in settings.executorConfigurations)
-        {
-            #region Download and extract
-
-            var downloadProgress = taskProgress?.GetSubjectProgress();
-            await DownloadExecutor(executorConfiguration, downloadProgress, cancellationToken);
-            taskProgress?.NextTask();
-
-            #endregion
-
-            var assemblyPath = Path.Combine(executorConfiguration.executorDirectory, "AutoMuteUsPortable.Executor.dll");
-            var pluginLoader = CreatePluginLoader(assemblyPath);
-            var assembly = pluginLoader.LoadDefaultAssembly();
-            _pluginLoaders.Add(pluginLoader);
-
-            var constructorArgs = new object[]
-            {
-                settings,
-                executorConfiguration
-            };
-            var executorController = (ExecutorControllerBase?)assembly.CreateInstance(
-                "AutoMuteUsPortable.Executor.ExecutorController", false, BindingFlags.CreateInstance, null,
-                constructorArgs, null, null);
-            if (executorController == null)
-                throw new InvalidOperationException(
-                    $"Failed to create new instance of {executorConfiguration.type.ToString()} ExecutorController");
-            executors.Add(executorConfiguration.type, executorController);
-        }
 
         #endregion
 
@@ -772,47 +667,31 @@ public class ServerConfiguratorController
         #region Setup progress
 
         var taskProgress = progress != null
-            ? new TaskProgress(progress,
-                _config.serverConfiguration.advancedSettings!.ToDictionary<ExecutorConfiguration, string, object?>(
-                    x => $"Installing {x.type}", x => new List<string>
-                    {
-                        $"Downloading {x.type} Executor",
-                        $"Installing {x.type}"
-                    }))
+            ? new TaskProgress(progress, new Dictionary<string, object?>
+            {
+                ["Configure executors"] = null,
+                ["Install each executors"] = _config.serverConfiguration.advancedSettings!
+                    .Select(x => $"Install {x.type}").ToList()
+            })
             : null;
 
         #endregion
 
-        #region Load assembly, create instance of ExecutorController and install
+        #region Configure executors
+
+        var configureProgress = taskProgress?.GetSubjectProgress();
+        await ConfigureByAdvancedSettings(configureProgress, cancellationToken);
+        taskProgress?.NextTask();
+
+        #endregion
+
+        #region Install each executors
 
         foreach (var executorConfiguration in _config.serverConfiguration.advancedSettings!)
         {
-            taskProgress?.Task!.AddTask("Downloading");
-            taskProgress?.Task!.AddTask("Installing");
-
-            var downloadProgress = taskProgress?.GetSubjectProgress();
-            await DownloadExecutor(executorConfiguration, downloadProgress, cancellationToken);
-            taskProgress?.NextTask();
-
-            var assemblyPath = Path.Combine(executorConfiguration.executorDirectory, "AutoMuteUsPortable.Executor.dll");
-            var pluginLoader = CreatePluginLoader(assemblyPath);
-            var assembly = pluginLoader.LoadDefaultAssembly();
-            _pluginLoaders.Add(pluginLoader);
-
-            var constructorArgs = new object[]
-            {
-                executorConfiguration
-            };
-            var executorController = (ExecutorControllerBase?)assembly.CreateInstance(
-                "AutoMuteUsPortable.Executor.ExecutorController", false, BindingFlags.CreateInstance, null,
-                constructorArgs, null, null);
-            if (executorController == null)
-                throw new InvalidOperationException(
-                    $"Failed to create new instance of {executorConfiguration.type.ToString()} ExecutorController");
-            executors.Add(executorConfiguration.type, executorController);
-
             var installProgress = taskProgress?.GetSubjectProgress();
-            await executorController.Install(executors.ToDictionary(), installProgress, cancellationToken);
+            await executors[executorConfiguration.type]
+                .Install(executors.ToDictionary(), installProgress, cancellationToken);
             taskProgress?.NextTask();
         }
 
