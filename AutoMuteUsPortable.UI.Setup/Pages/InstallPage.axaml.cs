@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -6,6 +7,7 @@ using AutoMuteUsPortable.Core.Controller.ServerConfigurator;
 using AutoMuteUsPortable.Core.Infrastructure.Config;
 using AutoMuteUsPortable.Shared.Entity.ProgressInfo;
 using AutoMuteUsPortable.Shared.Infrastructure.ConfigBase;
+using AutoMuteUsPortable.Shared.Utility;
 using AutoMuteUsPortable.UI.Setup.Common;
 using AutoMuteUsPortable.UI.Setup.ViewModels;
 using Avalonia.ReactiveUI;
@@ -24,7 +26,7 @@ public partial class InstallPage : ReactiveUserControl<InstallPageViewModel>
         {
             ProgressInfo = new ProgressInfo
             {
-                name = "ÉRÉìÉtÉBÉOÇçÏê¨ÇµÇƒÇ¢Ç‹Ç∑",
+                name = "„Ç≥„É≥„Éï„Ç£„Ç∞„Çí‰ΩúÊàê„Åó„Å¶„ÅÑ„Åæ„Åô",
                 IsIndeterminate = true
             }
         };
@@ -41,8 +43,19 @@ public partial class InstallPage : ReactiveUserControl<InstallPageViewModel>
 
                 var progress = new Subject<ProgressInfo>();
                 progress.ObserveOn(RxApp.MainThreadScheduler).Subscribe(x => ViewModel.ProgressInfo = x);
+                var taskProgress = new TaskProgress(progress, new List<string>
+                {
+                    "Configure executors",
+                    "Install executors"
+                });
 
-                await serverConfigurator.Install(progress);
+                var configureProgress = taskProgress.GetSubjectProgress();
+                await serverConfigurator.Configure(configureProgress);
+                taskProgress.NextTask();
+
+                var installProgress = taskProgress.GetSubjectProgress();
+                await serverConfigurator.Install(installProgress);
+                taskProgress.NextTask();
 
                 if (!File.Exists(AppHost.DefaultConfigPath))
                 {
