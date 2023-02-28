@@ -24,6 +24,7 @@
         <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.0-preview4" />
         <PackageReference Include="DotNetEnv" Version="2.5.0" />
         <PackageReference Include="FluentAvalonia.FluentIcons" Version="2.0.0-alpha.8" />
+        <PackageReference Include="FluentAvalonia.UI.Windowing" Version="2.0.0-preview4" />
         <PackageReference Include="FluentAvaloniaUI" Version="2.0.0-preview4" />
         <PackageReference Include="XamlNameReferenceGenerator" Version="1.5.1" />
     </ItemGroup>

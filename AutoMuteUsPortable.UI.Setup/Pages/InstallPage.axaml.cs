@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Threading;
 using AutoMuteUsPortable.Core.Controller.ServerConfigurator;
 using AutoMuteUsPortable.Core.Infrastructure.Config;
 using AutoMuteUsPortable.Shared.Entity.ProgressInfo;
@@ -10,6 +11,7 @@ using AutoMuteUsPortable.Shared.Infrastructure.ConfigBase;
 using AutoMuteUsPortable.Shared.Utility;
 using AutoMuteUsPortable.UI.Setup.Common;
 using AutoMuteUsPortable.UI.Setup.ViewModels;
+using AutoMuteUsPortable.UI.Setup.Views;
 using Avalonia.ReactiveUI;
 using Avalonia.Threading;
 using FluentAvalonia.UI.Media.Animation;
@@ -49,13 +51,18 @@ public partial class InstallPage : ReactiveUserControl<InstallPageViewModel>
                     "Install executors"
                 });
 
+                var cancellationTokenSource = new CancellationTokenSource();
+                MainWindow.Instance.CloseCTS = cancellationTokenSource;
+
                 var configureProgress = taskProgress.GetSubjectProgress();
-                await serverConfigurator.Configure(configureProgress);
+                await serverConfigurator.Configure(configureProgress, cancellationTokenSource.Token);
                 taskProgress.NextTask();
 
                 var installProgress = taskProgress.GetSubjectProgress();
-                await serverConfigurator.Install(installProgress);
+                await serverConfigurator.Install(installProgress, cancellationTokenSource.Token);
                 taskProgress.NextTask();
+
+                MainWindow.Instance.CloseCTS = null;
 
                 if (!File.Exists(AppHost.DefaultConfigPath))
                 {
