@@ -3,15 +3,30 @@
         xmlns:vm="using:AutoMuteUsPortable.UI.Main.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        xmlns:ui="using:FluentAvalonia.UI.Controls"
+        xmlns:ctrls="using:AutoMuteUsPortable.UI.Main.Controls"
+        MinWidth="960" MinHeight="540"
+        mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="540"
         x:Class="AutoMuteUsPortable.UI.Main.Views.MainWindow"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="AutoMuteUs_Portable.UI.Main">
-
+        Icon="/Assets/AutoMuteUsPortable.ico"
+        Title="AutoMuteUs Portable">
     <Design.DataContext>
         <vm:MainWindowViewModel />
     </Design.DataContext>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+    <ui:NavigationView x:Name="NavigationView" SelectionChanged="NavigationView_OnSelectionChanged">
+        <ui:NavigationView.MenuItems>
+            <ui:NavigationViewItem x:Name="GeneralPageViewItem" Icon="Pin" Content="一般" Tag="GeneralPageFrame" />
+            <ui:NavigationViewItem x:Name="LogViewItem" Icon="Library" Content="ログ">
+                <ui:NavigationViewItem.MenuItems>
+                    <ui:NavigationViewItem Icon="MapDrive" Content="Automuteus" Tag="LogPage.automuteus" />
+                    <ui:NavigationViewItem Icon="MapDrive" Content="Galactus" Tag="LogPage.galactus" />
+                    <ui:NavigationViewItem Icon="MapDrive" Content="PostgreSQL" Tag="LogPage.postgresql" />
+                    <ui:NavigationViewItem Icon="MapDrive" Content="Redis" Tag="LogPage.redis" />
+                </ui:NavigationViewItem.MenuItems>
+            </ui:NavigationViewItem>
+        </ui:NavigationView.MenuItems>
 
+        <ctrls:CustomFrame x:Name="Frame" Margin="20" />
+    </ui:NavigationView>
 </Window>

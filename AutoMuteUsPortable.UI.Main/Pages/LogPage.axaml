@@ -1,0 +1,68 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:AutoMuteUsPortable.UI.Main.ViewModels"
+             xmlns:ic="using:FluentAvalonia.FluentIcons"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="AutoMuteUsPortable.UI.Main.Pages.LogPage">
+    <UserControl.DataContext>
+        <vm:LogPageViewModel />
+    </UserControl.DataContext>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="12">
+                <ic:FluentIcon Icon="Server24Filled" Width="20" VerticalAlignment="Center" />
+
+                <StackPanel Orientation="Vertical" Spacing="4" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding Type}" />
+                    <TextBlock x:Name="StoppedState">停止</TextBlock>
+                    <TextBlock x:Name="RunningState">稼働中</TextBlock>
+                    <TextBlock x:Name="RestartingState">再起動中</TextBlock>
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                <StackPanel.Styles>
+                    <Style Selector="Button">
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="Theme" Value="{StaticResource TransparentButton}" />
+                    </Style>
+                </StackPanel.Styles>
+
+                <ProgressBar x:Name="ProgressBar"
+                             IsIndeterminate="{Binding Progress.IsIndeterminate}"
+                             IsVisible="{Binding ProgressBarVisibility}" />
+
+                <Button x:Name="RunButton" Command="{Binding RunCommand}">
+                    <ic:FluentIcon Icon="PlayCircle24Filled" Width="20" />
+                </Button>
+
+                <Button x:Name="StopButton" Command="{Binding StopCommand}">
+                    <ic:FluentIcon Icon="RecordStop24Filled" Width="20" />
+                </Button>
+
+                <Button x:Name="RestartButton" Command="{Binding RestartCommand}">
+                    <ic:FluentIcon Icon="ArrowSyncCircle24Filled" Width="20" />
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <ScrollViewer Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                      HorizontalScrollBarVisibility="Auto">
+            <TextBlock Text="{Binding Text}" />
+        </ScrollViewer>
+    </Grid>
+</UserControl>

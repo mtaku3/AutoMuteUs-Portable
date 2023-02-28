@@ -1,0 +1,92 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:AutoMuteUsPortable.UI.Main.ViewModels"
+             xmlns:ic="using:FluentAvalonia.FluentIcons"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="AutoMuteUsPortable.UI.Main.Pages.GeneralPage">
+    <UserControl.DataContext>
+        <vm:GeneralPageViewModel />
+    </UserControl.DataContext>
+
+    <StackPanel Orientation="Vertical" Spacing="12">
+        <StackPanel Orientation="Horizontal" Spacing="8">
+            <ic:FluentIcon Icon="Bot24Filled" Width="28" VerticalAlignment="Center" />
+            <TextBlock Theme="{StaticResource TitleTextBlockStyle}" VerticalAlignment="Center">AutoMuteUsは稼働中です</TextBlock>
+        </StackPanel>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <ic:FluentIcon Grid.Row="0" Grid.Column="0" Icon="CloudDismiss24Filled" Width="28"
+                           VerticalAlignment="Center" Margin="0,0,8,0" />
+            <TextBlock Grid.Row="0" Grid.Column="1" Theme="{StaticResource SubtitleTextBlockStyle}"
+                       VerticalAlignment="Center">
+                ボットがDiscordサーバーにいない場合
+            </TextBlock>
+
+            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                <StackPanel.Styles>
+                    <Style Selector=":is(Control)">
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                    </Style>
+                </StackPanel.Styles>
+
+                <ui:HyperlinkButton x:Name="DiscordBotInviteHyperlinkButton">こちら</ui:HyperlinkButton>
+                <TextBlock>からボットを招待してください</TextBlock>
+            </StackPanel>
+        </Grid>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <ic:FluentIcon Grid.Row="0" Grid.Column="0" Icon="ChatHelp24Filled" Width="28" VerticalAlignment="Center"
+                           Margin="0,0,8,0" />
+            <TextBlock Grid.Row="0" Grid.Column="1" Theme="{StaticResource SubtitleTextBlockStyle}"
+                       VerticalAlignment="Center">
+                ボットが動作していない場合
+            </TextBlock>
+
+            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical">
+                <TextBlock>
+                    <x:String xml:space="preserve">
+    まずはAutoMuteUs Portableを再起動してください。
+
+    それでも改善されない場合は以下の項目をご確認ください。
+    ・Among UsにModを入れていない
+    ・最新のAmongUsCaptureを使用している
+    ・最新のAutoMuteUs Portableを使用している
+
+                        </x:String>
+                </TextBlock>
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel.Styles>
+                        <Style Selector=":is(Control)">
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                        </Style>
+                    </StackPanel.Styles>
+
+                    <TextBlock>上記の項目を確認した上で、まだ改善されない場合は</TextBlock>
+                    <ui:HyperlinkButton NavigateUri="https://discord.gg/HYh9qjDFWM">こちら</ui:HyperlinkButton>
+                    <TextBlock>のDiscordサーバーでサポートチケットを発行してください。</TextBlock>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </StackPanel>
+</UserControl>

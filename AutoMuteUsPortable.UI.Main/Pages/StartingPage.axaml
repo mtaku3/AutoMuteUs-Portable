@@ -1,0 +1,22 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:AutoMuteUsPortable.UI.Main.ViewModels"
+             xmlns:ic="using:FluentAvalonia.FluentIcons"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="AutoMuteUsPortable.UI.Main.Pages.StartingPage">
+    <UserControl.DataContext>
+        <vm:StartingPageViewModel />
+    </UserControl.DataContext>
+
+    <StackPanel Orientation="Vertical" VerticalAlignment="Center" Spacing="12" IsVisible="{Binding IsLoading}">
+        <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+            <ic:FluentIcon Icon="Rocket24Filled" Width="28" VerticalAlignment="Center" />
+            <TextBlock Theme="{StaticResource TitleTextBlockStyle}" VerticalAlignment="Center">AutoMuteUsを起動しています</TextBlock>
+        </StackPanel>
+        <TextBlock Text="{Binding ProgressInfo.name}" HorizontalAlignment="Center" />
+        <ProgressBar x:Name="Progress" HorizontalAlignment="Stretch"
+                     IsIndeterminate="{Binding ProgressInfo.IsIndeterminate}" />
+    </StackPanel>
+</UserControl>
