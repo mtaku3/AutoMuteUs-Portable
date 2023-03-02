@@ -1,5 +1,6 @@
 ﻿<linker>
     <!-- Can be removed if CompiledBinding and no reflection are used -->
     <assembly fullname="AutoMuteUsPortable" preserve="All"/>
-    <assembly fullname="Avalonia.Themes.Fluent" preserve="All"/>
+    <assembly fullname="AutoMuteUsPortable.UI.Main" preserve="All"/>
+    <assembly fullname="AutoMuteUsPortable.UI.Setup" preserve="All"/>
 </linker>

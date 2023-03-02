@@ -13,7 +13,7 @@ public partial class GeneralPage : ReactiveUserControl<GeneralPageViewModel>
         InitializeComponent();
         ViewModel = new GeneralPageViewModel();
 
-        var config = AppHost.Instance.ConfigRepository.ActiveConfig;
+        var config = AppHost.Instance.ConfigRepository.Config;
         if (!config.serverConfiguration.IsSimpleSettingsUsed) throw new NotImplementedException();
 
         var token = config.serverConfiguration.simpleSettings!.discordToken;

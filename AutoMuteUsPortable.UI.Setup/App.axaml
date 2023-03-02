@@ -11,9 +11,6 @@
     <Application.Styles>
         <sty:FluentAvaloniaTheme />
         <StyleInclude Source="avares://FluentAvalonia.UI.Windowing/Styles/FAWindowingStyles.axaml" />
-        <StyleInclude Source="avares://AutoMuteUsPortable.UI.Setup/Controls/SetupPageContainer.axaml" />
-        <StyleInclude Source="avares://AutoMuteUsPortable.UI.Setup/Controls/SetupPageHeader.axaml" />
-        <StyleInclude Source="avares://AutoMuteUsPortable.UI.Setup/Controls/InstructionStyle.axaml" />
-        <StyleInclude Source="avares://AutoMuteUsPortable.UI.Setup/Controls/DiscordStyledButton.axaml" />
+        <StyleInclude Source="/Styles.axaml" />
     </Application.Styles>
 </Application>

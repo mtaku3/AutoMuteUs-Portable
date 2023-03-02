@@ -32,17 +32,31 @@
 
     <ItemGroup>
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+        <PackageReference Include="Avalonia" Version="11.0.0-preview4" />
+        <PackageReference Include="Avalonia.Desktop" Version="11.0.0-preview4" />
+        <PackageReference Include="Avalonia.Diagnostics" Version="11.0.0-preview4" />
+        <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.0-preview4" />
         <PackageReference Include="DotNetEnv" Version="2.5.0" />
+        <PackageReference Include="FluentAvalonia.UI.Windowing" Version="2.0.0-preview4" />
+        <PackageReference Include="FluentAvaloniaUI" Version="2.0.0-preview4" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
         <PackageReference Include="MinVer" Version="4.3.0-beta.1">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="XamlNameReferenceGenerator" Version="1.3.4" />
+        <PackageReference Include="XamlNameReferenceGenerator" Version="1.5.1" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\AutoMuteUsPortable.Core\AutoMuteUsPortable.Core.csproj" />
         <ProjectReference Include="..\AutoMuteUsPortable.UI.Main\AutoMuteUsPortable.UI.Main.csproj" />
+        <ProjectReference Include="..\AutoMuteUsPortable.UI.Setup\AutoMuteUsPortable.UI.Setup.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="App.axaml.cs">
+        <DependentUpon>App.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
     </ItemGroup>
 </Project>

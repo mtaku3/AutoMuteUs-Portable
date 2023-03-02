@@ -16,24 +16,24 @@ public class AppHost
 
     public AppHost()
     {
-        ConfigRepository = new ConfigRepository(ProcessPath);
+        ConfigRepository = new ConfigRepository();
         ConfigRepository.Load(DefaultConfigPath);
 
         PocketBaseClientApplication = new PocketBaseClientApplication();
         ServerConfiguratorController =
-            new ServerConfiguratorController(ConfigRepository.ActiveConfig, PocketBaseClientApplication);
+            new ServerConfiguratorController(ConfigRepository.Config, PocketBaseClientApplication);
 
         if (IsSimpleSettings)
-            LogPageController = new LogPageController(ConfigRepository.ActiveConfig.serverConfiguration.simpleSettings!
+            LogPageController = new LogPageController(ConfigRepository.Config.serverConfiguration.simpleSettings!
                 .executorConfigurations);
         else
             LogPageController =
-                new LogPageController(ConfigRepository.ActiveConfig.serverConfiguration.advancedSettings!);
+                new LogPageController(ConfigRepository.Config.serverConfiguration.advancedSettings!);
     }
 
     public static AppHost Instance { get; private set; }
 
-    public bool IsSimpleSettings => ConfigRepository.ActiveConfig.serverConfiguration.IsSimpleSettingsUsed;
+    public bool IsSimpleSettings => ConfigRepository.Config.serverConfiguration.IsSimpleSettingsUsed;
     public ConfigRepository ConfigRepository { get; }
     public PocketBaseClientApplication PocketBaseClientApplication { get; }
     public ServerConfiguratorController ServerConfiguratorController { get; }

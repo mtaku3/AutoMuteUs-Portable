@@ -1,13 +1,12 @@
 ﻿using System;
 using System.IO;
-using AutoMuteUsPortable.Core.Controller.ServerConfigurator;
 using AutoMuteUsPortable.Core.Infrastructure.Config;
-using AutoMuteUsPortable.PocketBaseClient;
-using AutoMuteUsPortable.Shared.Infrastructure.ConfigBase;
-using AutoMuteUsPortable.UI.Main;
+using AutoMuteUsPortable.UI.Setup.Views;
 using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.ReactiveUI;
-using Microsoft.Extensions.DependencyInjection;
+using FluentAvalonia.UI.Windowing;
 #if DEBUG
 using DotNetEnv;
 #endif
@@ -16,9 +15,11 @@ namespace AutoMuteUsPortable;
 
 internal class Program
 {
-    public static readonly string DefaultConfigPath =
+    private static readonly string DefaultConfigPath =
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "AutoMuteUsPortable.json");
+
+    private static readonly App App = new();
 
     // Initialization code. Don't use any Avalonia, third-party APIs or any
     // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
@@ -30,48 +31,47 @@ internal class Program
         Env.TraversePath().Load();
 #endif
 
-        #region Find config to launch with
-
-        var configBaseRepository = new ConfigBaseRepository();
-        configBaseRepository.LoadOrCreateDefault(DefaultConfigPath);
-
-        var configBase = configBaseRepository.FindUnique(Environment.ProcessPath!);
-        if (configBase == null)
-            // TODO: show window to select which config user want to launch with
-            throw new NotImplementedException();
-
-        var configRepository = new ConfigRepository(configBase.executableFilePath);
-        configRepository.Load(DefaultConfigPath);
-
-        var pocketBaseClientApplication = new PocketBaseClientApplication();
-
-        #endregion
-
-        var serverConfigurator =
-            new ServerConfiguratorController(configRepository.ActiveConfig, pocketBaseClientApplication);
-
-        #region Dependency Injection - Repository
-
-        var serviceCollection = new ServiceCollection();
-
-        serviceCollection.AddSingleton<IConfigBaseRepository>(configBaseRepository);
-        serviceCollection.AddSingleton<IConfigRepository>(configRepository);
-        serviceCollection.AddSingleton(pocketBaseClientApplication);
-
-        var service = serviceCollection.BuildServiceProvider();
-
-        #endregion
-
-        BuildAvaloniaApp()
-            .StartWithClassicDesktopLifetime(args);
-    }
-
-    // Avalonia configuration, don't remove; also used by visual designer.
-    public static AppBuilder BuildAvaloniaApp()
-    {
-        return AppBuilder.Configure<App>()
+        var lifetime = new ClassicDesktopStyleApplicationLifetime
+        {
+            Args = args,
+            ShutdownMode = ShutdownMode.OnMainWindowClose
+        };
+        AppBuilder.Configure(() => App)
             .UsePlatformDetect()
             .LogToTrace()
-            .UseReactiveUI();
+            .UseReactiveUI()
+            .UseFAWindowing()
+            .SetupWithLifetime(lifetime);
+
+        var configRepository = new ConfigRepository();
+        configRepository.Load(DefaultConfigPath);
+
+        if (configRepository.Config == null)
+        {
+            #region Launch Setup and then Main
+
+            App.InitializeSetupUI();
+            lifetime.MainWindow = MainWindow.Instance;
+            lifetime.Start(args);
+
+            configRepository.Load(DefaultConfigPath);
+            if (configRepository.Config == null) return;
+
+            App.InitializeMainUI();
+            lifetime.MainWindow = UI.Main.Views.MainWindow.Instance;
+            lifetime.Start(args);
+
+            #endregion
+        }
+        else
+        {
+            #region Launch Main
+
+            App.InitializeMainUI();
+            lifetime.MainWindow = UI.Main.Views.MainWindow.Instance;
+            lifetime.Start(args);
+
+            #endregion
+        }
     }
 }

@@ -36,7 +36,6 @@ public class SimpleSettingsConfigurationState : IConfigurationState
 
         var config = new Config
         {
-            executableFilePath = Environment.ProcessPath!,
             installedDirectory = InstallationDirectory,
             serverConfiguration = new ServerConfiguration
             {

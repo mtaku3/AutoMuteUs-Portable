@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
 using AutoMuteUsPortable.Core.Controller.ServerConfigurator;
 using AutoMuteUsPortable.Core.Infrastructure.Config;
 using AutoMuteUsPortable.Shared.Entity.ProgressInfo;
-using AutoMuteUsPortable.Shared.Infrastructure.ConfigBase;
 using AutoMuteUsPortable.Shared.Utility;
 using AutoMuteUsPortable.UI.Setup.Common;
 using AutoMuteUsPortable.UI.Setup.ViewModels;
@@ -64,15 +62,9 @@ public partial class InstallPage : ReactiveUserControl<InstallPageViewModel>
 
                 MainWindow.Instance.CloseCTS = null;
 
-                if (!File.Exists(AppHost.DefaultConfigPath))
-                {
-                    var configBaseRepository = new ConfigBaseRepository();
-                    configBaseRepository.LoadOrCreateDefault(AppHost.DefaultConfigPath);
-                }
-
-                var configRepository = new ConfigRepository(AppHost.ProcessPath);
+                var configRepository = new ConfigRepository();
                 configRepository.Load(AppHost.DefaultConfigPath);
-                configRepository.Create(config);
+                configRepository.Upsert(config);
 
                 Dispatcher.UIThread.Post(() =>
                 {
