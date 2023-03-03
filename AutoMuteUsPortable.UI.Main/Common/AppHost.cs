@@ -21,19 +21,19 @@ public class AppHost
 
         PocketBaseClientApplication = new PocketBaseClientApplication();
         ServerConfiguratorController =
-            new ServerConfiguratorController(ConfigRepository.Config, PocketBaseClientApplication);
+            new ServerConfiguratorController(ConfigRepository.Config!, PocketBaseClientApplication);
 
         if (IsSimpleSettings)
-            LogPageController = new LogPageController(ConfigRepository.Config.serverConfiguration.simpleSettings!
+            LogPageController = new LogPageController(ConfigRepository.Config!.serverConfiguration.simpleSettings!
                 .executorConfigurations);
         else
             LogPageController =
-                new LogPageController(ConfigRepository.Config.serverConfiguration.advancedSettings!);
+                new LogPageController(ConfigRepository.Config!.serverConfiguration.advancedSettings!);
     }
 
     public static AppHost Instance { get; private set; }
 
-    public bool IsSimpleSettings => ConfigRepository.Config.serverConfiguration.IsSimpleSettingsUsed;
+    public bool IsSimpleSettings => ConfigRepository.Config!.serverConfiguration.IsSimpleSettingsUsed;
     public ConfigRepository ConfigRepository { get; }
     public PocketBaseClientApplication PocketBaseClientApplication { get; }
     public ServerConfiguratorController ServerConfiguratorController { get; }

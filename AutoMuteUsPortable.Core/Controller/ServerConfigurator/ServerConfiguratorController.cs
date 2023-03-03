@@ -13,6 +13,7 @@ using AutoMuteUsPortable.Shared.Entity.ProgressInfo;
 using AutoMuteUsPortable.Shared.Utility;
 using McMaster.NETCore.Plugins;
 using Open.Collections;
+using Serilog;
 
 namespace AutoMuteUsPortable.Core.Controller.ServerConfigurator;
 
@@ -585,6 +586,9 @@ public class ServerConfiguratorController
         var downloadUrl = Utils.GetDownloadUrl(executor.DownloadUrl);
         if (string.IsNullOrEmpty(downloadUrl))
             throw new InvalidDataException("DownloadUrl cannot be null or empty");
+
+        Log.Information("Downloading executor {ExecutorType} {ExecutorVersion} from {DownloadUrl}", executor.Type,
+            executor.Version, downloadUrl);
 
         #endregion
 

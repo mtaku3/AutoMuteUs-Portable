@@ -3,6 +3,7 @@ using System.Text.Json;
 using AutoMuteUsPortable.Core.Entity.ConfigNS;
 using AutoMuteUsPortable.Shared.Utility;
 using FluentValidation;
+using Serilog;
 
 namespace AutoMuteUsPortable.Core.Infrastructure.Config;
 
@@ -14,9 +15,15 @@ public class ConfigRepository : IConfigRepository
 
     public void Load(string filePath)
     {
+        Log.Information("Loading config file from {FilePath}", filePath);
+
         _filePath = filePath;
 
-        if (!File.Exists(filePath)) return;
+        if (!File.Exists(filePath))
+        {
+            Log.Information("Config file does not exist at {FilePath}", filePath);
+            return;
+        }
 
         var text = File.ReadAllText(filePath);
         var config = JsonSerializer.Deserialize<Entity.ConfigNS.Config>(text, Utils.CustomJsonSerializerOptions);
@@ -35,6 +42,8 @@ public class ConfigRepository : IConfigRepository
 
     public void Upsert(Entity.ConfigNS.Config config)
     {
+        Log.Debug("Updating config to {@Config}", config);
+
         var validator = new ConfigValidator();
         validator.ValidateAndThrow(config);
 
@@ -46,6 +55,8 @@ public class ConfigRepository : IConfigRepository
 
     public void Delete()
     {
+        Log.Information("Deleting config file at {FilePath}", _filePath);
+
         File.Delete(_filePath);
         Config = null;
     }

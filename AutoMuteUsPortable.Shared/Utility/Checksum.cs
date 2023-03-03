@@ -1,3 +1,4 @@
+using Serilog;
 using Standart.Hash.xxHash;
 
 namespace AutoMuteUsPortable.Shared.Utility;
@@ -15,6 +16,8 @@ public static partial class Utils
                 var fileName = line.Substring(17);
                 res[fileName] = Convert.ToUInt64(checksum, 16);
             }
+
+        Log.Verbose("Parsed checksums: {@Checksums}", res);
 
         return res;
     }
@@ -39,6 +42,8 @@ public static partial class Utils
 
             cancellationToken.ThrowIfCancellationRequested();
         }
+
+        Log.Debug("Found {Count} files with different checksums: {@InvalidFiles}", ret.Count, ret);
 
         return ret;
     }

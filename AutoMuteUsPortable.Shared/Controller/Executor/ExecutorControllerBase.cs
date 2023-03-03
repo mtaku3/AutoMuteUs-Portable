@@ -2,6 +2,7 @@
 using AutoMuteUsPortable.Shared.Entity.ExecutorConfigurationBaseNS;
 using AutoMuteUsPortable.Shared.Entity.ExecutorConfigurationNS;
 using AutoMuteUsPortable.Shared.Entity.ProgressInfo;
+using Serilog;
 
 namespace AutoMuteUsPortable.Shared.Controller.Executor;
 
@@ -28,12 +29,14 @@ public class ExecutorControllerBase
 
     protected virtual void OnStart()
     {
+        Log.Information("Started {ExecutorName}", ExecutorConfiguration.type);
         IsRunning = true;
         Started?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnStop()
     {
+        Log.Information("Stopped {ExecutorName}", ExecutorConfiguration.type);
         IsRunning = false;
         Stopped?.Invoke(this, EventArgs.Empty);
     }

@@ -1,12 +1,14 @@
 ﻿using System;
 using System.IO;
 using AutoMuteUsPortable.Core.Infrastructure.Config;
+using AutoMuteUsPortable.Logging;
 using AutoMuteUsPortable.UI.Setup.Views;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.ReactiveUI;
 using FluentAvalonia.UI.Windowing;
+using Serilog;
 #if DEBUG
 using DotNetEnv;
 #endif
@@ -31,6 +33,12 @@ internal class Program
         Env.TraversePath().Load();
 #endif
 
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Verbose()
+            .Enrich.FromLogContext()
+            .WriteTo.Debug()
+            .CreateLogger();
+
         var lifetime = new ClassicDesktopStyleApplicationLifetime
         {
             Args = args,
@@ -38,7 +46,14 @@ internal class Program
         };
         AppBuilder.Configure(() => App)
             .UsePlatformDetect()
-            .LogToTrace()
+            .LogToSerilog(
+                new LoggerConfiguration()
+                    .MinimumLevel.Warning()
+                    .Enrich.FromLogContext()
+                    .WriteTo.Debug(
+                        outputTemplate:
+                        "[{Timestamp:HH:mm:ss} {Level:u3} - Avalonia] [{Area}] {Message} ({SourceType} #{SourceHash}){NewLine}{Exception}")
+                    .CreateLogger())
             .UseReactiveUI()
             .UseFAWindowing()
             .SetupWithLifetime(lifetime);
@@ -52,14 +67,29 @@ internal class Program
 
             App.InitializeSetupUI();
             lifetime.MainWindow = MainWindow.Instance;
-            lifetime.Start(args);
+            try
+            {
+                lifetime.Start(args);
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "Error while running Setup UI");
+                return;
+            }
 
             configRepository.Load(DefaultConfigPath);
             if (configRepository.Config == null) return;
 
             App.InitializeMainUI();
             lifetime.MainWindow = UI.Main.Views.MainWindow.Instance;
-            lifetime.Start(args);
+            try
+            {
+                lifetime.Start(args);
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "Error while running Main UI");
+            }
 
             #endregion
         }
@@ -69,7 +99,14 @@ internal class Program
 
             App.InitializeMainUI();
             lifetime.MainWindow = UI.Main.Views.MainWindow.Instance;
-            lifetime.Start(args);
+            try
+            {
+                lifetime.Start(args);
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "Error while running Main UI");
+            }
 
             #endregion
         }
