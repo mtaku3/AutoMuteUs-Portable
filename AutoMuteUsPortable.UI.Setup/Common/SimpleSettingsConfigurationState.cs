@@ -5,6 +5,7 @@ using System.Reflection;
 using AutoMuteUsPortable.Core.Entity.ConfigNS;
 using AutoMuteUsPortable.Core.Entity.SimpleSettingsNS;
 using AutoMuteUsPortable.PocketBaseClient;
+using AutoMuteUsPortable.PocketBaseClient.Models;
 using AutoMuteUsPortable.Shared.Entity.ExecutorConfigurationBaseNS;
 using AutoMuteUsPortable.Shared.Entity.ExecutorConfigurationSSNS;
 using AutoMuteUsPortable.UI.Setup.Utils;
@@ -25,19 +26,31 @@ public class SimpleSettingsConfigurationState : IConfigurationState
 
     public Config CreateConfig()
     {
-        var redis = _pbClient.Data.RedisCollection.First();
-        var postgresql = _pbClient.Data.PostgresqlCollection.First();
-        var galactus = _pbClient.Data.GalactusCollection.First();
-        var automuteus = _pbClient.Data.AutomuteusCollection.First();
+        var version = Assembly.GetEntryAssembly()!.GetName().Version!.ToString();
+        var application = _pbClient.Data.ApplicationCollection.First(x => x.Version == version);
+        var compatibleExecutors = application.CompatibleExecutors;
 
-        var redisExecutor = redis.CompatibleExecutors.OrderByDescending(x => x.Created).First();
-        var postgresqlExecutor = postgresql.CompatibleExecutors.OrderByDescending(x => x.Created).First();
-        var galactusExecutor = galactus.CompatibleExecutors.OrderByDescending(x => x.Created).First();
-        var automuteusExecutor = automuteus.CompatibleExecutors.OrderByDescending(x => x.Created).First();
+        var redisExecutor = compatibleExecutors.Where(x => x.Type == Executor.TypeEnum.Redis)
+            .OrderByDescending(x => x.Version).First();
+        var postgresqlExecutor = compatibleExecutors.Where(x => x.Type == Executor.TypeEnum.Postgresql)
+            .OrderByDescending(x => x.Version).First();
+        var galactusExecutor = compatibleExecutors.Where(x => x.Type == Executor.TypeEnum.Galactus)
+            .OrderByDescending(x => x.Version).First();
+        var automuteusExecutor = compatibleExecutors.Where(x => x.Type == Executor.TypeEnum.Automuteus)
+            .OrderByDescending(x => x.Version).First();
+
+        var redis = _pbClient.Data.RedisCollection.OrderByDescending(x => x.Version)
+            .First(x => x.CompatibleExecutors.Contains(redisExecutor));
+        var postgresql = _pbClient.Data.PostgresqlCollection.OrderByDescending(x => x.Version)
+            .First(x => x.CompatibleExecutors.Contains(redisExecutor));
+        var galactus = _pbClient.Data.GalactusCollection.OrderByDescending(x => x.Version)
+            .First(x => x.CompatibleExecutors.Contains(redisExecutor));
+        var automuteus = _pbClient.Data.AutomuteusCollection.OrderByDescending(x => x.Version)
+            .First(x => x.CompatibleExecutors.Contains(redisExecutor));
 
         var config = new Config
         {
-            version = Assembly.GetEntryAssembly()?.GetName().Version,
+            version = version,
             installedDirectory = InstallationDirectory,
             serverConfiguration = new ServerConfiguration
             {

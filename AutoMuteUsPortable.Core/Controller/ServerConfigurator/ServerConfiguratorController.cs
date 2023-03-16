@@ -5,6 +5,7 @@ using System.Reflection;
 using AutoMuteUsPortable.Core.Entity.ComputedSimpleSettingsNS;
 using AutoMuteUsPortable.Core.Entity.ConfigNS;
 using AutoMuteUsPortable.PocketBaseClient;
+using AutoMuteUsPortable.PocketBaseClient.Models;
 using AutoMuteUsPortable.Shared.Controller.Executor;
 using AutoMuteUsPortable.Shared.Entity.ExecutorConfigurationBaseNS;
 using AutoMuteUsPortable.Shared.Entity.ExecutorConfigurationNS;
@@ -22,11 +23,30 @@ public class ServerConfiguratorController
     private readonly Config _config;
     private readonly PocketBaseClientApplication _pocketBaseClientApplication;
     private readonly CompositeDisposable _pluginLoaders = new();
+    private readonly Application _application;
 
     public ServerConfiguratorController(Config config, PocketBaseClientApplication pocketBaseClientApplication)
     {
         _config = config;
         _pocketBaseClientApplication = pocketBaseClientApplication;
+
+        var application =
+            _pocketBaseClientApplication.Data.ApplicationCollection.FirstOrDefault(x => x.Version == _config.version);
+
+#if DEBUG
+        if (application == null)
+        {
+            application = new Application
+            {
+                Version = _config.version
+            };
+            foreach (var executor in _pocketBaseClientApplication.Data.ExecutorCollection)
+                application.CompatibleExecutors.Add(executor);
+            _pocketBaseClientApplication.Data.ApplicationCollection.Append(application);
+        }
+#endif
+
+        _application = application ?? throw new Exception("Application not found");
     }
 
     public OrderedDictionary<ExecutorType, ExecutorControllerBase> executors { get; } = new();
@@ -162,6 +182,11 @@ public class ServerConfiguratorController
             if (executor == null)
                 throw new InvalidOperationException(
                     $"{executorConfiguration.type} Executor {executorConfiguration.version} is not found in the database");
+            if (!_application.CompatibleExecutors.Any(x =>
+                    x.Type.ToString()?.ToLower() == executorConfiguration.type.ToString() &&
+                    x.Version == executorConfiguration.version))
+                throw new InvalidOperationException(
+                    $"{executorConfiguration.type} Executor {executorConfiguration.version} is not compatible with the application version {_config.version}");
 
             var checksumUrl = Utils.GetChecksum(executor.Checksum);
 
@@ -254,6 +279,11 @@ public class ServerConfiguratorController
             if (executor == null)
                 throw new InvalidOperationException(
                     $"{executorConfiguration.type} Executor {executorConfiguration.version} is not found in the database");
+            if (!_application.CompatibleExecutors.Any(x =>
+                    x.Type.ToString()?.ToLower() == executorConfiguration.type.ToString() &&
+                    x.Version == executorConfiguration.version))
+                throw new InvalidOperationException(
+                    $"{executorConfiguration.type} Executor {executorConfiguration.version} is not compatible with the application version {_config.version}");
 
             var checksumUrl = Utils.GetChecksum(executor.Checksum);
 
