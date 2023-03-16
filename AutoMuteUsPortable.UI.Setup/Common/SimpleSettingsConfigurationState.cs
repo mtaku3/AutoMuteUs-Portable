@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using AutoMuteUsPortable.Core.Entity.ConfigNS;
 using AutoMuteUsPortable.Core.Entity.SimpleSettingsNS;
 using AutoMuteUsPortable.PocketBaseClient;
@@ -36,6 +37,7 @@ public class SimpleSettingsConfigurationState : IConfigurationState
 
         var config = new Config
         {
+            version = Assembly.GetEntryAssembly()?.GetName().Version,
             installedDirectory = InstallationDirectory,
             serverConfiguration = new ServerConfiguration
             {

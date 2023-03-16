@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using AutoMuteUsPortable.Core.Infrastructure.Config;
 using AutoMuteUsPortable.Logging;
+using AutoMuteUsPortable.Shared.Infrastructure.ConfigBase;
 using AutoMuteUsPortable.UI.Setup.Views;
 using Avalonia;
 using Avalonia.Controls;
@@ -9,6 +11,10 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.ReactiveUI;
 using FluentAvalonia.UI.Windowing;
 using Serilog;
+using Serilog.Enrichers.Sensitive;
+using Serilog.Events;
+using Serilog.Exceptions;
+using Serilog.Templates;
 #if DEBUG
 using DotNetEnv;
 #endif
@@ -21,23 +27,21 @@ internal class Program
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "AutoMuteUsPortable.json");
 
+    private static readonly ExpressionTemplate LogMessageTemplate =
+        new("[{@t:HH:mm:ss} {@l:u3}{#if SourceContext is not null} ({SourceContext}){#end}] {@m:lj}\n{@x}");
+
     private static readonly App App = new();
 
     // Initialization code. Don't use any Avalonia, third-party APIs or any
     // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
     // yet and stuff might break.
     [STAThread]
+    [Obsolete("Obsolete")]
     public static void Main(string[] args)
     {
 #if DEBUG
         Env.TraversePath().Load();
 #endif
-
-        Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Verbose()
-            .Enrich.FromLogContext()
-            .WriteTo.Debug()
-            .CreateLogger();
 
         var lifetime = new ClassicDesktopStyleApplicationLifetime
         {
@@ -46,17 +50,52 @@ internal class Program
         };
         AppBuilder.Configure(() => App)
             .UsePlatformDetect()
-            .LogToSerilog(
-                new LoggerConfiguration()
-                    .MinimumLevel.Warning()
-                    .Enrich.FromLogContext()
-                    .WriteTo.Debug(
-                        outputTemplate:
-                        "[{Timestamp:HH:mm:ss} {Level:u3} - Avalonia] [{Area}] {Message} ({SourceType} #{SourceHash}){NewLine}{Exception}")
-                    .CreateLogger())
             .UseReactiveUI()
             .UseFAWindowing()
             .SetupWithLifetime(lifetime);
+
+        #region Load configuration if exists
+
+        var configBaseRepository = new ConfigBaseRepository();
+        configBaseRepository.Load(DefaultConfigPath);
+
+        var logLevel = configBaseRepository.ConfigBase?.logging?.logLevel ?? LogEventLevel.Verbose;
+        string logOutputDirectory;
+        if (configBaseRepository.ConfigBase != null)
+        {
+            if (configBaseRepository.ConfigBase.logging?.outputDirectory != null)
+            {
+                logOutputDirectory = configBaseRepository.ConfigBase.logging.outputDirectory;
+            }
+            else
+            {
+                logOutputDirectory = Path.Combine(configBaseRepository.ConfigBase.installedDirectory, "logs");
+                if (!Directory.Exists(logOutputDirectory)) Directory.CreateDirectory(logOutputDirectory);
+            }
+        }
+        else
+        {
+            logOutputDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        }
+
+        #endregion
+
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Is(logLevel)
+            .Enrich.FromLogContext()
+            .Enrich.WithExceptionDetails()
+            .Enrich.WithSensitiveDataMasking(options =>
+            {
+                options.MaskingOperators = new List<IMaskingOperator>
+                {
+                    new UsernameMaskingOperator(),
+                    new DiscordBotTokenMaskingOperator()
+                };
+            })
+            .WriteTo.Debug()
+            .WriteTo.File(Path.Combine(logOutputDirectory, "AutoMuteUsPortable.log"),
+                rollingInterval: RollingInterval.Day)
+            .CreateLogger();
 
         var configRepository = new ConfigRepository();
         configRepository.Load(DefaultConfigPath);
