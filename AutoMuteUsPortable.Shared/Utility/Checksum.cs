@@ -17,8 +17,6 @@ public static partial class Utils
                 res[fileName] = Convert.ToUInt64(checksum, 16);
             }
 
-        Log.Verbose("Parsed checksums: {@Checksums}", res);
-
         return res;
     }
 
@@ -43,7 +41,7 @@ public static partial class Utils
             cancellationToken.ThrowIfCancellationRequested();
         }
 
-        Log.Debug("Found {Count} files with different checksums: {@InvalidFiles}", ret.Count, ret);
+        Log.Debug("Found {Count} files with different checksums", ret.Count);
 
         return ret;
     }
