@@ -10,6 +10,7 @@ pub mod component;
 #[derive(StableAbi)]
 #[sabi(kind(Prefix))]
 pub struct ComponentMod {
+    #[sabi(last_prefix_field)]
     pub new: extern "C" fn() -> Component_TO<'static, RBox<()>>,
 }
 

@@ -1,0 +1,21 @@
+[package]
+name = "amup_component_module_automuteus"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+abi_stable = "0.11.3"
+
+[dependencies.amup_core_comp_mod_intf]
+version = "0.1"
+path = "../../../libs/core/comp_mod_intf"
+
+[dependencies.amup_core_config_intf]
+version = "0.1"
+path = "../../../libs/core/config_intf"
+
+[lib]
+name = "automuteus"
+crate-type = ["cdylib", "rlib"]
