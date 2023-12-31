@@ -1,0 +1,7 @@
+[package]
+name = "amup_core_ui_ipc_intf"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+serde = { version = "1.0.193", features = ["derive"] }
