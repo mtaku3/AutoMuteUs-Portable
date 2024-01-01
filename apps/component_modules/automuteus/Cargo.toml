@@ -11,11 +11,11 @@ abi_stable = { workspace = true }
 
 [dependencies.amup_core_comp_mod_intf]
 version = "0.1"
-path = "../../../libs/core/comp_mod_intf"
+path = "../../../lib/core/comp_mod_intf"
 
 [dependencies.amup_core_config_intf]
 version = "0.1"
-path = "../../../libs/core/config_intf"
+path = "../../../lib/core/config_intf"
 
 [lib]
 name = "automuteus"

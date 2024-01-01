@@ -25,7 +25,7 @@ log = { workspace = true }
 env_logger = { workspace = true }
 
 [dependencies.amup_core_ui_ipc_intf]
-path = "../../../../libs/core/ui_ipc_intf"
+path = "../../../../lib/core/ui_ipc_intf"
 version = "0.1"
 
 [features]
