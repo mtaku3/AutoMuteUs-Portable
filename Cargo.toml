@@ -1,0 +1,18 @@
+[workspace]
+members = [
+	"apps/core",
+	"apps/component_modules/*",
+	"apps/ui/main/src-tauri",
+	"libs/core/*"
+]
+
+[workspace.package]
+authors = ["mtaku3 <m.taku3.1222@gmail.com>"]
+
+[workspace.dependencies]
+anyhow = "1.0.78"
+abi_stable = "0.11.3"
+async-channel = "1.9.0"
+log = "0.4.20"
+env_logger = "0.10.1"
+busrt = "0.4.8"

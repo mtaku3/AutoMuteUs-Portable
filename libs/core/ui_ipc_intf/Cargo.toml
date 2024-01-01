@@ -1,5 +1,6 @@
 [package]
 name = "amup_core_ui_ipc_intf"
+authors.workspace = true
 version = "0.1.0"
 edition = "2021"
 
